@@ -1812,7 +1812,9 @@
             <input type="text" id="book-author" placeholder="Auteur">
           </div>
           <div class="book-form-row">
-            <select id="book-genre" class="btn btn-sm" style="flex:1">
+            <div id="book-genre-host" style="flex:1;min-width:0"></div>
+            <div id="book-init-status-host" style="flex:1;min-width:0"></div>
+            <select id="book-genre" class="btn btn-sm" style="display:none;flex:1">
               <option value="roman">📕 Roman</option>
               <option value="essai">💡 Essai</option>
               <option value="politique">🏛️ Politique</option>
@@ -1822,12 +1824,12 @@
               <option value="bio">👤 Biographie</option>
               <option value="autre">📦 Autre</option>
             </select>
-            <select id="book-init-status" class="btn btn-sm" style="flex:1">
+            <select id="book-init-status" class="btn btn-sm" style="display:none;flex:1">
               <option value="todo">📚 À lire</option>
               <option value="reading">📖 En cours</option>
               <option value="done">✓ Terminé</option>
             </select>
-            <button class="btn btn-primary" id="book-add" style="flex:1">Ajouter</button>
+            <button class="btn btn-primary btn-sm" id="book-add" style="flex-shrink:0;white-space:nowrap">Ajouter</button>
           </div>
         </div>
 
@@ -5784,8 +5786,24 @@ function init(){
 
   // Généralisation du sélecteur custom : convertit les <select> natifs restants
   ['day-theme','habit-moment','task-freq','task-rem-weekday','task-rem-month',
-   'task-rem-day','note-cat','book-genre','book-init-status']
+   'task-rem-day','note-cat']
     .forEach(id=>{ try{ upgradeSelect(id); }catch(e){} });
+  // book-genre et book-init-status ont des hosts dédiés (pour la mise en page)
+  try{
+    ['book-genre','book-init-status'].forEach(id=>{
+      const sel = document.getElementById(id);
+      const host = document.getElementById(id+'-host');
+      if(!sel || !host) return;
+      const msel = makeMsel({
+        options: [...sel.options].map(o=>({value:o.value, label:o.textContent})),
+        value: sel.value,
+        onChange: v=>{ sel.value=v; sel.dispatchEvent(new Event('change',{bubbles:true})); }
+      });
+      msel.style.width='100%'; msel.style.maxWidth='100%';
+      host.appendChild(msel);
+      sel._msel = msel;
+    });
+  }catch(e){}
   // Note rapide : son sélecteur de catégorie s'ouvre vers le HAUT (la modale est en bas d'écran)
   try{ upgradeSelect('qn-cat', {dropUp:true}); }catch(e){}
   // Sélecteurs d'heure et de date custom (remplacent les pickers natifs Google/Android)
