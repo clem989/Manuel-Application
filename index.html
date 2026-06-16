@@ -2810,10 +2810,21 @@ function renderHabitOverlayList(){
   }
 }
 function maybeShowHabitOverlay(force = false){
-  // S'affiche à CHAQUE ouverture de l'app (et sur demande via le bouton de réouverture).
-  // On affiche les habitudes du moment courant + les tâches dues dans cette plage horaire.
   const moment = currentMoment();
-  if(habitsForMoment(moment).length === 0 && tasksForMoment(moment).length === 0) return; // rien à montrer
+  if(habitsForMoment(moment).length === 0 && tasksForMoment(moment).length === 0) return;
+
+  if(!force){
+    // Affichage limité : 1ère ouverture, OU changement de moment, OU 2 h écoulées
+    const last = STORE.get('manuel-overlay-last', null);
+    if(last){
+      const sameMoment = last.moment === moment;
+      const within2h = (Date.now() - (last.ts || 0)) < 2 * 3600 * 1000;
+      if(sameMoment && within2h) return;
+    }
+    // pas de "last" → première ouverture → on affiche
+  }
+
+  STORE.set('manuel-overlay-last', { ts: Date.now(), moment });
   renderHabitOverlayList();
   document.getElementById('habit-overlay').style.display = 'flex';
 }
@@ -5529,11 +5540,13 @@ function tick(){
     const today = todayKey();
     if(today !== lastDayKey){
       lastDayKey = today;
-      purgeExpiredOnceTasks();   // les tâches uniques d'hier disparaissent
+      purgeExpiredOnceTasks();
       renderUnifiedTasks();
       renderCustomTasks();
       renderStats();
     }
+    // Overlay habitudes : changement de moment ou 2h écoulées
+    maybeShowHabitOverlay();
   }
 }
 
@@ -5787,6 +5800,15 @@ function init(){
 
   // Overlay habitudes du moment (après le splash)
   setTimeout(()=>maybeShowHabitOverlay(), 900);
+
+  // Retour sur l'app (depuis une autre appli, écran verrouillé...) → vérifie l'overlay
+  let _lastReturn = 0;
+  document.addEventListener('visibilitychange', ()=>{
+    if(!document.hidden){
+      const now = Date.now();
+      if(now - _lastReturn > 5000){ _lastReturn = now; maybeShowHabitOverlay(); }
+    }
+  });
 
   // Refresh stats when stats view is opened
   document.querySelector('.tab[data-view="stats"]').addEventListener('click', ()=>{ renderStats(); updateBackupStatus(); });
