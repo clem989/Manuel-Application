@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guide — Synchronisation Firebase · Manuel</title>
+<style>
+  :root{
+    --bg:#0E0E10; --surface:#16161A; --surface-2:#1D1D22;
+    --ink:#EDEAE4; --ink-soft:#B8B4AC; --muted:#6E6A63;
+    --accent:#E26D52; --sage:#84A98C; --line:#26262C;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+    line-height:1.65; padding:32px 20px 80px;
+  }
+  .wrap{max-width:680px;margin:0 auto}
+  .eyebrow{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+  h1{font-family:Georgia,'Times New Roman',serif;font-weight:400;font-size:34px;margin-bottom:6px}
+  h1 em{color:var(--accent);font-style:italic}
+  .sub{color:var(--ink-soft);font-size:15px;margin-bottom:28px}
+  .step{
+    background:var(--surface);border:1px solid var(--line);border-radius:16px;
+    padding:22px;margin-bottom:16px;
+  }
+  .step-head{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+  .step-num{
+    font-family:Georgia,serif;font-style:italic;font-size:22px;color:var(--accent);
+    min-width:34px;
+  }
+  .step h2{font-size:17px;font-weight:600}
+  .step p{color:var(--ink-soft);font-size:14px;margin-bottom:8px}
+  .step p:last-child{margin-bottom:0}
+  .step b{color:var(--ink)}
+  .step ol{padding-left:20px;color:var(--ink-soft);font-size:14px}
+  .step li{margin-bottom:6px}
+  code{
+    background:var(--surface-2);border:1px solid var(--line);border-radius:6px;
+    padding:1px 6px;font-family:ui-monospace,'Cascadia Mono',monospace;font-size:12.5px;color:var(--sage);
+  }
+  pre{
+    background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+    padding:14px;overflow-x:auto;font-family:ui-monospace,monospace;
+    font-size:12px;line-height:1.5;color:var(--ink-soft);margin:10px 0;
+  }
+  .callout{
+    border-left:3px solid var(--sage);background:rgba(132,169,140,.08);
+    border-radius:0 10px 10px 0;padding:12px 14px;font-size:13px;color:var(--ink-soft);margin:10px 0;
+  }
+  .callout.warn{border-left-color:var(--accent);background:rgba(226,109,82,.08)}
+  .callout b{color:var(--ink);display:block;font-size:11px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:4px}
+  a{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">Manuel · Guide</div>
+  <h1>Synchroniser avec <em>Firebase</em></h1>
+  <p class="sub">≈ 10 minutes, une seule fois. À la fin : tes notes, lectures, habitudes et stats se synchronisent en temps réel entre ton téléphone et ton PC Linux. 100&nbsp;% gratuit (plan « Spark » de Google, largement suffisant pour un usage personnel).</p>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">01</span><h2>Créer le projet</h2></div>
+    <ol>
+      <li>Va sur <a href="https://console.firebase.google.com">console.firebase.google.com</a> et connecte-toi avec ton compte Google.</li>
+      <li>Clique <b>Créer un projet</b> → nom : <code>manuel</code> (ou ce que tu veux).</li>
+      <li>Quand on te propose <b>Google Analytics</b> : <b>désactive-le</b> (inutile ici), puis <b>Créer le projet</b>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">02</span><h2>Activer Firestore (la base de données)</h2></div>
+    <ol>
+      <li>Menu de gauche → <b>Créer</b> (Build) → <b>Firestore Database</b> → <b>Créer une base de données</b>.</li>
+      <li>Emplacement : choisis <code>europe-west1 (Belgique)</code> ou <code>eur3</code>.</li>
+      <li>Mode : <b>production</b> (on met les règles juste après) → <b>Créer</b>.</li>
+      <li>Une fois créée, onglet <b>Règles</b> : remplace tout le contenu par ceci, puis <b>Publier</b> :</li>
+    </ol>
+<pre>rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{uid}/{document=**} {
+      allow read, write: if request.auth != null
+                         && request.auth.uid == uid;
+    }
+  }
+}</pre>
+    <div class="callout"><b>Ce que ça veut dire</b>Seul TON compte Google peut lire et écrire TES données. Personne d'autre, même en connaissant l'adresse du projet.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">03</span><h2>Activer la connexion Google</h2></div>
+    <ol>
+      <li>Menu de gauche → <b>Créer</b> → <b>Authentication</b> → <b>Commencer</b>.</li>
+      <li>Onglet <b>Sign-in method</b> → <b>Google</b> → interrupteur <b>Activer</b>.</li>
+      <li>Choisis ton adresse e-mail comme « adresse d'assistance » → <b>Enregistrer</b>.</li>
+    </ol>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">04</span><h2>Autoriser ton site Netlify</h2></div>
+    <ol>
+      <li>Toujours dans <b>Authentication</b> → onglet <b>Settings</b> (Paramètres) → <b>Domaines autorisés</b>.</li>
+      <li>Clique <b>Ajouter un domaine</b> et saisis ton adresse Netlify, par exemple <code>manuel-clement-xyz.netlify.app</code> (sans <code>https://</code>).</li>
+    </ol>
+    <div class="callout warn"><b>Important</b>Sans cette étape, le bouton « Se connecter » échouera avec une erreur <code>auth/unauthorized-domain</code>. Si tu changes un jour d'URL Netlify, reviens ajouter la nouvelle ici.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">05</span><h2>Récupérer la configuration</h2></div>
+    <ol>
+      <li>Roue dentée ⚙️ (en haut à gauche, à côté de « Vue d'ensemble ») → <b>Paramètres du projet</b>.</li>
+      <li>Descends jusqu'à <b>Vos applications</b> → clique l'icône <b>Web &lt;/&gt;</b>.</li>
+      <li>Surnom : <code>manuel</code> → ne coche PAS « Firebase Hosting » → <b>Enregistrer l'application</b>.</li>
+      <li>Un bloc de code apparaît, contenant <code>const firebaseConfig = { apiKey: "...", ... }</code>. <b>Copie tout ce bloc</b> (le bouton copier de la console fait l'affaire).</li>
+    </ol>
+    <div class="callout"><b>Pas un secret</b>Cette « clé API » identifie ton projet, elle ne donne aucun accès à tes données : ce sont les règles de l'étape 02 qui protègent. Tu peux la coller sans crainte.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">06</span><h2>Brancher l'app (sur chaque appareil)</h2></div>
+    <ol>
+      <li>Ouvre <b>Manuel</b> → onglet <b>Stats</b> → carte <b>Synchronisation</b> → <b>Configurer</b>.</li>
+      <li>Colle le bloc copié à l'étape 05 → <b>Enregistrer</b>.</li>
+      <li>Le bouton devient <b>Se connecter</b> : touche-le et choisis ton compte Google.</li>
+      <li>Le statut passe à <b>✅ Synchronisé</b>. Refais les mêmes gestes (coller + connexion) sur ton PC Linux : 2 minutes.</li>
+    </ol>
+    <div class="callout"><b>Vérification</b>Ajoute une note sur le téléphone : elle apparaît sur le PC en 1 à 3 secondes (et inversement). Hors ligne ? Les changements partent tout seuls au retour du réseau.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-head"><span class="step-num">07</span><h2>Bon à savoir</h2></div>
+    <p><b>Gratuit, vraiment ?</b> Oui : le plan Spark offre 50 000 lectures et 20 000 écritures par jour. Ton usage personnel en consommera quelques dizaines.</p>
+    <p><b>Qu'est-ce qui se synchronise ?</b> Tout : notes, lectures, citations, latin, alexandrins, tâches, objectifs, habitudes, rappels, stats, Pomodoros, réglages du mode nuit. La fusion se fait élément par élément : la version la plus récente gagne, rien ne s'écrase bêtement.</p>
+    <p><b>Et la sauvegarde JSON ?</b> Elle reste utile comme ceinture de sécurité (Stats → Sauvegarde) — un export de temps en temps ne coûte rien.</p>
+    <p><b>Déconnexion :</b> le bouton « Déconnexion » arrête la synchro mais ne supprime rien, ni sur l'appareil ni dans le cloud.</p>
+  </div>
+</div>
+</body>
+</html>
