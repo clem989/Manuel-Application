@@ -5591,12 +5591,12 @@ const _syncOrigDel = STORE.del.bind(STORE);
 STORE.del = (key)=>{ _syncOrigDel(key); markChanged(key); };
 
 function schedulePush(){
-  if(!SYNC.ready || !SYNC.user) return;
+  if(!SYNC.ready) return;
   if(SYNC.pushTimer) clearTimeout(SYNC.pushTimer);
   SYNC.pushTimer = setTimeout(pushPending, 1500);
 }
 async function pushPending(){
-  if(!SYNC.ready || !SYNC.user || SYNC.pending.size===0) return;
+  if(!SYNC.ready || SYNC.pending.size===0) return;
   const m = syncMeta();
   const payload = {data:{}, meta:{}};
   const keys = [...SYNC.pending];
@@ -5606,8 +5606,8 @@ async function pushPending(){
   });
   SYNC.pending.clear();
   try{
-    await SYNC.fns.setDoc(SYNC.fns.doc(SYNC.db, 'users', SYNC.user.uid, 'manuel', 'data'), payload, {merge:true});
-    syncStatus(`✅ Synchronisé · ${SYNC.user.email||''} · ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`);
+    await SYNC.fns.setDoc(SYNC.fns.doc(SYNC.db, 'manuel-sync', 'shared'), payload, {merge:true});
+    syncStatus(`✅ Synchronisé · ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`);
   }catch(e){
     keys.forEach(k=>SYNC.pending.add(k)); // on retentera
     syncStatus('📡 Hors ligne — synchronisation en attente');
@@ -5616,7 +5616,7 @@ async function pushPending(){
 function startSyncListener(){
   if(SYNC.unsub) SYNC.unsub();
   SYNC.unsub = SYNC.fns.onSnapshot(
-    SYNC.fns.doc(SYNC.db, 'users', SYNC.user.uid, 'manuel', 'data'),
+    SYNC.fns.doc(SYNC.db, 'manuel-sync', 'shared'),
     snap => {
       if(snap.metadata.hasPendingWrites) return; // écho de nos propres écritures
       const remote = snap.data() || {};
@@ -5637,13 +5637,13 @@ function startSyncListener(){
       // PUSH : le local plus récent (ou inconnu du distant) part vers le cloud
       Object.keys(localStorage).forEach(k=>{
         if(syncExcluded(k)) return;
-        if(!localM[k]) localM[k] = Date.now(); // données d'avant la synchro
+        if(!localM[k]) localM[k] = Date.now();
         if(localM[k] > (rMeta[k] || 0)) SYNC.pending.add(k);
       });
       setSyncMetaStore(localM);
       if(changed) refreshAllViews();
       if(SYNC.pending.size) schedulePush();
-      else syncStatus(`✅ Synchronisé · ${SYNC.user.email||''} · ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`);
+      else syncStatus(`✅ Synchronisé · ${new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'})}`);
     },
     () => syncStatus('📡 Connexion Firestore perdue — re-tentera')
   );
@@ -5663,66 +5663,36 @@ function parseFbConfig(text){
   return (out.apiKey && out.projectId && out.authDomain && out.appId) ? out : null;
 }
 async function initSync(){
-  setSyncBtn('config');
   const cfgRaw = localStorage.getItem('manuel-fb-config');
-  if(!cfgRaw){ syncStatus('Non configurée — touche Configurer (guide fourni)'); return; }
-  let cfg; try{ cfg = JSON.parse(cfgRaw); }catch(e){ syncStatus('Config invalide — re-colle-la via Configurer'); return; }
+  if(!cfgRaw){ setSyncBtn('config'); syncStatus('Non configurée — touche Configurer (guide fourni)'); return; }
+  let cfg; try{ cfg = JSON.parse(cfgRaw); }catch(e){ setSyncBtn('config'); syncStatus('Config invalide — re-colle-la via Configurer'); return; }
   syncStatus('Chargement de Firebase…');
   try{
     const V = '10.12.2';
-    const [appM, authM, fsM] = await Promise.all([
+    const [appM, fsM] = await Promise.all([
       import(`https://www.gstatic.com/firebasejs/${V}/firebase-app.js`),
-      import(`https://www.gstatic.com/firebasejs/${V}/firebase-auth.js`),
       import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
     ]);
-    SYNC.app  = appM.initializeApp(cfg);
-    SYNC.auth = authM.getAuth(SYNC.app);
-    SYNC.db   = fsM.getFirestore(SYNC.app);
-    SYNC.fns  = {
-      doc: fsM.doc, setDoc: fsM.setDoc, onSnapshot: fsM.onSnapshot,
-      provider: new authM.GoogleAuthProvider(),
-      signInWithPopup: authM.signInWithPopup,
-      signInWithRedirect: authM.signInWithRedirect,
-      getRedirectResult: authM.getRedirectResult,
-      signOut: authM.signOut
-    };
+    SYNC.app = appM.initializeApp(cfg);
+    SYNC.db  = fsM.getFirestore(SYNC.app);
+    SYNC.fns = { doc: fsM.doc, setDoc: fsM.setDoc, onSnapshot: fsM.onSnapshot };
     SYNC.ready = true;
-    authM.getRedirectResult(SYNC.auth).catch(()=>{});
-    authM.onAuthStateChanged(SYNC.auth, user=>{
-      SYNC.user = user;
-      if(user){
-        setSyncBtn('signout');
-        syncStatus('Connexion à Firestore…');
-        startSyncListener();
-      } else {
-        setSyncBtn('signin');
-        syncStatus('Configurée — connecte-toi avec ton compte Google');
-        if(SYNC.unsub){ SYNC.unsub(); SYNC.unsub = null; }
-      }
-    });
+    // Synchro sans authentification : document partagé fixe.
+    // Tous les appareils avec la même config Firebase lisent/écrivent au même endroit.
+    setSyncBtn('config');
+    syncStatus('Connexion à Firestore…');
+    startSyncListener();
+    // Pousser les données locales existantes au démarrage
+    Object.keys(localStorage).forEach(k=>{ if(!syncExcluded(k)) SYNC.pending.add(k); });
+    schedulePush();
   }catch(e){
     syncStatus('Firebase inaccessible (hors ligne ?) — réessaie plus tard');
   }
 }
-// UI : bouton principal + boîte de configuration
+// UI : bouton principal (configurer la config Firebase)
 document.getElementById('sync-btn').addEventListener('click', async ()=>{
-  const mode = document.getElementById('sync-btn').dataset.mode;
   const box = document.getElementById('sync-config-box');
-  if(mode === 'config'){
-    box.style.display = box.style.display === 'none' ? 'block' : 'none';
-  } else if(mode === 'signin'){
-    try{
-      await SYNC.fns.signInWithPopup(SYNC.auth, SYNC.fns.provider);
-    }catch(e){
-      // Les popups sont parfois bloquées (APK/TWA) : on bascule en redirection
-      try{ await SYNC.fns.signInWithRedirect(SYNC.auth, SYNC.fns.provider); }
-      catch(e2){ alert('Connexion impossible : ' + (e2.message||e2)); }
-    }
-  } else if(mode === 'signout'){
-    if(confirm('Te déconnecter de la synchronisation ? (tes données restent sur cet appareil)')){
-      await SYNC.fns.signOut(SYNC.auth);
-    }
-  }
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
 });
 // Toucher le statut permet de rouvrir la configuration à tout moment
 document.getElementById('sync-status').addEventListener('click', ()=>{
