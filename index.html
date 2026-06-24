@@ -2687,7 +2687,12 @@ function nowDecimal(){
   return d.getHours() + d.getMinutes()/60;
 }
 function findCurrentMoment(){
-  const tl = timelines[currentMode];
+  let tl = timelines[currentMode];
+  if(!tl || !Array.isArray(tl) || tl.length === 0){
+    currentMode = 'study';
+    STORE.set('manuel-mode', 'study');
+    tl = timelines['study'];
+  }
   const n = nowDecimal();
   // Try active window first
   let found = tl.find(m => n >= m.start && n < m.end);
@@ -2744,6 +2749,9 @@ function renderTimeline(){
   if(nowCard) nowCard.style.display = '';
   if(calEl) calEl.style.display = 'none';
   let tl = timelines[currentMode];
+  if(!tl || !Array.isArray(tl) || tl.length === 0){
+    currentMode = 'study'; STORE.set('manuel-mode','study'); tl = timelines['study'];
+  }
   const n = nowDecimal();
   const container = document.getElementById('timeline');
   container.innerHTML = '';
