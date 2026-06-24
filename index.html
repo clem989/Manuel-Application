@@ -6376,7 +6376,8 @@ async function initSync(){
       import(`https://www.gstatic.com/firebasejs/${V}/firebase-firestore.js`)
     ]);
     SYNC.app = appM.initializeApp(cfg);
-    SYNC.db  = fsM.getFirestore(SYNC.app);
+    // Auto-détection du long-polling : WebChannel quand possible, repli long-polling sinon
+    SYNC.db  = fsM.initializeFirestore(SYNC.app, { experimentalAutoDetectLongPolling: true });
     SYNC.fns = { doc: fsM.doc, setDoc: fsM.setDoc, onSnapshot: fsM.onSnapshot };
     SYNC.ready = true;
     // Synchro sans authentification : document partagé fixe.
@@ -6431,6 +6432,11 @@ window.addEventListener('pagehide', flushSyncNow);
    INIT
 ═══════════════════════════════════════════════ */
 function init(){
+  // Sécurité : repartir d'un état propre — aucune modale ouverte au démarrage
+  try{
+    document.querySelectorAll('.habit-overlay, .note-full-overlay').forEach(el=>{ el.style.display='none'; });
+    const _cm = document.getElementById('ctx-menu'); if(_cm) _cm.style.display='none';
+  }catch(e){}
   purgeExpiredOnceTasks();   // nettoie les tâches uniques d'hier
   updateGreeting();
   renderNowCard();
