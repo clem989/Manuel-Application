@@ -441,22 +441,28 @@
   .week-bar.today{outline:1px solid var(--ink-soft);outline-offset:1px}
   /* Segments empilés par catégorie */
   .bar-seg{width:100%;transition:height .5s cubic-bezier(.16,1,.3,1)}
-  .bar-seg.cat-habit{background:var(--sage)}        /* habitudes (aujourd'hui) — vert */
-  .bar-seg.cat-habit-past{background:var(--accent)} /* habitudes (jours précédents) — terracotta */
+  .bar-seg.cat-habit{background:var(--sage)}        /* habitudes — vert (repli) */
+  .bar-seg.cat-habit-matin{background:#84A98C}      /* habitudes matin — vert */
+  .bar-seg.cat-habit-aprem{background:#E6B833}      /* habitudes après-midi — jaune */
+  .bar-seg.cat-habit-soir{background:#9C8AC4}       /* habitudes soir — violet */
+  .bar-seg.cat-habit-past{background:var(--accent)} /* (déprécié) */
   .bar-seg.cat-daily{background:#5B8DB8}             /* quotidien — bleu */
   .bar-seg.cat-once{background:var(--accent)}        /* unique — orange */
-  .bar-seg.cat-weekly{background:#9C8AC4}            /* hebdo — violet */
-  .bar-seg.cat-monthly{background:var(--gold)}       /* mensuel — doré */
+  .bar-seg.cat-weekly{background:#3E9E96}            /* hebdo — teal */
+  .bar-seg.cat-monthly{background:#C77DAE}           /* mensuel — rose */
   .bar-seg.cat-yearly{background:#A8475A}            /* annuel — bordeaux */
   /* Légende */
   .chart-legend{display:flex;flex-wrap:wrap;gap:10px 14px;margin-top:14px}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--ink-soft)}
   .legend-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
   .legend-dot.cat-habit{background:var(--sage)}
+  .legend-dot.cat-habit-matin{background:#84A98C}
+  .legend-dot.cat-habit-aprem{background:#E6B833}
+  .legend-dot.cat-habit-soir{background:#9C8AC4}
   .legend-dot.cat-daily{background:#5B8DB8}
   .legend-dot.cat-once{background:var(--accent)}
-  .legend-dot.cat-weekly{background:#9C8AC4}
-  .legend-dot.cat-monthly{background:var(--gold)}
+  .legend-dot.cat-weekly{background:#3E9E96}
+  .legend-dot.cat-monthly{background:#C77DAE}
   .legend-dot.cat-yearly{background:#A8475A}
   /* Récap périodes (hebdo/mensuel/annuel) */
   .period-breakdown{margin-top:16px;display:flex;flex-direction:column;gap:10px}
@@ -468,9 +474,12 @@
   /* Libellé de type dans le classement des habitudes */
   .rank-type{font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:600;opacity:.85}
   .rank-type.cat-habit{color:var(--sage)}
+  .rank-type.cat-habit-matin{color:#84A98C}
+  .rank-type.cat-habit-aprem{color:#E6B833}
+  .rank-type.cat-habit-soir{color:#9C8AC4}
   .rank-type.cat-daily{color:#5B8DB8}
-  .rank-type.cat-weekly{color:#9C8AC4}
-  .rank-type.cat-monthly{color:var(--gold)}
+  .rank-type.cat-weekly{color:#3E9E96}
+  .rank-type.cat-monthly{color:#C77DAE}
   .rank-type.cat-yearly{color:#A8475A}
   .week-days{
     display:grid;grid-template-columns:repeat(7,1fr);
@@ -591,15 +600,15 @@
     vertical-align:middle;
   }
   .freq-badge.daily{background:rgba(91,141,184,.18);color:#5B8DB8}
-  .freq-badge.weekly{background:rgba(156,138,196,.18);color:#9C8AC4}
-  .freq-badge.monthly{background:rgba(212,164,90,.15);color:var(--gold)}
+  .freq-badge.weekly{background:rgba(62,158,150,.18);color:#3E9E96}
+  .freq-badge.monthly{background:rgba(199,125,174,.16);color:#C77DAE}
   .freq-badge.yearly{background:rgba(168,71,90,.18);color:#A8475A}
   .freq-badge.once{background:rgba(226,109,82,.15);color:var(--accent)}
   .freq-badge.habit{background:rgba(132,169,140,.15);color:var(--sage)}
   [data-theme="light"] .freq-badge.habit{background:rgba(79,107,78,.12);color:var(--sage)}
   [data-theme="light"] .freq-badge.daily{background:rgba(91,141,184,.14);color:#3D6E96}
-  [data-theme="light"] .freq-badge.weekly{background:rgba(156,138,196,.16);color:#7560A0}
-  [data-theme="light"] .freq-badge.monthly{background:rgba(164,122,46,.12);color:var(--gold)}
+  [data-theme="light"] .freq-badge.weekly{background:rgba(62,158,150,.16);color:#2F7E78}
+  [data-theme="light"] .freq-badge.monthly{background:rgba(199,125,174,.16);color:#A85C92}
   [data-theme="light"] .freq-badge.yearly{background:rgba(122,47,58,.12);color:#A8475A}
   [data-theme="light"] .freq-badge.once{background:rgba(184,76,50,.12);color:var(--accent)}
 
@@ -651,6 +660,23 @@
   .freq-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
   .freq-btn[style*="--cc"]{border-color:var(--cc)}
   .freq-btn[style*="--cc"].active{background:var(--cc);border-color:var(--cc);color:#fff}
+  .sched-day-filter{display:flex;gap:6px;overflow-x:auto;padding:2px 0 12px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+  .sched-day-filter::-webkit-scrollbar{display:none}
+  .sched-day-filter .freq-btn{flex:0 0 auto}
+  .sched-empty{color:var(--muted);font-size:13px;text-align:center;padding:18px 8px}
+  .sched-notify{border-top:1px solid var(--line);padding-top:10px;margin-top:2px;display:flex;flex-direction:column;gap:8px}
+  .sched-notify-head{display:flex;align-items:center;justify-content:space-between}
+  .sched-notify-lbl{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .sched-notify-opts{display:flex;flex-direction:column;gap:8px}
+  .sched-notify-custom{display:flex;gap:8px;align-items:center}
+  .sched-notify-val{width:76px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink);font-family:inherit;font-size:13px;text-align:center}
+  .sched-notify-unit{flex:1;min-width:0}
+  .sched-switch{position:relative;display:inline-block;width:42px;height:24px;flex:0 0 auto}
+  .sched-switch input{opacity:0;width:0;height:0}
+  .sched-slider{position:absolute;inset:0;background:var(--line);border-radius:24px;transition:.2s;cursor:pointer}
+  .sched-slider::before{content:"";position:absolute;height:18px;width:18px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s}
+  .sched-switch input:checked + .sched-slider{background:var(--sage)}
+  .sched-switch input:checked + .sched-slider::before{transform:translateX(18px)}
 
   .note-item, .reminder-item{
     background:var(--surface);
@@ -1264,6 +1290,9 @@
   .note-cat-badge.site{color:#5B8DB8;border-color:#5B8DB8}
   .note-cat-badge.moi{color:#9C8AC4;border-color:#9C8AC4}
   .note-cat-badge.motiv-badge{color:#D4A45A;border-color:#D4A45A}
+  .note-cat-badge.hm-matin{color:#84A98C;border-color:#84A98C}
+  .note-cat-badge.hm-aprem{color:#E6B833;border-color:#E6B833}
+  .note-cat-badge.hm-soir{color:#9C8AC4;border-color:#9C8AC4}
 
   /* ── LECTURE ENRICHIE ─────────────────────── */
   .book-genre-badge{
@@ -1333,6 +1362,51 @@
     .tab{padding:8px 1px}
     .tab svg{width:20px;height:20px}
   }
+  .nutri-intro{font-size:13px;color:var(--ink-soft);line-height:1.6;margin-bottom:16px;font-style:italic}
+  .nutri-card{background:var(--surface-2);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+  .nutri-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+  .nutri-emoji{font-size:20px}
+  .nutri-time{font-size:13px;font-weight:700;color:var(--accent);letter-spacing:.04em}
+  .nutri-foods{font-size:14px;color:var(--ink);line-height:1.5;margin-bottom:6px}
+  .nutri-why{font-size:12.5px;color:var(--muted);line-height:1.55}
+  .notifmode-row{display:flex;align-items:center;justify-content:space-between;font-size:14px;color:var(--ink)}
+  .nutri-foods-title{font-family:Georgia,'Times New Roman',serif;font-size:19px;margin:24px 0 6px;color:var(--ink)}
+  .nutri-badge{margin-left:auto;font-size:9.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:20px;white-space:nowrap}
+  .nutri-top{background:rgba(132,169,140,.20);color:var(--sage)}
+  .nutri-good{background:rgba(132,169,140,.12);color:var(--sage)}
+  .nutri-occasional{background:rgba(226,109,82,.16);color:var(--accent)}
+  .day-calendar{display:flex;flex-direction:column;gap:10px;margin-top:8px;margin-bottom:8px}
+  .day-cal-empty{color:var(--muted);font-size:13px;padding:24px 12px;text-align:center}
+  .day-cal-block{display:flex;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--block-color);border-radius:12px;overflow:hidden}
+  .day-cal-block.now{box-shadow:0 6px 18px color-mix(in srgb, var(--block-color) 30%, transparent);border-left-width:6px;background:color-mix(in srgb, var(--block-color) 16%, var(--surface-2));transform:scale(1.02);position:relative;z-index:2}
+  .day-cal-block.now .dcb-time{font-size:13px}
+  .day-cal-block.now .dcb-title{font-size:16px}
+  .day-cal-block.now .dcb-body{padding:14px 14px}
+  .dcb-time{flex-shrink:0;width:58px;padding:10px 6px;font-size:11px;font-weight:700;color:var(--block-color);text-align:center}
+  .dcb-end{font-weight:500;color:var(--muted)}
+  .dcb-body{flex:1;padding:10px 12px;min-width:0}
+  .dcb-title{font-size:14px;font-weight:700;color:var(--ink)}
+  .dcb-nowtag{font-size:10px;font-weight:700;color:#fff;background:var(--block-color);padding:1px 6px;border-radius:6px;margin-left:6px}
+  .dcb-note{font-size:12.5px;color:var(--ink-soft);margin-top:4px;line-height:1.5;white-space:pre-wrap}
+  .day-cal-items{margin-top:8px;display:flex;flex-direction:column;gap:4px}
+  .day-cal-item{font-size:12px;color:var(--ink);background:var(--surface);border-radius:7px;padding:5px 8px;display:flex;align-items:center;gap:6px}
+  .dci-time{color:var(--muted);font-size:11px}
+  .dci-icon{font-size:11px}
+  .schedule-edit-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+  .sched-head-btns{display:flex;gap:8px;flex-shrink:0}
+  .sched-card{background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--block-color);border-radius:12px;padding:12px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+  .sched-row1{display:flex;gap:8px;align-items:center}
+  .sched-title{flex:1;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink);font-weight:600;font-family:inherit}
+  .sched-del{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;padding:4px 6px;flex-shrink:0}
+  .sched-row2{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .sched-lbl{font-size:13px;color:var(--muted)}
+  .sched-start,.sched-end{width:72px;text-align:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 4px;color:var(--ink)}
+  .sched-note{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink-soft);font-size:13px;font-family:inherit;line-height:1.5;min-height:38px;resize:vertical;overflow:hidden;white-space:pre-wrap}
+  .sched-row3{display:flex;gap:8px;flex-wrap:wrap}
+  .sched-freq,.sched-int,.sched-recur{flex:1;min-width:110px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;color:var(--ink);font-family:inherit}
+  .sched-colors{display:flex;gap:6px;flex-wrap:wrap}
+  .sched-color{width:28px;height:28px;border-radius:50%;border:2px solid transparent;cursor:pointer;padding:0}
+  .sched-color.active{border-color:var(--ink);transform:scale(1.1)}
 
 </style>
 </head>
@@ -1385,6 +1459,16 @@
         <button class="btn btn-sm" id="notif-test-btn">Tester</button>
         <button class="btn btn-sm" id="notif-btn">Activer</button>
       </div>
+    </div>
+
+    <div class="backup-card" style="flex-direction:column;align-items:stretch;gap:10px">
+      <div class="backup-info">
+        <div class="backup-title">Préférence de la journée</div>
+        <div class="backup-sub">Quelles notifications recevoir selon ton rythme</div>
+      </div>
+      <label class="notifmode-row"><span>📖 Études</span><span class="sched-switch"><input type="checkbox" id="notifmode-study"><span class="sched-slider"></span></span></label>
+      <label class="notifmode-row"><span>🌴 Vacances</span><span class="sched-switch"><input type="checkbox" id="notifmode-vacation"><span class="sched-slider"></span></span></label>
+      <label class="notifmode-row"><span>📅 Journée</span><span class="sched-switch"><input type="checkbox" id="notifmode-today"><span class="sched-slider"></span></span></label>
     </div>
 
     <div class="backup-card">
@@ -1476,7 +1560,7 @@
     <div class="view-inner">
       <div class="view-head">
         <div class="eyebrow" id="today-date">—</div>
-        <h1>Bonjour <em id="greet-name">Clément</em></h1>
+        <h1><span id="greet-word">Bonjour</span> <em id="greet-name">Clément</em></h1>
         <p class="sub" id="greet-sub">—</p>
         <p id="sleep-alert" style="display:none;margin-top:8px;font-family:'Instrument Serif',serif;font-size:22px;line-height:1.25;color:var(--accent)">Il est très très tard, va dormir bordel !!!</p>
       </div>
@@ -1509,6 +1593,7 @@
 
       <!-- TIMELINE -->
       <div class="tl-section">
+        <div class="day-calendar" id="day-calendar" style="display:none"></div>
         <div class="section-title">
           <h3>La journée</h3>
           <span class="meta" id="tl-mode-meta">Études</span>
@@ -1516,6 +1601,7 @@
         <div class="mode-tabs">
           <button class="mode-tab active" data-mode="study">📖 Études</button>
           <button class="mode-tab" data-mode="vacation">🌴 Vacances</button>
+          <button class="mode-tab" data-mode="today">📅 Journée</button>
         </div>
         <div class="timeline" id="timeline"></div>
       </div>
@@ -1670,6 +1756,29 @@
         <button class="sub-tab" data-sub="tasks">✅ Tâches</button>
         <button class="sub-tab" data-sub="reminders">⏰ Rappels</button>
         <button class="sub-tab" data-sub="habits">☑️ Habitudes</button>
+        <button class="sub-tab" data-sub="schedule">📅 Emploi du temps</button>
+      </div>
+
+      <!-- Emploi du temps (planning Aujourd'hui) -->
+      <div class="sub-view" data-sub="schedule" style="display:none">
+        <div class="schedule-edit-head">
+          <span style="font-size:12px;color:var(--muted);flex:1">Planning « Aujourd'hui » — modifie tes créneaux.</span>
+          <div class="sched-head-btns">
+            <button class="btn btn-primary btn-sm" id="schedule-add">+ Ajouter</button>
+            <button class="btn btn-sm" id="schedule-reset">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="sched-day-filter" id="schedule-day-filter">
+          <button class="freq-btn active" data-day="all">Tout</button>
+          <button class="freq-btn" data-day="1">Lun</button>
+          <button class="freq-btn" data-day="2">Mar</button>
+          <button class="freq-btn" data-day="3">Mer</button>
+          <button class="freq-btn" data-day="4">Jeu</button>
+          <button class="freq-btn" data-day="5">Ven</button>
+          <button class="freq-btn" data-day="6">Sam</button>
+          <button class="freq-btn" data-day="0">Dim</button>
+        </div>
+        <div id="schedule-editor"></div>
       </div>
 
       <!-- Habitudes -->
@@ -1737,6 +1846,14 @@
           </select>
           <select id="task-rem-day" style="display:none">
             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+          </select>
+          <select id="task-interval" style="display:none">
+            <option value="1">chaque</option>
+            <option value="2">toutes les 2</option>
+            <option value="3">toutes les 3</option>
+            <option value="4">toutes les 4</option>
+            <option value="5">toutes les 5</option>
+            <option value="6">toutes les 6</option>
           </select>
           <input type="time" id="task-rem-time" value="09:00">
         </div>
@@ -1931,9 +2048,11 @@
       <div class="mode-tabs" id="guide-mode-tabs">
         <button class="mode-tab active" data-gmode="pillars">🏛️ Six piliers</button>
         <button class="mode-tab" data-gmode="youth">✨ 20 ans</button>
+        <button class="mode-tab" data-gmode="nutrition">🍽️ Manger</button>
       </div>
       <div id="pillars"></div>
       <div id="youth-section" style="display:none"></div>
+      <div id="nutrition-section" style="display:none"></div>
     </div>
   </section>
 
@@ -2121,6 +2240,125 @@ const timelines = {
   ]
 };
 
+/* ─── PLANNING « JOURNÉE » (calendrier personnalisable) ─── */
+const SCHEDULE_COLORS = ['#A8475A','#C2683E','#C7913A','#D4B33A','#6FA382','#4A8C8C','#5B8DB8','#4A6FB0','#7B6FB8','#9C7BB8','#B0506E','#8C5A4A','#5A8C5A','#3A7A8C','#B86F9C','#6A6A8C'];
+const TODAY_SCHEDULE_DEFAULT = [
+  {id:'s1', title:'Réveil & petit-déjeuner', start:'07h00', end:'08h00', note:'Lumière, eau, protéines.', color:'#C7913A', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s2', title:'Cours / travail', start:'09h00', end:'12h00', note:'Fenêtre dorée — tâche la plus dure.', color:'#5B8DB8', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s3', title:'Déjeuner', start:'12h30', end:'14h00', note:'Vraie pause, loin de l\'écran.', color:'#6FA382', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s4', title:'Cours / travail', start:'14h00', end:'16h00', note:'', color:'#5B8DB8', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s5', title:'Sport / marche', start:'17h00', end:'18h00', note:'', color:'#6FA382', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s6', title:'Révisions actives', start:'18h00', end:'19h00', note:'', color:'#A8475A', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s7', title:'Dîner', start:'19h30', end:'20h30', note:'Léger.', color:'#6FA382', freq:'daily', interval:1, anchor:Date.now()},
+  {id:'s8', title:'Détente / lecture', start:'21h00', end:'22h30', note:'Pas d\'écran stimulant.', color:'#9C7BB8', freq:'daily', interval:1, anchor:Date.now()},
+];
+function getTodaySchedule(){
+  const s = STORE.get('manuel-schedule-today', null);
+  if(!Array.isArray(s) || !s.length) return TODAY_SCHEDULE_DEFAULT.slice();
+  return s.map((b, i)=>{
+    if(b.start) return b;
+    const start = b.hour || '08h00';
+    const endDec = hourToDecimal(start) + 1;
+    const eh = Math.floor(endDec) % 24;
+    return { id:b.id||('s'+i+'-'+Date.now()), title:b.title||'', start, end:`${String(eh).padStart(2,'0')}h00`,
+      note:b.note||'', color:SCHEDULE_COLORS[i % SCHEDULE_COLORS.length], freq:'daily', interval:1, anchor:Date.now() };
+  });
+}
+function hourToDecimal(h){
+  const m = String(h).match(/(\d{1,2})\s*h\s*(\d{0,2})/i);
+  if(!m) return 0;
+  return parseInt(m[1],10) + (m[2] ? parseInt(m[2],10)/60 : 0);
+}
+function scheduleBlockDueToday(b, date=new Date()){
+  const freq = b.freq || 'daily';
+  if(freq === 'once'){
+    if(b.onceDate) return b.onceDate === `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
+    const a=new Date(b.anchor||Date.now()); return a.toDateString()===date.toDateString();
+  }
+  let due = true;
+  if(freq === 'weekly'){
+    if(b.weekday !== undefined && b.weekday !== null && b.weekday !== '') due = (parseInt(b.weekday) === date.getDay());
+    else if(b.anchor) due = (new Date(b.anchor).getDay() === date.getDay());
+  } else if(freq === 'monthly'){
+    if(b.monthday) due = (parseInt(b.monthday) === date.getDate());
+    else if(b.anchor) due = (new Date(b.anchor).getDate() === date.getDate());
+  } else if(freq === 'yearly'){
+    if(b.month && b.monthday) due = (parseInt(b.month) === date.getMonth()+1 && parseInt(b.monthday) === date.getDate());
+    else if(b.anchor){ const a=new Date(b.anchor); due = (a.getMonth()===date.getMonth() && a.getDate()===date.getDate()); }
+  }
+  return due && isIntervalActive({freq, interval:b.interval, anchor:b.anchor}, date);
+}
+function itemsInRange(startDec, endDec){
+  const out = [];
+  const toDec = s => { if(!s) return null; const [h,m]=s.split(':').map(Number); return h+m/60; };
+  getCustomTasks().forEach(t=>{
+    if(t.freq && t.freq!=='once' && t.freq!=='yearly' && !isIntervalActive(t)) return;
+    if(t.freq==='once' && t.onceDate !== todayKey()) return;
+    const tm = toDec(t.freq==='once' ? t.onceTime : t.reminder?.time);
+    if(tm!==null && tm>=startDec && tm<endDec) out.push({text:t.text, time:(t.freq==='once'?t.onceTime:t.reminder?.time), kind:'task'});
+  });
+  getCustomReminders().forEach(r=>{
+    const tm = toDec(r.time);
+    if(tm!==null && tm>=startDec && tm<endDec) out.push({text:r.text, time:r.time, kind:'reminder'});
+  });
+  return out.sort((a,b)=>toDec(a.time)-toDec(b.time));
+}
+function renderScheduleTimeline(hostId){
+  const container = document.getElementById(hostId);
+  if(!container) return;
+  const blocks = getTodaySchedule().filter(b=>scheduleBlockDueToday(b)).slice()
+    .sort((a,b)=>hourToDecimal(a.start)-hourToDecimal(b.start));
+  const n = nowDecimal();
+  container.innerHTML = '';
+  if(blocks.length === 0){
+    container.innerHTML = '<div style="color:var(--muted);font-size:12px;padding:6px 2px">Aucun créneau aujourd\'hui.</div>';
+    return;
+  }
+  blocks.forEach(b=>{
+    const s = hourToDecimal(b.start), e = hourToDecimal(b.end);
+    const isNow = n >= s && n < e;
+    const isPassed = n >= e;
+    const el = document.createElement('div');
+    el.className = 'tl-dot' + (isNow ? ' now' : '') + (isPassed ? ' passed' : '');
+    const t = b.title || '—';
+    const label = t.length > 16 ? t.slice(0,15) + '…' : t;
+    el.innerHTML = `<div class="tl-circle"></div><div class="tl-time">${b.start}</div><div class="tl-label">${escapeHtml(label)}</div>`;
+    container.appendChild(el);
+  });
+  setTimeout(()=>{
+    const nowDot = container.querySelector('.tl-dot.now');
+    if(nowDot) nowDot.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+  }, 150);
+}
+function renderDayCalendar(){
+  const host = document.getElementById('day-calendar');
+  if(!host) return;
+  const blocks = getTodaySchedule().filter(b=>scheduleBlockDueToday(b)).slice()
+    .sort((a,b)=>hourToDecimal(a.start)-hourToDecimal(b.start));
+  const nowDec = nowDecimal();
+  if(blocks.length === 0){
+    host.innerHTML = '<div class="day-cal-empty">Aucun créneau prévu aujourd\'hui. Ajoute-en dans le Carnet → Emploi du temps.</div>';
+    return;
+  }
+  host.innerHTML = blocks.map(b=>{
+    const sDec = hourToDecimal(b.start), eDec = hourToDecimal(b.end);
+    const isNow = nowDec >= sDec && nowDec < eDec;
+    const items = itemsInRange(sDec, eDec);
+    const itemsHtml = items.length ? `<div class="day-cal-items">${items.map(it=>
+      `<div class="day-cal-item"><span class="dci-time">${it.time||''}</span><span class="dci-icon">${it.kind==='reminder'?'🔔':'📌'}</span>${escapeHtml(it.text)}</div>`
+    ).join('')}</div>` : '';
+    return `
+      <div class="day-cal-block${isNow?' now':''}" style="--block-color:${b.color||'#5B8DB8'}">
+        <div class="dcb-time">${b.start}<br><span class="dcb-end">${b.end}</span></div>
+        <div class="dcb-body">
+          <div class="dcb-title">${escapeHtml(b.title||'Sans titre')}${isNow?' <span class="dcb-nowtag">maintenant</span>':''}</div>
+          ${b.note?`<div class="dcb-note">${escapeHtml(b.note)}</div>`:''}
+          ${itemsHtml}
+        </div>
+      </div>`;
+  }).join('');
+}
+
 /* ─── MEDIA GUIDE DATA ───────────────────────── */
 
 /* ═══════════════════════════════════════════════
@@ -2244,6 +2482,14 @@ const defaultReminders = [
   {h:20, m:30, title:"Sas du soir 🌙", body:"Pas d'écran. Papier, conversation."},
   {h:22, m:30, title:"Au lit 😴", body:"Chambre fraîche, sombre, silencieuse."}
 ];
+// Rappels « Vacances » — rythme plus souple (désactivés par défaut, modifiables)
+const vacationReminders = [
+  {h:9,  m:0,  title:"Réveil tranquille ☀️", body:"Sans réveil brutal. Lumière, eau, étirements."},
+  {h:11, m:0,  title:"Bouge un peu 🚶",       body:"Marche, sport doux ou sortie au soleil."},
+  {h:13, m:0,  title:"Déjeuner sans écran 🍽️", body:"Prends ton temps, savoure."},
+  {h:17, m:0,  title:"Un moment à toi 🎧",     body:"Lecture, musique, créativité — recharge."},
+  {h:23, m:0,  title:"Au lit quand même 😴",   body:"Même en vacances, garde un cap de sommeil."}
+];
 
 /* ═══════════════════════════════════════════════
    STORAGE HELPERS
@@ -2365,6 +2611,12 @@ function updateGreeting(){
   const monthNames = ["janvier","février","mars","avril","mai","juin","juillet","août","septembre","octobre","novembre","décembre"];
   document.getElementById('today-date').textContent = `${dayNames[now.getDay()]} ${now.getDate()} ${monthNames[now.getMonth()]}`;
   const h = now.getHours();
+  const mins = h*60 + now.getMinutes();
+  const isSleep = (mins < 6*60+40);            // 00h00 → 6h40
+  const isEvening = (h >= 20);                   // 20h → 00h00
+  const greetWord = isSleep ? 'Dors' : (isEvening ? 'Bonsoir' : 'Bonjour');
+  const _gw = document.getElementById('greet-word');
+  if(_gw) _gw.textContent = greetWord;
   let sub = "";
   if(h<7) sub = "Tu te lèves tôt — bravo";
   else if(h<12) sub = "Bonne matinée, le pic cognitif est là";
@@ -2373,11 +2625,16 @@ function updateGreeting(){
   else if(h<20) sub = "Place aux révisions actives";
   else if(h<22) sub = "Sas du soir, baisse les lumières";
   else sub = "Pense au coucher — repos avant tout";
-  document.getElementById('greet-sub').textContent = sub;
-  // Alerte sommeil : entre 23h30 et 6h00
-  const mins = h*60 + now.getMinutes();
+  const sleepMsg = "Il est très très tard, va dormir bordel !!!";
+  const _sub = document.getElementById('greet-sub');
+  if(_sub){
+    _sub.textContent = isSleep ? sleepMsg : sub;
+    _sub.style.color = isSleep ? '#D64545' : '';
+    _sub.style.fontWeight = isSleep ? '700' : '';
+  }
+  // L'ancien bloc sleep-alert séparé n'est plus utilisé (le message passe dans le sous-titre)
   const sleepAlert = document.getElementById('sleep-alert');
-  if(sleepAlert) sleepAlert.style.display = (mins >= 23*60+30 || mins < 6*60) ? 'block' : 'none';
+  if(sleepAlert) sleepAlert.style.display = 'none';
 }
 
 /* ═══════════════════════════════════════════════
@@ -2422,7 +2679,7 @@ function renderNowCard(){
   document.getElementById('now-when').textContent = prefix + moment.when;
   document.getElementById('now-why').innerHTML = moment.why;
   document.getElementById('now-how').innerHTML = moment.how.map(h=>`<li>${h}</li>`).join("");
-  document.getElementById('now-tip').textContent = moment.tip;
+  document.getElementById('now-tip').innerHTML = moment.tip;
   showMediaSection(moment.media);
 
   const pulse = document.querySelector('.now-pulse');
@@ -2430,13 +2687,30 @@ function renderNowCard(){
 }
 
 function renderTimeline(){
-  const tl = timelines[currentMode];
+  const tlEl = document.getElementById('timeline');
+  const calEl = document.getElementById('day-calendar');
+  const nowCard = document.getElementById('now-card');
+  if(currentMode === 'today'){
+    if(nowCard) nowCard.style.display = 'none';
+    if(calEl) calEl.style.display = '';
+    const meta = document.getElementById('tl-mode-meta');
+    if(meta) meta.textContent = 'Rythme Journée';
+    renderDayCalendar();
+    renderScheduleTimeline('timeline');
+    if(tlEl) tlEl.style.display = '';
+    return;
+  }
+  if(tlEl) tlEl.style.display = '';
+  if(nowCard) nowCard.style.display = '';
+  if(calEl) calEl.style.display = 'none';
+  let tl = timelines[currentMode];
   const n = nowDecimal();
   const container = document.getElementById('timeline');
   container.innerHTML = '';
 
   document.getElementById('tl-mode-meta').textContent =
-    currentMode === 'study' ? 'Rythme universitaire' : 'Rythme vacances';
+    currentMode === 'study' ? 'Rythme universitaire' :
+    currentMode === 'vacation' ? 'Rythme vacances' : 'Ton planning du jour';
 
   tl.forEach((m, i)=>{
     const isNow = n >= m.start && n < m.end;
@@ -2456,8 +2730,8 @@ function renderTimeline(){
       document.getElementById('now-title').textContent = m.title;
       document.getElementById('now-when').textContent = m.when;
       document.getElementById('now-why').innerHTML = m.why;
-      document.getElementById('now-how').innerHTML = m.how.map(h=>`<li>${h}</li>`).join("");
-      document.getElementById('now-tip').textContent = m.tip;
+      document.getElementById('now-how').innerHTML = (m.how||[]).map(h=>`<li>${h}</li>`).join("");
+      document.getElementById('now-tip').innerHTML = m.tip || '';
       showMediaSection(m.media);
       // Scroll up to show now-card
       document.querySelector('.view.active').scrollTo({top: 0, behavior: 'smooth'});
@@ -2493,6 +2767,184 @@ document.querySelectorAll('.view[data-view="home"] .mode-tab').forEach(b=>{
   });
 });
 
+/* ─── ÉDITEUR DU PLANNING « AUJOURD'HUI » (Carnet) ─── */
+let scheduleDayFilter = 'all';
+function scheduleSlotMatchesDay(slot, day){
+  if(day === 'all') return true;
+  const f = slot.freq || 'daily';
+  if(f === 'daily') return true;                          // quotidien → tous les jours
+  if(f === 'weekly') return String(slot.weekday ?? '') === String(day); // hebdo → son jour
+  return false;                                           // mensuel/annuel/unique → uniquement dans « Tout »
+}
+function renderScheduleEditor(){
+  const host = document.getElementById('schedule-editor');
+  if(!host) return;
+  const sched = getTodaySchedule();
+  host.innerHTML = '';
+  let rendered = 0;
+  sched.forEach((slot, idx)=>{
+    if(!scheduleSlotMatchesDay(slot, scheduleDayFilter)) return;
+    rendered++;
+    const card = document.createElement('div');
+    card.className = 'sched-card';
+    card.style.setProperty('--block-color', slot.color || '#5B8DB8');
+    const freqOpts = [['daily','Quotidien'],['weekly','Hebdo'],['monthly','Mensuel'],['yearly','Annuel'],['once','Unique']]
+      .map(([v,l])=>`<option value="${v}"${(slot.freq||'daily')===v?' selected':''}>${l}</option>`).join('');
+    const intOpts = [1,2,3,4,5,6].map(n=>`<option value="${n}"${(slot.interval||1)==n?' selected':''}>${n===1?'chaque':'toutes/tous les '+n}</option>`).join('');
+    let recurHtml = '';
+    const f = slot.freq || 'daily';
+    if(f === 'weekly'){
+      const days = [['1','Lundi'],['2','Mardi'],['3','Mercredi'],['4','Jeudi'],['5','Vendredi'],['6','Samedi'],['0','Dimanche']];
+      recurHtml = `<select class="sched-recur" data-recur="weekday">${days.map(([v,l])=>`<option value="${v}"${String(slot.weekday??'')===v?' selected':''}>${l}</option>`).join('')}</select>`;
+    } else if(f === 'monthly'){
+      recurHtml = `<input class="sched-recur" data-recur="monthday" type="number" min="1" max="31" value="${slot.monthday||''}" placeholder="Jour (1-31)">`;
+    } else if(f === 'yearly'){
+      const months = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+      recurHtml = `<select class="sched-recur" data-recur="month">${months.map((m,i)=>`<option value="${i+1}"${String(slot.month??'')==String(i+1)?' selected':''}>${m}</option>`).join('')}</select>`
+        + `<input class="sched-recur" data-recur="monthday" type="number" min="1" max="31" value="${slot.monthday||''}" placeholder="Jour">`;
+    }
+    const colorDots = SCHEDULE_COLORS.map(c=>
+      `<button class="sched-color${(slot.color===c)?' active':''}" data-color="${c}" style="background:${c}"></button>`).join('');
+    const notifyModeOpts = [['at','Au moment de l\'événement'],['custom','Personnalisé']]
+      .map(([v,l])=>`<option value="${v}"${(slot.notifyMode||'at')===v?' selected':''}>${l}</option>`).join('');
+    const notifyUnitOpts = [['min','minutes avant'],['h','heures avant'],['d','jours avant'],['w','semaines avant']]
+      .map(([v,l])=>`<option value="${v}"${(slot.notifyUnit||'min')===v?' selected':''}>${l}</option>`).join('');
+    card.innerHTML = `
+      <div class="sched-row1">
+        <input class="sched-title" value="${escapeHtml(slot.title||'')}" placeholder="Titre du créneau">
+        <button class="sched-del" title="Supprimer">✕</button>
+      </div>
+      <div class="sched-row2">
+        <span class="sched-lbl">De</span>
+        <span class="sched-start-host"></span>
+        <span class="sched-lbl">à</span>
+        <span class="sched-end-host"></span>
+      </div>
+      <textarea class="sched-note" rows="1" placeholder="Notes complémentaires (optionnel)">${escapeHtml(slot.note||'')}</textarea>
+      <div class="sched-row3">
+        <select class="sched-freq">${freqOpts}</select>
+        <select class="sched-int">${intOpts}</select>
+        ${recurHtml}
+      </div>
+      <div class="sched-colors">${colorDots}</div>
+      <div class="sched-notify">
+        <div class="sched-notify-head">
+          <span class="sched-notify-lbl">🔔 Notification</span>
+          <label class="sched-switch"><input type="checkbox" class="sched-notify-on"${slot.notify?' checked':''}><span class="sched-slider"></span></label>
+        </div>
+        <div class="sched-notify-opts" style="display:${slot.notify?'flex':'none'}">
+          <select class="sched-notify-mode">${notifyModeOpts}</select>
+          <div class="sched-notify-custom" style="display:${(slot.notifyMode||'at')==='custom'?'flex':'none'}">
+            <input class="sched-notify-val" type="number" min="1" max="999" value="${slot.notifyVal||10}">
+            <select class="sched-notify-unit">${notifyUnitOpts}</select>
+          </div>
+        </div>
+      </div>
+    `;
+    const h2c = h => (h||'07h00').replace('h',':');
+    const c2h = c => (c||'07:00').replace(':','h');
+    const startPicker = makeMtime({value:h2c(slot.start||'07h00'), onChange:()=>save(false)});
+    const endPicker   = makeMtime({value:h2c(slot.end||'08h00'),   onChange:()=>save(false)});
+    card.querySelector('.sched-start-host').appendChild(startPicker);
+    card.querySelector('.sched-end-host').appendChild(endPicker);
+    const save = (rerender)=>{
+      const arr = getTodaySchedule();
+      const block = {
+        id: slot.id || ('s'+idx+'-'+Date.now()),
+        title: card.querySelector('.sched-title').value.trim(),
+        start: c2h(startPicker.getValue()),
+        end: c2h(endPicker.getValue()),
+        note: card.querySelector('.sched-note').value.trim(),
+        color: slot.color || '#5B8DB8',
+        freq: card.querySelector('.sched-freq').value,
+        interval: parseInt(card.querySelector('.sched-int').value)||1,
+        anchor: slot.anchor || Date.now(),
+        notify: card.querySelector('.sched-notify-on').checked,
+        notifyMode: card.querySelector('.sched-notify-mode').value,
+        notifyVal: parseInt(card.querySelector('.sched-notify-val').value)||10,
+        notifyUnit: card.querySelector('.sched-notify-unit').value
+      };
+      card.querySelectorAll('.sched-recur').forEach(el=>{ block[el.dataset.recur] = el.value; });
+      arr[idx] = block;
+      STORE.set('manuel-schedule-today', arr);
+      if(rerender) renderScheduleEditor();
+      if(currentMode === 'today') renderTimeline();
+    };
+    card.querySelectorAll('.sched-title, .sched-note, .sched-recur').forEach(el=> el.addEventListener('blur', ()=>save(false)));
+    card.querySelector('.sched-freq').addEventListener('change', ()=>save(true));
+    card.querySelector('.sched-int').addEventListener('change', ()=>save(false));
+    card.querySelectorAll('.sched-color').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const arr = getTodaySchedule();
+        arr[idx] = {...arr[idx], color: btn.dataset.color};
+        STORE.set('manuel-schedule-today', arr);
+        renderScheduleEditor();
+        if(currentMode === 'today') renderTimeline();
+      });
+    });
+    card.querySelector('.sched-del').addEventListener('click', ()=>{
+      const arr = getTodaySchedule();
+      arr.splice(idx,1);
+      STORE.set('manuel-schedule-today', arr);
+      renderScheduleEditor();
+      if(currentMode === 'today') renderTimeline();
+    });
+    const notifyOnEl = card.querySelector('.sched-notify-on');
+    const notifyOptsEl = card.querySelector('.sched-notify-opts');
+    const notifyModeEl = card.querySelector('.sched-notify-mode');
+    const notifyCustomEl = card.querySelector('.sched-notify-custom');
+    notifyOnEl.addEventListener('change', ()=>{
+      notifyOptsEl.style.display = notifyOnEl.checked ? 'flex' : 'none';
+      if(notifyOnEl.checked && 'Notification' in window && Notification.permission === 'default'){ Notification.requestPermission(); }
+      save(false);
+    });
+    notifyModeEl.addEventListener('change', ()=>{
+      notifyCustomEl.style.display = notifyModeEl.value === 'custom' ? 'flex' : 'none';
+      save(false);
+    });
+    card.querySelector('.sched-notify-val').addEventListener('blur', ()=>save(false));
+    card.querySelector('.sched-notify-unit').addEventListener('change', ()=>save(false));
+    host.appendChild(card);
+    const noteTa = card.querySelector('.sched-note');
+    if(noteTa){
+      const growNote = ()=>{ noteTa.style.height='auto'; noteTa.style.height=noteTa.scrollHeight+'px'; };
+      noteTa.addEventListener('input', growNote);
+      requestAnimationFrame(growNote);
+    }
+    card.querySelectorAll('.sched-freq, .sched-int, select.sched-recur, .sched-notify-mode, .sched-notify-unit').forEach(s=>{ try{ upgradeSelectEl(s); }catch(e){} });
+  });
+  if(rendered === 0){
+    host.innerHTML = `<div class="sched-empty">Aucun créneau pour ce jour.<br>Les créneaux quotidiens et les hebdomadaires de ce jour apparaissent ici.</div>`;
+  }
+}
+(function initScheduleEditor(){
+  const add = document.getElementById('schedule-add');
+  const reset = document.getElementById('schedule-reset');
+  const dayFilter = document.getElementById('schedule-day-filter');
+  if(dayFilter) dayFilter.querySelectorAll('.freq-btn').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      scheduleDayFilter = b.dataset.day;
+      dayFilter.querySelectorAll('.freq-btn').forEach(x=>x.classList.toggle('active', x===b));
+      renderScheduleEditor();
+    });
+  });
+  if(add) add.addEventListener('click', ()=>{
+    const arr = getTodaySchedule();
+    const used = arr.length;
+    arr.unshift({id:'s'+Date.now(), title:'Nouveau créneau', start:'00h00', end:'00h00', note:'', color:SCHEDULE_COLORS[used % SCHEDULE_COLORS.length], freq:'daily', interval:1, anchor:Date.now()});
+    STORE.set('manuel-schedule-today', arr);
+    renderScheduleEditor();
+    if(currentMode === 'today') renderTimeline();
+  });
+  if(reset) reset.addEventListener('click', ()=>{
+    if(confirm('Réinitialiser le planning par défaut ?')){
+      STORE.set('manuel-schedule-today', TODAY_SCHEDULE_DEFAULT.slice());
+      renderScheduleEditor();
+      if(currentMode === 'today') renderTimeline();
+    }
+  });
+})();
+
 /* ═══════════════════════════════════════════════
    TASKS — built-in + custom with recurrence
 ═══════════════════════════════════════════════ */
@@ -2521,6 +2973,26 @@ function getPeriodKey(freq, date=new Date()){
 function getFreqLabel(freq){
   return {daily:'Quotidien', weekly:'Hebdo', monthly:'Mensuel', yearly:'Annuel', once:'Unique'}[freq] || '';
 }
+
+// « toutes les X » : vrai si la période courante est active pour cette tâche.
+function isIntervalActive(t, date=new Date()){
+  const interval = Math.max(1, parseInt(t.interval) || 1);
+  if(interval === 1) return true;
+  if(!t.anchor) return true;
+  const a = new Date(t.anchor);
+  let periods;
+  if(t.freq === 'daily'){
+    periods = Math.floor((startOfDay(date) - startOfDay(a)) / 86400000);
+  } else if(t.freq === 'weekly'){
+    periods = Math.floor((startOfDay(date) - startOfDay(a)) / (86400000*7));
+  } else if(t.freq === 'monthly'){
+    periods = (date.getFullYear()-a.getFullYear())*12 + (date.getMonth()-a.getMonth());
+  } else {
+    return true;
+  }
+  return periods >= 0 && (periods % interval === 0);
+}
+function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x.getTime(); }
 
 // Tâches custom (stockées une fois, état par période)
 function getCustomTasks(){
@@ -2599,6 +3071,7 @@ function renderUnifiedTasks(){
   const items = [
     ...allCustom
       .filter(t => t.freq !== 'once' || t.onceDate === todayKey()) // les uniques : seulement le jour J
+      .filter(t => t.freq === 'once' || t.freq === 'yearly' || isIntervalActive(t)) // « toutes les X »
       .map(t=>({
         kind:'custom', data:t,
         isDone: getCustomTaskState(t.id, t.freq),
@@ -2693,6 +3166,13 @@ const HABIT_MOMENTS = {
   soir:  {ids:['screen','bed'], label:'Ce soir', title:'Préparer la nuit', range:[18,28]}
 };
 const MOMENT_LABEL = {matin:'Matin', aprem:'Après-midi', soir:'Soir'};
+
+// Moment (matin/aprem/soir) d'une habitude par son id (intégrée ou personnalisée)
+function habitMomentOf(id){
+  for(const m of ['matin','aprem','soir']){ if(HABIT_MOMENTS[m].ids.includes(id)) return m; }
+  const h = getCustomHabits().find(x=>x.id===id);
+  return (h && h.moment) ? h.moment : 'matin';
+}
 
 function getCustomHabits(){ return STORE.get('manuel-custom-habits', []); }
 function habitsForMoment(moment){
@@ -2864,7 +3344,7 @@ function renderHabitsManager(){
             <button class="btn btn-sm btn-ghost" data-act="edit" style="font-size:12px;padding:2px 8px">✏️</button>
           </div>
           ${h.note ? `<div class="note-text" style="font-size:12px">${escapeHtml(h.note)}</div>` : ''}
-          <div style="margin-top:6px"><span class="note-cat-badge ${h.moment==='matin'?'course':h.moment==='aprem'?'projets':'moi'}">${MOMENT_LABEL[h.moment]}</span></div>
+          <div style="margin-top:6px"><span class="note-cat-badge ${h.moment==='matin'?'hm-matin':h.moment==='aprem'?'hm-aprem':'hm-soir'}">${MOMENT_LABEL[h.moment]}</span></div>
         </div>
         <button class="note-del-btn" aria-label="Supprimer">Supprimer</button>
       `;
@@ -3066,6 +3546,21 @@ function upgradeSelect(id, opts={}){
   });
   // reprend les contraintes de largeur du select d'origine (flex, max-width)
   if(sel.style.flex) msel.style.flex = sel.style.flex;
+  msel.classList.add('msel-upgraded');
+  sel.parentNode.insertBefore(msel, sel.nextSibling);
+  sel._msel = msel;
+}
+// Variante : upgrade un <select> par référence (sans id) — pour les selects dynamiques.
+function upgradeSelectEl(sel, opts={}){
+  if(!sel || sel._msel) return;
+  const buildOpts = ()=> [...sel.options].map(o=>({value:o.value, label:o.textContent}));
+  sel.style.display = 'none';
+  const msel = makeMsel({
+    options: buildOpts(),
+    value: sel.value,
+    dropUp: opts.dropUp === true,
+    onChange: (v)=>{ sel.value = v; sel.dispatchEvent(new Event('change', {bubbles:true})); }
+  });
   msel.classList.add('msel-upgraded');
   sel.parentNode.insertBefore(msel, sel.nextSibling);
   sel._msel = msel;
@@ -3344,6 +3839,8 @@ function updateReminderFields(){
   setVis('task-rem-weekday', freq==='weekly');
   setVis('task-rem-day', (freq==='monthly'||freq==='yearly'));
   setVis('task-rem-month', freq==='yearly');
+  setVis('task-interval', freq==='daily' || freq==='weekly' || freq==='monthly');
+  updateIntervalLabels(freq);
   if(isOnce){
     const dEl = document.getElementById('task-once-date');
     if(!dEl.value){
@@ -3351,6 +3848,21 @@ function updateReminderFields(){
       dEl.value = `${t.getFullYear()}-${String(t.getMonth()+1).padStart(2,'0')}-${String(t.getDate()).padStart(2,'0')}`;
     }
   }
+}
+// Accorde « chaque / tous les / toutes les X <unité> » selon la fréquence.
+function updateIntervalLabels(freq){
+  const sel = document.getElementById('task-interval');
+  if(!sel) return;
+  const unit = freq==='daily' ? {one:'jour', many:'jours', fem:false}
+            : freq==='weekly' ? {one:'semaine', many:'semaines', fem:true}
+            : freq==='monthly' ? {one:'mois', many:'mois', fem:false}
+            : null;
+  if(!unit) return;
+  [...sel.options].forEach(opt=>{
+    const n = parseInt(opt.value);
+    opt.textContent = n===1 ? `chaque ${unit.one}` : `${unit.fem ? 'toutes' : 'tous'} les ${n} ${unit.many}`;
+  });
+  try{ if(typeof syncUpgradedSelect==='function') syncUpgradedSelect('task-interval'); }catch(e){}
 }
 document.getElementById('task-freq').addEventListener('change', updateReminderFields);
 updateReminderFields();
@@ -3392,7 +3904,8 @@ document.getElementById('task-add').addEventListener('click', ()=>{
     }
   }
   const tasks = getCustomTasks();
-  tasks.push({id:'task-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), text, freq, reminder, createdAt:Date.now()});
+  const interval = Math.max(1, parseInt(document.getElementById('task-interval').value) || 1);
+  tasks.push({id:'task-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), text, freq, reminder, interval, anchor:Date.now(), createdAt:Date.now()});
   STORE.set('manuel-custom-tasks', tasks);
   input.value = '';
   if(notifsEnabled) scheduleNextReminder();
@@ -3514,8 +4027,8 @@ function renderStats(){
   // Calcule, pour un jour donné, le nombre d'items complétés par catégorie
   function dayBreakdown(dk){
     const cs = STORE.get('manuel-check-' + dk, {});
-    let habit=0, daily=0, once=0;
-    habitIds.forEach(id=>{ if(cs[id]) habit++; });
+    let hMatin=0, hAprem=0, hSoir=0, daily=0, once=0;
+    habitIds.forEach(id=>{ if(cs[id]){ const m=habitMomentOf(id); if(m==='soir')hSoir++; else if(m==='aprem')hAprem++; else hMatin++; } });
     dailyIds.forEach(id=>{ if(taskStatesAll[`${id}__${dk}`]) daily++; });
     remIds.forEach(id=>{ if(taskStatesAll[`${id}__${dk}`]) daily++; }); // rappels comptés avec quotidien
     // Tâches uniques : état stocké sous "id__once" ; on les place le jour où elles ont été cochées
@@ -3524,7 +4037,7 @@ function renderStats(){
       if(taskStatesAll[stateKey] && (doneDayAll[stateKey]===dk || (!doneDayAll[stateKey] && t.onceDate===dk))) once++;
     });
     const lg = longByDay[dk] || {weekly:0, monthly:0, yearly:0};
-    return {habit, daily, once, weekly:lg.weekly, monthly:lg.monthly, yearly:lg.yearly};
+    return {hMatin, hAprem, hSoir, daily, once, weekly:lg.weekly, monthly:lg.monthly, yearly:lg.yearly};
   }
 
   // Échelle : max d'items un jour donné sur la semaine (pour normaliser les hauteurs)
@@ -3534,7 +4047,7 @@ function renderStats(){
     const d = new Date(today2); d.setDate(today2.getDate()-i);
     const dk = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
     const bd = dayBreakdown(dk);
-    const tot = bd.habit + bd.daily + bd.once + bd.weekly + bd.monthly + bd.yearly;
+    const tot = bd.hMatin + bd.hAprem + bd.hSoir + bd.daily + bd.once + bd.weekly + bd.monthly + bd.yearly;
     weekMax = Math.max(weekMax, tot);
     weekData.push({d, dk, bd, tot, isToday:i===0});
   }
@@ -3544,9 +4057,10 @@ function renderStats(){
     const totalH = Math.max(4, (wd.tot/weekMax)*100);
     bar.style.height = totalH + '%';
     // Segments empilés (du bas vers le haut grâce à flex-direction:column-reverse)
-    // Habitudes : vert si remplies aujourd'hui, terracotta si remplies un jour précédent.
-    const habitCls = wd.isToday ? 'cat-habit' : 'cat-habit-past';
-    [[habitCls,wd.bd.habit],['cat-once',wd.bd.once],['cat-daily',wd.bd.daily],
+    // Habitudes colorées par moment (matin vert / après-midi jaune / soir violet),
+    // couleur conservée quel que soit le jour (plus de terracotta pour le passé).
+    [['cat-habit-matin',wd.bd.hMatin],['cat-habit-aprem',wd.bd.hAprem],['cat-habit-soir',wd.bd.hSoir],
+     ['cat-once',wd.bd.once],['cat-daily',wd.bd.daily],
      ['cat-weekly',wd.bd.weekly],['cat-monthly',wd.bd.monthly],['cat-yearly',wd.bd.yearly]].forEach(([cls,n])=>{
       if(n>0){
         const seg = document.createElement('div');
@@ -3567,7 +4081,8 @@ function renderStats(){
   const legend = document.getElementById('chart-legend');
   if(legend){
     legend.innerHTML = [
-      ['cat-habit','Habitudes'],['cat-once','Unique'],['cat-daily','Quotidien'],
+      ['cat-habit-matin','Habitudes matin'],['cat-habit-aprem','Habitudes après-midi'],['cat-habit-soir','Habitudes soir'],
+      ['cat-daily','Quotidien'],['cat-once','Unique'],
       ['cat-weekly','Hebdo'],['cat-monthly','Mensuel'],['cat-yearly','Annuel']
     ].map(([cls,label])=>`<span class="legend-item"><span class="legend-dot ${cls}"></span>${label}</span>`).join('');
   }
@@ -3582,7 +4097,7 @@ function renderStats(){
       let done=0, tot=0;
       list.forEach(t=>{ for(let p=0;p<max;p++){ tot++; if(taskStatesAll[`${t.id}__${periodFn(p)}`]) done++; } });
       const pct = tot>0 ? Math.round((done/tot)*100) : 0;
-      const color = {weekly:'#9C8AC4',monthly:'var(--gold)',yearly:'#A8475A'}[freq];
+      const color = {weekly:'#3E9E96',monthly:'#C77DAE',yearly:'#A8475A'}[freq];
       return `<div class="pb-row"><span class="pb-label">${label}</span>
         <span class="pb-track"><span class="pb-fill" style="width:${pct}%;background:${color}"></span></span>
         <span class="pb-val">${done}/${tot}</span></div>`;
@@ -3632,8 +4147,8 @@ function renderStats(){
   });
   function habitIndexOf(id){ return (id in habitDayIndex) ? habitDayIndex[id] : 999; }
 
-  checks.forEach(c => { allStats[c.id] = {text:c.text, count:0, max:7, suffix:'/7 j.', cat:'cat-habit', typeLabel:'Habitude', order:0, dayIndex:habitIndexOf(c.id)}; });
-  getCustomHabits().forEach(h => { allStats[h.id] = {text:h.text, count:0, max:7, suffix:'/7 j.', cat:'cat-habit', typeLabel:'Habitude', order:0, dayIndex:habitIndexOf(h.id)}; });
+  checks.forEach(c => { allStats[c.id] = {text:c.text, count:0, max:7, suffix:'/7 j.', cat:'cat-habit-'+habitMomentOf(c.id), typeLabel:'Habitude', order:0, dayIndex:habitIndexOf(c.id)}; });
+  getCustomHabits().forEach(h => { allStats[h.id] = {text:h.text, count:0, max:7, suffix:'/7 j.', cat:'cat-habit-'+habitMomentOf(h.id), typeLabel:'Habitude', order:0, dayIndex:habitIndexOf(h.id)}; });
 
   const allCustom = getCustomTasks();
   allCustom.forEach(t => {
@@ -3706,7 +4221,8 @@ function renderStats(){
   }
   // map catégorie → classe de badge de fréquence (même style que les tâches d'aujourd'hui)
   const badgeClassOf = {
-    'cat-habit':'habit', 'cat-once':'once', 'cat-daily':'daily', 'cat-weekly':'weekly',
+    'cat-habit':'habit', 'cat-habit-matin':'habit', 'cat-habit-aprem':'habit', 'cat-habit-soir':'habit',
+    'cat-once':'once', 'cat-daily':'daily', 'cat-weekly':'weekly',
     'cat-monthly':'monthly', 'cat-yearly':'yearly'
   };
   ranked.forEach((h, i) => {
@@ -4075,6 +4591,7 @@ document.querySelectorAll('.sub-tab').forEach(b=>{
     scope.querySelectorAll('.sub-view').forEach(v=>{
       v.style.display = (v.dataset.sub === target) ? 'block' : 'none';
     });
+    if(target === 'schedule') renderScheduleEditor();
   });
 });
 
@@ -5188,15 +5705,21 @@ function renderPillars(){
   });
 }
 
-/* ─── GUIDE MODE TOGGLE (Piliers / 20 ans) ───── */
+/* ─── GUIDE MODE TOGGLE (Piliers / 20 ans / Manger) ───── */
 function setGuideMode(mode){
   document.querySelectorAll('#guide-mode-tabs .mode-tab').forEach(b=>
     b.classList.toggle('active', b.dataset.gmode === mode));
   document.getElementById('pillars').style.display = mode==='pillars' ? '' : 'none';
   document.getElementById('youth-section').style.display = mode==='youth' ? '' : 'none';
+  const nutri = document.getElementById('nutrition-section');
+  if(nutri) nutri.style.display = mode==='nutrition' ? '' : 'none';
   if(mode==='pillars'){
     document.getElementById('guide-title').innerHTML = 'Six <em>piliers</em>';
     document.getElementById('guide-sub').textContent = 'Le fond de connaissances. Déplie chaque pilier pour les détails.';
+  } else if(mode==='nutrition'){
+    document.getElementById('guide-title').innerHTML = 'Manger <em>correctement</em>';
+    document.getElementById('guide-sub').textContent = 'Quoi manger, à quel moment de la journée, et pourquoi.';
+    renderNutrition();
   } else {
     document.getElementById('guide-title').innerHTML = 'Profite d\'avoir <em>20 ans</em>';
     document.getElementById('guide-sub').textContent = '9 choses que le temps rend irremplaçables. Coche ce que tu explores.';
@@ -5206,6 +5729,47 @@ function setGuideMode(mode){
 document.querySelectorAll('#guide-mode-tabs .mode-tab').forEach(b=>{
   b.addEventListener('click', ()=>setGuideMode(b.dataset.gmode));
 });
+
+/* ─── NUTRITION (tableau de référence) ───────── */
+const NUTRITION_ROWS = [
+  {time:'7h–8h', emoji:'🌅', foods:'Eau (grand verre), œufs ou yaourt grec, flocons d\'avoine, fruit, oléagineux', why:'Protéines + fibres au réveil stabilisent la glycémie et la concentration toute la matinée. Évite le sucre rapide seul (chute d\'énergie).'},
+  {time:'10h–11h', emoji:'☕', foods:'Fruit entier, poignée d\'amandes/noix, éventuellement café', why:'Petit apport pour tenir jusqu\'au déjeuner sans grignotage sucré. Les oléagineux apportent de bons lipides et du magnésium (mémoire).'},
+  {time:'12h–13h', emoji:'🍽️', foods:'Protéine (viande, poisson, légumineuses) + légumes + féculent complet (riz/pâtes complètes)', why:'Repas complet : protéines pour la satiété, glucides complexes pour l\'énergie durable de l\'après-midi, légumes pour les micronutriments.'},
+  {time:'16h–17h', emoji:'🥨', foods:'Fruit + protéine (fromage blanc, œuf, ou poignée de noix), chocolat noir 70%+', why:'Goûter qui évite le coup de barre et le craquage du soir. Le chocolat noir apporte des antioxydants sans pic de sucre.'},
+  {time:'19h–20h', emoji:'🌙', foods:'Léger : légumes, poisson ou œufs, peu de féculents, pas de sucre rapide', why:'Un dîner léger améliore le sommeil et la récupération. Trop lourd ou sucré le soir perturbe l\'endormissement et le stockage.'},
+  {time:'Toute la journée', emoji:'💧', foods:'1,5 à 2 L d\'eau, limiter sodas et alcool', why:'Même une légère déshydratation baisse la concentration et l\'humeur. L\'eau est le premier levier d\'énergie, gratuit et sous-estimé.'},
+];
+const NUTRITION_TIER_LABEL = { top:'À privilégier', good:'Bonne base', occasional:'Avec modération' };
+const NUTRITION_FOODS = [
+  {name:'Filet de poulet', emoji:'🍗', tier:'top', note:"La protéine maigre par excellence : peu de gras, très rassasiant, polyvalent. Parfait au déjeuner ou après le sport. Privilégie grillé ou au four plutôt que pané."},
+  {name:'Escalopes', emoji:'🥩', tier:'top', note:"Dinde, veau ou poulet : excellente source de protéines maigres. Évite simplement de les noyer dans la crème ou la friture — une poêlée à l'huile d'olive suffit."},
+  {name:'Bananes', emoji:'🍌', tier:'top', note:"Glucides faciles à digérer + potassium : idéale en collation ou autour d'un effort. Bien mûre elle est plus sucrée et digeste ; plus verte elle rassasie plus longtemps."},
+  {name:'Riz', emoji:'🍚', tier:'good', note:"Bonne base d'énergie durable, surtout complet ou basmati (index glycémique plus bas). Le riz blanc reste correct — accompagne-le de légumes et d'une protéine pour équilibrer le repas."},
+  {name:'Pâtes', emoji:'🍝', tier:'good', note:"Glucides complexes parfaits avant un effort ou une longue session de travail. Les versions complètes rassasient davantage. C'est surtout la sauce (crème, fromage) qui alourdit le plat."},
+  {name:'Lardons', emoji:'🥓', tier:'occasional', note:"Charcuterie grasse et salée : très bons pour relever un plat, mais en petite quantité. À voir comme un assaisonnement plutôt qu'une vraie source de protéines."},
+  {name:'Chocapic (sans lait)', emoji:'🥣', tier:'occasional', note:"Céréales très sucrées ; mangées sèches, le sucre est encore plus concentré et ça rassasie peu. Pour le plaisir, une petite portion avec un yaourt ou un fruit tient bien mieux au corps."},
+  {name:'Cakes (Savane)', emoji:'🍫', tier:'occasional', note:"Gâteau industriel sucré et gras, pensé pour le plaisir, pas pour la nutrition. Rien d'interdit : garde-le comme petit plaisir ponctuel plutôt que comme goûter quotidien."},
+];
+function renderNutrition(){
+  const host = document.getElementById('nutrition-section');
+  if(!host) return;
+  host.innerHTML = `
+    <div class="nutri-intro">Un cadre simple : des protéines et des fibres tôt, un déjeuner complet, un dîner léger. Adapte à ta faim — c'est une référence, pas une règle rigide.</div>
+    ${NUTRITION_ROWS.map(r=>`
+      <div class="nutri-card">
+        <div class="nutri-head"><span class="nutri-emoji">${r.emoji}</span><span class="nutri-time">${r.time}</span></div>
+        <div class="nutri-foods">${escapeHtml(r.foods)}</div>
+        <div class="nutri-why">${escapeHtml(r.why)}</div>
+      </div>`).join('')}
+    <div class="nutri-foods-title">Quelques aliments courants — mon avis</div>
+    <div class="nutri-intro" style="margin-bottom:14px">Verdict rapide et sans dogme : presque tout a sa place, c'est la fréquence et la quantité qui font la différence.</div>
+    ${NUTRITION_FOODS.map(f=>`
+      <div class="nutri-card">
+        <div class="nutri-head"><span class="nutri-emoji">${f.emoji}</span><span class="nutri-time">${escapeHtml(f.name)}</span><span class="nutri-badge nutri-${f.tier}">${NUTRITION_TIER_LABEL[f.tier]}</span></div>
+        <div class="nutri-why">${escapeHtml(f.note)}</div>
+      </div>`).join('')}
+  `;
+}
 
 
 /* ─── YOUTH DATA ─────────────────────────────── */
@@ -5305,6 +5869,8 @@ function renderYouth(){
 ═══════════════════════════════════════════════ */
 const notifBtn = document.getElementById('notif-btn');
 let notifsEnabled = STORE.get('manuel-notifs', false);
+// Préférence de la journée : quelles notifications recevoir (Études / Vacances / Journée)
+let notifModes = Object.assign({study:true, vacation:false, today:true}, STORE.get('manuel-notif-modes', {}));
 let notifTimer = null;
 
 function updateNotifBtnUI(){
@@ -5347,7 +5913,10 @@ function getAllReminders(){
     const [h,m] = c.time.split(':').map(Number);
     return {h, m, title:'Rappel ⏰', body: c.text};
   });
-  return [...defaultReminders, ...formatted, ...getTaskRemindersForToday()].sort((a,b)=>(a.h*60+a.m)-(b.h*60+b.m));
+  const base = [];
+  if(notifModes.study   !== false) base.push(...defaultReminders);
+  if(notifModes.vacation === true) base.push(...vacationReminders);
+  return [...base, ...formatted, ...getTaskRemindersForToday()].sort((a,b)=>(a.h*60+a.m)-(b.h*60+b.m));
 }
 function scheduleNextReminder(){
   if(notifTimer) clearTimeout(notifTimer);
@@ -5408,6 +5977,7 @@ function checkOverdueDeadlines(){
       else if(t.freq==='yearly') isToday = ((now.getMonth()+1)===(r.month??-1) && now.getDate()===(r.monthday??-1));
       due = toMin(r.time);
     }
+    if(isToday && (t.freq==='daily'||t.freq==='weekly'||t.freq==='monthly') && !isIntervalActive(t, now)) isToday = false;
     if(!isToday || due===null) return;
     if(nowMin <= due) return;                       // pas encore dépassé
     if(getCustomTaskState(t.id, t.freq)) return;    // déjà fait
@@ -5507,11 +6077,92 @@ notifBtn.addEventListener('click', async ()=>{
   }
 });
 
+/* ─── Préférence de la journée (Études / Vacances / Journée) ─── */
+(function initNotifModes(){
+  const ids = { study:'notifmode-study', vacation:'notifmode-vacation', today:'notifmode-today' };
+  // Études et Vacances sont mutuellement exclusifs : on normalise au démarrage
+  if(notifModes.study && notifModes.vacation){ notifModes.vacation = false; STORE.set('manuel-notif-modes', notifModes); }
+  const els = {};
+  Object.entries(ids).forEach(([k, id])=>{ els[k] = document.getElementById(id); if(els[k]) els[k].checked = !!notifModes[k]; });
+  Object.keys(ids).forEach(key=>{
+    const el = els[key];
+    if(!el) return;
+    el.addEventListener('change', ()=>{
+      notifModes[key] = el.checked;
+      // Activer Études coupe Vacances, et inversement
+      if(el.checked && (key === 'study' || key === 'vacation')){
+        const other = key === 'study' ? 'vacation' : 'study';
+        notifModes[other] = false;
+        if(els[other]) els[other].checked = false;
+      }
+      STORE.set('manuel-notif-modes', notifModes);
+      if(notifsEnabled) scheduleNextReminder(); // re-planifier avec le nouveau filtre
+    });
+  });
+})();
+
 /* ═══════════════════════════════════════════════
    AUTO-REFRESH (every minute)
 ═══════════════════════════════════════════════ */
 let lastMinute = -1;
 let lastDayKey = todayKey();
+/* ─── Notifications des créneaux d'emploi du temps ───
+   Le webview tourne aussi quand la fenêtre desktop est cachée dans le tray,
+   donc ce déclencheur JS couvre mobile (app ouverte) et desktop (même cachée). */
+const _SCHED_UNIT_MIN = { min:1, h:60, d:1440, w:10080 };
+const _schedNotifFired = new Set();
+function _schedIntervalActive(slot, freq, d){
+  const interval = Math.max(1, parseInt(slot.interval)||1);
+  if(interval === 1) return true;
+  if(!slot.anchor) return true;
+  const a = new Date(slot.anchor); const A = new Date(a.getFullYear(), a.getMonth(), a.getDate());
+  const D = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+  let periods;
+  if(freq === 'daily')        periods = Math.round((D - A)/86400000);
+  else if(freq === 'weekly')  periods = Math.floor(Math.round((D - A)/86400000)/7);
+  else if(freq === 'monthly') periods = (D.getFullYear()-A.getFullYear())*12 + (D.getMonth()-A.getMonth());
+  else return true;
+  return periods >= 0 && periods % interval === 0;
+}
+function _schedOccursOn(slot, d){
+  const f = slot.freq || 'daily';
+  if(f === 'daily')   return _schedIntervalActive(slot, 'daily', d);
+  if(f === 'weekly')  return d.getDay() === Number(slot.weekday) && _schedIntervalActive(slot, 'weekly', d);
+  if(f === 'monthly') return d.getDate() === Number(slot.monthday) && _schedIntervalActive(slot, 'monthly', d);
+  if(f === 'yearly')  return (d.getMonth()+1) === Number(slot.month) && d.getDate() === Number(slot.monthday);
+  return false; // 'once' : pas de date stockée pour un créneau
+}
+function _canNotify(){
+  if(window.__TAURI__ && window.__TAURI__.notification) return true;
+  return ('Notification' in window) && Notification.permission === 'granted';
+}
+function fireDueScheduleNotifs(now){
+  if(!_canNotify()) return;
+  if(notifModes && notifModes.today === false) return;
+  const sched = getTodaySchedule();
+  sched.forEach(slot=>{
+    if(!slot.notify) return;
+    const startHHMM = (slot.start || '07h00').replace('h', ':');
+    const [sh, sm] = startHHMM.split(':').map(Number);
+    const offMin = (slot.notifyMode === 'custom')
+      ? (parseInt(slot.notifyVal)||0) * (_SCHED_UNIT_MIN[slot.notifyUnit] || 1)
+      : 0;
+    // L'instant de notif = occurrence − décalage. Donc occurrence = maintenant + décalage.
+    const occ = new Date(now.getTime() + offMin*60000);
+    if(occ.getHours() !== sh || occ.getMinutes() !== sm) return;
+    if(!_schedOccursOn(slot, occ)) return;
+    const key = (slot.id||slot.title) + '|' + occ.getFullYear() + '-' + (occ.getMonth()+1) + '-' + occ.getDate() + '|' + sh + ':' + sm;
+    if(_schedNotifFired.has(key)) return;
+    _schedNotifFired.add(key);
+    let body;
+    if(offMin === 0) body = `C'est l'heure (${slot.start || ''}).`;
+    else {
+      const unitLbl = {min:'minute(s)', h:'heure(s)', d:'jour(s)', w:'semaine(s)'}[slot.notifyUnit] || '';
+      body = `Commence à ${slot.start || ''} — dans ${slot.notifyVal} ${unitLbl}.`;
+    }
+    showSysNotif('📅 ' + (slot.title || 'Créneau'), body, 'sched-' + (slot.id||''));
+  });
+}
 function sleepNagTimes(){
   // 4 rappels : au début du mode nuit, puis +20, +40 et +60 min
   const s = toMin(nightTimes().start);
@@ -5538,10 +6189,13 @@ function tick(){
         ? `Il est ${hhmm}. Une nuit courte = cerveau à 0,5 g/L demain. Pose l'écran.`
         : 'Toujours debout ? Chaque minute de sommeil compte plus que cet écran.');
     }
+    // Notifications des créneaux d'emploi du temps
+    fireDueScheduleNotifs(now);
     // Si on change de jour, rafraîchir les vues qui dépendent de la période
     const today = todayKey();
     if(today !== lastDayKey){
       lastDayKey = today;
+      _schedNotifFired.clear();
       purgeExpiredOnceTasks();
       renderUnifiedTasks();
       renderCustomTasks();
@@ -5755,7 +6409,7 @@ function init(){
   initSync();
 
   // Généralisation du sélecteur custom : convertit les <select> natifs restants
-  ['day-theme','habit-moment','task-freq','task-rem-weekday','task-rem-month',
+  ['day-theme','habit-moment','task-freq','task-interval','task-rem-weekday','task-rem-month',
    'task-rem-day','note-cat']
     .forEach(id=>{ try{ upgradeSelect(id); }catch(e){} });
   // book-genre et book-init-status ont des hosts dédiés (pour la mise en page)
