@@ -2288,14 +2288,46 @@ function scheduleBlockDueToday(b, date=new Date()){
   }
   return due && isIntervalActive({freq, interval:b.interval, anchor:b.anchor}, date);
 }
+function _daysUntilMonthday(date, md){
+  const d0 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  let target = new Date(d0.getFullYear(), d0.getMonth(), md);
+  if(target < d0) target = new Date(d0.getFullYear(), d0.getMonth()+1, md);
+  return Math.round((target - d0)/86400000);
+}
+function _daysUntilYearly(date, mo, md){
+  const d0 = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  let target = new Date(d0.getFullYear(), mo-1, md);
+  if(target < d0) target = new Date(d0.getFullYear()+1, mo-1, md);
+  return Math.round((target - d0)/86400000);
+}
+// Une tâche doit-elle apparaître dans la Journée à cette date ?
+// daily : chaque jour actif (intervalle respecté) · weekly : son jour (sur N semaines)
+// monthly : 1 semaine avant la date · yearly : 3 semaines avant la date (pas avant)
+function taskVisibleInJournee(t, date=new Date()){
+  const freq = t.freq || 'daily';
+  const r = t.reminder || {};
+  if(freq==='once')   return t.onceDate === todayKey() && !getCustomTaskState(t.id,'once');
+  if(freq==='daily')  return isIntervalActive(t, date);
+  if(freq==='weekly') return date.getDay()===Number(r.weekday ?? -1) && isIntervalActive(t, date);
+  if(freq==='monthly'){
+    const md = Number(r.monthday ?? -1);
+    return md>=1 && _daysUntilMonthday(date, md) <= 7;
+  }
+  if(freq==='yearly'){
+    const mo = Number(r.month ?? -1), md = Number(r.monthday ?? -1);
+    return mo>=1 && md>=1 && _daysUntilYearly(date, mo, md) <= 21;
+  }
+  return false;
+}
 function itemsInRange(startDec, endDec){
   const out = [];
+  const now = new Date();
   const toDec = s => { if(!s) return null; const [h,m]=s.split(':').map(Number); return h+m/60; };
   getCustomTasks().forEach(t=>{
-    if(t.freq && t.freq!=='once' && t.freq!=='yearly' && !isIntervalActive(t)) return;
-    if(t.freq==='once' && t.onceDate !== todayKey()) return;
-    const tm = toDec(t.freq==='once' ? t.onceTime : t.reminder?.time);
-    if(tm!==null && tm>=startDec && tm<endDec) out.push({text:t.text, time:(t.freq==='once'?t.onceTime:t.reminder?.time), kind:'task'});
+    if(!taskVisibleInJournee(t, now)) return;
+    const time = (t.freq==='once') ? t.onceTime : t.reminder?.time;
+    const tm = toDec(time);
+    if(tm!==null && tm>=startDec && tm<endDec) out.push({text:t.text, time, kind:'task'});
   });
   getCustomReminders().forEach(r=>{
     const tm = toDec(r.time);
@@ -2326,8 +2358,16 @@ function renderScheduleTimeline(hostId){
     container.appendChild(el);
   });
   setTimeout(()=>{
+    // Auto-défilement vers le moment courant — uniquement dans la vue Aujourd'hui,
+    // et scroll horizontal interne au conteneur (jamais la page) pour éviter tout saut.
+    if(currentView !== 'home') return;
+    const homeView = document.querySelector('.view[data-view="home"]');
+    if(!homeView || !homeView.classList.contains('active')) return;
     const nowDot = container.querySelector('.tl-dot.now');
-    if(nowDot) nowDot.scrollIntoView({behavior:'smooth', inline:'center', block:'nearest'});
+    if(nowDot){
+      const left = nowDot.offsetLeft - (container.clientWidth/2) + (nowDot.clientWidth/2);
+      container.scrollTo({left: Math.max(0, left), behavior:'smooth'});
+    }
   }, 150);
 }
 function renderDayCalendar(){
