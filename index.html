@@ -1290,6 +1290,7 @@
   .note-cat-badge.site{color:#5B8DB8;border-color:#5B8DB8}
   .note-cat-badge.moi{color:#9C8AC4;border-color:#9C8AC4}
   .note-cat-badge.motiv-badge{color:#D4A45A;border-color:#D4A45A}
+  .note-plus{font-weight:800;margin-right:6px;line-height:1}
   .note-cat-badge.hm-matin{color:#84A98C;border-color:#84A98C}
   .note-cat-badge.hm-aprem{color:#E6B833;border-color:#E6B833}
   .note-cat-badge.hm-soir{color:#9C8AC4;border-color:#9C8AC4}
@@ -1375,6 +1376,20 @@
   .nutri-top{background:rgba(132,169,140,.20);color:var(--sage)}
   .nutri-good{background:rgba(132,169,140,.12);color:var(--sage)}
   .nutri-occasional{background:rgba(226,109,82,.16);color:var(--accent)}
+  .pol-res{background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-bottom:10px}
+  .pol-res-head{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:6px}
+  .pol-res-nom{font-weight:700;font-size:14px}
+  .pol-res-pct{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--ink)}
+  .pol-bar{height:8px;background:var(--surface);border-radius:6px;overflow:hidden}
+  .pol-bar-fill{height:100%;border-radius:6px;transition:width .4s}
+  .pol-res-tag{font-size:11.5px;color:var(--muted);margin-top:6px}
+  .pol-tag{margin-left:auto;font-size:10px;color:var(--muted);text-align:right}
+  .pol-step{display:flex;gap:10px;font-size:13px;color:var(--ink-soft);line-height:1.5;padding:5px 0;border-top:1px solid var(--line)}
+  .pol-step:first-of-type{border-top:none}
+  .pol-step-age{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;flex:0 0 44px;white-space:nowrap}
+  .pol-check{flex:0 0 16px;color:var(--accent)}
+  .pol-pct{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:14px;margin-left:8px}
+  .pol-src{font-size:10.5px;color:var(--muted);margin-top:5px;font-style:italic}
   .day-calendar{display:flex;flex-direction:column;gap:10px;margin-top:8px;margin-bottom:8px}
   .day-cal-empty{color:var(--muted);font-size:13px;padding:24px 12px;text-align:center}
   .day-cal-block{display:flex;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--block-color);border-radius:12px;overflow:hidden}
@@ -2049,10 +2064,12 @@
         <button class="mode-tab active" data-gmode="pillars">🏛️ Six piliers</button>
         <button class="mode-tab" data-gmode="youth">✨ 20 ans</button>
         <button class="mode-tab" data-gmode="nutrition">🍽️ Manger</button>
+        <button class="mode-tab" data-gmode="politique">🏛️ Politique</button>
       </div>
       <div id="pillars"></div>
       <div id="youth-section" style="display:none"></div>
       <div id="nutrition-section" style="display:none"></div>
+      <div id="politique-section" style="display:none"></div>
     </div>
   </section>
 
@@ -2687,11 +2704,15 @@ function nowDecimal(){
   return d.getHours() + d.getMinutes()/60;
 }
 function findCurrentMoment(){
-  let tl = timelines[currentMode];
-  if(!tl || !Array.isArray(tl) || tl.length === 0){
+  // 'today' (Journée) est un mode valide : il n'a pas de timeline ici (il utilise le
+  // calendrier), donc on ne le réinitialise JAMAIS. On ne corrige que les modes inconnus.
+  if(currentMode !== 'study' && currentMode !== 'vacation' && currentMode !== 'today'){
     currentMode = 'study';
     STORE.set('manuel-mode', 'study');
-    tl = timelines['study'];
+  }
+  let tl = timelines[currentMode];
+  if(!tl || !Array.isArray(tl) || tl.length === 0){
+    tl = timelines['study']; // repli local (mode 'today' : résultat non affiché) — sans changer currentMode
   }
   const n = nowDecimal();
   // Try active window first
@@ -4911,8 +4932,9 @@ function renderNotes(){
     const catColor = customCat ? customCat.color : null;   // couleur perso éventuelle
     const badgeStyle = catColor ? ` style="color:${catColor};border-color:${catColor}"` : '';
     const badgeClass = catColor ? '' : cat;
-    // TITRE TEINTÉ — uniquement pour les notes, uniquement si couleur définie
-    const titleStyle = catColor ? ` style="color:${catColor}"` : '';
+    // Le titre reste BLANC (lisible) ; la couleur de catégorie est portée par un « + »
+    // placé devant le titre (et par le badge), plus par le texte lui-même.
+    const plusMark = catColor ? `<span class="note-plus" style="color:${catColor}">+</span>` : '';
     const el = document.createElement('div');
     el.className = 'note-item';
     const d = new Date(n.date);
@@ -4920,7 +4942,7 @@ function renderNotes(){
     el.innerHTML = `
       <div class="note-content">
         <div class="note-header">
-          ${n.title ? `<span class="note-item-title"${titleStyle}>${escapeHtml(n.title)}</span>` : '<span></span>'}
+          ${(n.title || plusMark) ? `<span class="note-item-title">${plusMark}${n.title?escapeHtml(n.title):''}</span>` : '<span></span>'}
           <div class="note-date">${d.toLocaleDateString('fr-FR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</div>
         </div>
         <div class="note-text${needsClamp?' clamped':''}">${escapeHtml(n.text)}</div>
@@ -5754,6 +5776,77 @@ function renderPillars(){
 }
 
 /* ─── GUIDE MODE TOGGLE (Piliers / 20 ans / Manger) ───── */
+function renderPolitique(){
+  const host = document.getElementById('politique-section');
+  if(!host) return;
+  const voies = [
+    {nom:'Voie expert', pct:51, col:'#B34000', tag:'Think tank → voix publique', steps:[
+      "Choisir un domaine porteur (constitution, énergie, IA, éducation) et commencer à écrire.",
+      "Master spécialisé ; publier des notes et analyses, se faire un nom sur un sujet précis.",
+      "Poste ou contrat en think tank (Montaigne, Terra Nova, Jean-Jaurès, Fondapol).",
+      "Voix reconnue : auditions, médias, notes lues par les cabinets — l'influence sans le mandat.",
+      "Recruté comme conseiller/candidat, ou direction d'un programme."]},
+    {nom:'Voie conseiller', pct:48, col:'#1E7A5E', tag:'Collaborateur → cabinet → éminence grise', steps:[
+      "Licence + engagement associatif ou militant discret ; tisser un réseau resserré.",
+      "Stage puis poste d'assistant parlementaire à temps partiel, en parallèle d'un master.",
+      "Collaborateur parlementaire à plein temps : notes, amendements, discours (~2 700 €/mois).",
+      "Conseiller puis chef de cabinet — réseau dense et fermé, idéal pour un introverti.",
+      "Directeur de cabinet, ou candidature avec un sponsor politique solide."]},
+    {nom:'Voie appareil', pct:43, col:'#6A1B9A', tag:'Parti → permanent → investiture', steps:[
+      "Adhérer à un mouvement de jeunesse ; rôle rédaction/numérique/stratégie, pas tractage.",
+      "Responsabilité chez les jeunes du parti ; travail de campagne en back-office.",
+      "Devenir permanent du parti : communication, stratégie, data électorale.",
+      "Cadre de l'appareil, avec un poids réel dans le choix des investitures.",
+      "Investiture comme candidat, ou direction com/stratégie du mouvement."]},
+    {nom:'Voie noble', pct:41, col:'#3A5BA0', tag:'Sciences Po → INSP → cabinet', steps:[
+      "Valider la licence, viser un transfert en IEP ou un master Sciences Po. Soigner les notes.",
+      "Intégrer l'IEP/le master ; se spécialiser (affaires publiques, droit public, finances).",
+      "Master 2 + concours (INSP, administrateur) ou premiers stages en cabinet ministériel.",
+      "Poste en administration ou cabinet ; construire une expertise et une légitimité technique.",
+      "Directeur adjoint de cabinet, puis parachutage/investiture quand le capital symbolique est là."]}
+  ];
+  const stats = [
+    {n:'49 a 7 m', l:"Âge moyen d'un député", d:"Âge médian de 51 ans, en hausse depuis 2017 : l'entrée jeune reste minoritaire.", src:'Assemblée nationale, 2024'},
+    {n:'73 %',     l:"Taux de réélection en 2024", d:"Record de la Ve République. La vraie barrière à l'entrée, c'est le stock de sortants réélus.", src:'CEVIPOF / franceinfo, 2024'},
+    {n:'~1 %',     l:"Députés issus des classes populaires", d:"6 ouvriers sur 577, quand ils forment ~20 % de la population active. La reproduction sociale y est massive.", src:'QuiNousReprésente, 2024'},
+    {n:'35 %',     l:"Ministres passés par un IEP", d:"Sciences Po Paris (30 %) + IEP de province. Le droit (32 %) et l'ENA/INSP (19 %) complètent le trio dominant.", src:'Recto Versoi, 2018'},
+    {n:'~2 000',   l:"Collaborateurs parlementaires", d:"Âge moyen 37 ans, ~41 % titulaires d'un bac +5. La porte d'entrée la plus accessible du milieu.", src:'Assemblée nationale & Sénat, 2015-2023'},
+    {n:'2 700 €',  l:"Salaire de départ d'un collaborateur", d:"Brut mensuel à l'Assemblée (davantage au Sénat). Un revenu réel dès ~23 ans, mais un plafond bas.", src:'Barèmes AN / Sénat, 2024'},
+    {n:'52-91 %',  l:"Cadres & prof. intellectuelles à l'Assemblée", d:"Contre ~18 % dans la population active : la surreprésentation des diplômés est la règle, pas l'exception.", src:'QuiNousReprésente / Europe 1, 2022-2024'}
+  ];
+  const checklist = [
+    "Valider la L1 — priorité absolue : les rattrapages passent avant la stratégie à 10 ans.",
+    "Soigner les notes en vue d'un transfert en IEP ou d'un master Sciences Po.",
+    "Choisir un domaine d'expertise porteur et commencer à écrire (notes, tribunes).",
+    "Tisser un réseau resserré via un engagement associatif ou militant discret.",
+    "Viser un premier stage d'assistant parlementaire.",
+    "Se tenir informé : Assemblée, think tanks, débats sur ton domaine."
+  ];
+  const stage = ['19-20','21-23','24-26','27-30','31-35'];
+  host.innerHTML = `
+    <div class="nutri-intro">Viser le national sans commencer par le local : quatre trajectoires réalistes pour entrer en politique par la <b>compétence</b> plutôt que par le terrain. Départ L1 Droit &amp; Science po, horizon 30-35 ans, introversion assumée.</div>
+
+    <div class="nutri-foods-title">Les quatre voies</div>
+    <div class="nutri-intro" style="margin-bottom:12px">Le pourcentage indique la compatibilité de chaque voie avec ton tempérament (d'après ton test).</div>
+    ${voies.map(v=>`
+      <div class="nutri-card" style="border-left:3px solid ${v.col}">
+        <div class="nutri-head"><span class="nutri-time" style="color:${v.col}">${v.nom}</span><span class="pol-pct" style="color:${v.col}">${v.pct}%</span><span class="pol-tag">${v.tag}</span></div>
+        <div class="pol-bar" style="margin:2px 0 8px"><div class="pol-bar-fill" style="width:${v.pct}%;background:${v.col}"></div></div>
+        ${v.steps.map((s,i)=>`<div class="pol-step"><span class="pol-step-age" style="color:${v.col}">${stage[i]}</span><span>${s}</span></div>`).join('')}
+      </div>`).join('')}
+    <div class="nutri-intro" style="margin-top:4px">Ces voies ne sont pas étanches : la plupart des trajectoires combinent noble + conseiller, ou expert + appareil. La feuille de route sert à décider où concentrer ton énergie dans les 24 prochains mois.</div>
+
+    <div class="nutri-foods-title">Les chiffres clés</div>
+    ${stats.map(s=>`<div class="nutri-card"><div class="nutri-head"><span class="nutri-time">${s.n}</span><span class="pol-tag">${s.l}</span></div><div class="nutri-why">${s.d}</div><div class="pol-src">${s.src}</div></div>`).join('')}
+    <div class="nutri-intro" style="margin-top:4px">Lecture : la surreprésentation des diplômés est la règle (cadres 52-91 % à l'Assemblée contre ~18 % dans la population active). Ta L1 Droit + Science po n'est pas un luxe, c'est le ticket d'entrée minimal.</div>
+
+    <div class="nutri-foods-title">À faire maintenant</div>
+    <div class="nutri-card">
+      ${checklist.map(c=>`<div class="pol-step"><span class="pol-check">▢</span><span>${c}</span></div>`).join('')}
+    </div>
+    <div class="nutri-intro" style="margin-top:4px">Sources : Assemblée nationale, Sénat, CEVIPOF, QuiNousReprésente, Recto Versoi (2015-2024). Modèle : Big Five / OCEAN. Outil de réflexion, pas un verdict.</div>
+  `;
+}
 function setGuideMode(mode){
   document.querySelectorAll('#guide-mode-tabs .mode-tab').forEach(b=>
     b.classList.toggle('active', b.dataset.gmode === mode));
@@ -5761,6 +5854,8 @@ function setGuideMode(mode){
   document.getElementById('youth-section').style.display = mode==='youth' ? '' : 'none';
   const nutri = document.getElementById('nutrition-section');
   if(nutri) nutri.style.display = mode==='nutrition' ? '' : 'none';
+  const polit = document.getElementById('politique-section');
+  if(polit) polit.style.display = mode==='politique' ? '' : 'none';
   if(mode==='pillars'){
     document.getElementById('guide-title').innerHTML = 'Six <em>piliers</em>';
     document.getElementById('guide-sub').textContent = 'Le fond de connaissances. Déplie chaque pilier pour les détails.';
@@ -5768,6 +5863,10 @@ function setGuideMode(mode){
     document.getElementById('guide-title').innerHTML = 'Manger <em>correctement</em>';
     document.getElementById('guide-sub').textContent = 'Quoi manger, à quel moment de la journée, et pourquoi.';
     renderNutrition();
+  } else if(mode==='politique'){
+    document.getElementById('guide-title').innerHTML = 'Devenir <em>politicien</em>';
+    document.getElementById('guide-sub').textContent = 'Viser le national par la compétence. Feuille de route 19 → 35 ans.';
+    renderPolitique();
   } else {
     document.getElementById('guide-title').innerHTML = 'Profite d\'avoir <em>20 ans</em>';
     document.getElementById('guide-sub').textContent = '9 choses que le temps rend irremplaçables. Coche ce que tu explores.';
@@ -6181,7 +6280,9 @@ function _schedOccursOn(slot, d){
   return false; // 'once' : pas de date stockée pour un créneau
 }
 function _canNotify(){
-  if(window.__TAURI__ && window.__TAURI__.notification) return true;
+  // Sous Tauri, on peut toujours notifier via la commande Rust (core.invoke),
+  // même si le global .notification n'est pas exposé.
+  if(window.__TAURI__ && (window.__TAURI__.core || window.__TAURI__.notification)) return true;
   return ('Notification' in window) && Notification.permission === 'granted';
 }
 function fireDueScheduleNotifs(now){
