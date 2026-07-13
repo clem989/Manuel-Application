@@ -35,7 +35,7 @@
     --safe-top:env(safe-area-inset-top,0px);
     --tabbar-h:68px;
     --app-header-h:108px;
-    --subbar-h:50px;
+    --subbar-h:25px;
   }
 
   /* Light mode override */
@@ -652,8 +652,10 @@
     position:fixed;left:0;right:0;bottom:calc(var(--tabbar-h) + var(--safe-bottom));
     z-index:97;max-width:680px;margin:0 auto;
     border-radius:0;border:none;border-top:1px solid var(--line);
-    background:var(--bg);padding:8px 16px;
+    background:var(--bg);padding:2px 16px;
   }
+  /* Barre de sous-onglets deux fois moins haute (mobile uniquement). */
+  .view-inner > .sub-tabs .sub-tab{padding:3px 12px;font-size:11px}
   .view:has(> .view-inner > .sub-tabs){
     padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h));
   }
@@ -1391,7 +1393,8 @@
   .book-item.expanded .book-detail{display:block}
   /* ── ÉTAGÈRES (À lire / Terminés) — dos de livres + couvertures à plat, planche bois ── */
   .shelf-row{position:relative;margin:0 0 24px;padding-top:16px}
-  .shelf{display:flex;align-items:flex-end;gap:6px;min-height:150px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
+  .shelf{display:flex;align-items:flex-end;gap:6px;min-height:150px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none;
+    background:linear-gradient(180deg,transparent 82%,#150C04 82%)}
   .shelf::-webkit-scrollbar{display:none}
   .shelf-row::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;
     background:linear-gradient(180deg,#4A2F14,#2A1A08);border-radius:0 0 6px 6px;box-shadow:0 4px 8px rgba(0,0,0,.5)}
@@ -1408,7 +1411,8 @@
   .tome-author{font-size:7px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#F1E8D8;opacity:.9;text-shadow:0 1px 2px rgba(0,0,0,.5)}
   .tome-coll{position:absolute;top:-14px;left:0;font-size:8px;letter-spacing:.06em;text-transform:uppercase;
     font-weight:700;color:var(--ink-soft);white-space:nowrap}
-  .flatshelf{display:flex;align-items:flex-end;gap:12px;min-height:160px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
+  .flatshelf{display:flex;align-items:flex-end;gap:12px;min-height:160px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none;
+    background:linear-gradient(180deg,transparent 82%,#150C04 82%)}
   .flatshelf::-webkit-scrollbar{display:none}
   .flat{width:84px;flex:0 0 auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
   .flat-cover{width:82px;height:114px;border-radius:4px 9px 9px 4px;position:relative;
@@ -1893,15 +1897,6 @@
 
       <!-- Citations -->
       <div class="sub-view" data-sub="lect-quotes" style="display:none">
-        <div class="note-form-card">
-          <textarea id="quote-text" placeholder="« La citation qui te frappe... »"></textarea>
-          <hr class="note-form-sep">
-          <input type="text" id="quote-source" class="note-title-input" placeholder="Auteur / source (optionnel)">
-        </div>
-        <div class="input-row" style="margin-top:8px">
-          <div id="quote-type-host"></div>
-          <button class="btn btn-primary btn-sm" id="quote-add" style="flex:1">Ajouter</button>
-        </div>
         <div class="freq-filter" id="quote-filter">
           <button class="freq-btn active" data-filter="all">Toutes</button>
           <button class="freq-btn" data-filter="livre">📖 Livre</button>
@@ -1913,60 +1908,21 @@
 
       <!-- Latin -->
       <div class="sub-view" data-sub="lect-latin" style="display:none">
-        <div class="note-form-card">
-          <textarea id="latin-text" placeholder="Alea jacta est..."></textarea>
-          <hr class="note-form-sep">
-          <input type="text" id="latin-trad" class="note-title-input" placeholder="Traduction (optionnel)">
-        </div>
-        <div class="input-row" style="margin-top:8px">
-          <input type="text" id="latin-source" placeholder="Source / auteur (optionnel)">
-          <button class="btn btn-primary btn-sm" id="latin-add">Ajouter</button>
-        </div>
         <div id="latin-list"></div>
       </div>
 
       <!-- Alexandrins -->
       <div class="sub-view" data-sub="lect-alex" style="display:none">
-        <div class="note-form-card">
-          <textarea id="alex-text" placeholder="Ton alexandrin (12 syllabes)... le compteur t'aide en dessous"></textarea>
-          <hr class="note-form-sep">
-          <input type="text" id="alex-source" class="note-title-input" placeholder="Auteur (toi ou un autre)">
-        </div>
-        <div class="input-row" style="margin-top:8px;align-items:center">
-          <span id="alex-count" style="font-size:12px;color:var(--muted);flex:1">≈ 0 syllabe</span>
-          <button class="btn btn-primary btn-sm" id="alex-add">Ajouter</button>
-        </div>
         <div id="alex-list"></div>
       </div>
 
       <!-- À retenir -->
       <div class="sub-view" data-sub="lect-keep" style="display:none">
-        <div class="input-row">
-          <input type="text" id="keep-text" placeholder="Un fait, une idée, un mot à retenir...">
-          <button class="btn btn-primary btn-sm" id="keep-add">+</button>
-        </div>
         <div id="keep-list"></div>
       </div>
 
       <!-- Notes -->
       <div class="sub-view" data-sub="notes-list">
-        <div class="note-form-card">
-          <input type="text" id="note-title" class="note-title-input" placeholder="Titre (optionnel)">
-          <hr class="note-form-sep">
-          <textarea id="note-text" placeholder="Une idée, une réflexion, un truc à retenir..."></textarea>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:8px 0 16px">
-          <select id="note-cat" class="btn btn-sm" style="flex:1;max-width:200px">
-            <option value="course">🛒 Course</option>
-            <option value="projets">🚀 Projets</option>
-            <option value="autobio">📔 Autobiographie</option>
-            <option value="politique">🏛️ Politique</option>
-            <option value="site">🌐 Site Internet</option>
-            <option value="moi">💭 Pour Moi</option>
-            <option value="autre" selected>📦 Autre</option>
-          </select>
-          <button class="btn btn-primary btn-sm" id="note-add">Ajouter la note</button>
-        </div>
         <div class="freq-filter" id="note-filter">
           <button class="freq-btn active" data-filter="all">Tout</button>
           <button class="freq-btn" data-filter="course">Course</button>
@@ -2014,6 +1970,7 @@
 
       <!-- Terminés -->
       <div class="sub-view" data-sub="lect-done" style="display:none">
+        <div class="freq-filter" id="genre-filter-done"></div>
         <div class="input-row" style="justify-content:flex-end">
           <select id="done-year-filter" class="btn btn-sm" style="display:none"></select>
         </div>
@@ -2255,6 +2212,74 @@
             <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
             <button class="btn btn-primary btn-sm" id="book-add" style="flex-shrink:0;white-space:nowrap">Ajouter</button>
           </div>
+        </div>
+      </div>
+
+      <!-- Notes (contexte Carnet) -->
+      <div class="sub-view" data-msub="notes" style="display:none">
+        <div class="note-form-card">
+          <input type="text" id="note-title" class="note-title-input" placeholder="Titre (optionnel)">
+          <hr class="note-form-sep">
+          <textarea id="note-text" placeholder="Une idée, une réflexion, un truc à retenir..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin-top:8px">
+          <select id="note-cat" class="btn btn-sm" style="flex:1;max-width:200px">
+            <option value="course">🛒 Course</option>
+            <option value="projets">🚀 Projets</option>
+            <option value="autobio">📔 Autobiographie</option>
+            <option value="politique">🏛️ Politique</option>
+            <option value="site">🌐 Site Internet</option>
+            <option value="moi">💭 Pour Moi</option>
+            <option value="autre" selected>📦 Autre</option>
+          </select>
+          <button class="btn btn-primary btn-sm" id="note-add">Ajouter la note</button>
+        </div>
+      </div>
+
+      <!-- Citations (contexte Carnet) -->
+      <div class="sub-view" data-msub="quotes" style="display:none">
+        <div class="note-form-card">
+          <textarea id="quote-text" placeholder="« La citation qui te frappe... »"></textarea>
+          <hr class="note-form-sep">
+          <input type="text" id="quote-source" class="note-title-input" placeholder="Auteur / source (optionnel)">
+        </div>
+        <div class="input-row" style="margin-top:8px">
+          <div id="quote-type-host"></div>
+          <button class="btn btn-primary btn-sm" id="quote-add" style="flex:1">Ajouter</button>
+        </div>
+      </div>
+
+      <!-- Latin (contexte Carnet) -->
+      <div class="sub-view" data-msub="latin" style="display:none">
+        <div class="note-form-card">
+          <textarea id="latin-text" placeholder="Alea jacta est..."></textarea>
+          <hr class="note-form-sep">
+          <input type="text" id="latin-trad" class="note-title-input" placeholder="Traduction (optionnel)">
+        </div>
+        <div class="input-row" style="margin-top:8px">
+          <input type="text" id="latin-source" placeholder="Source / auteur (optionnel)">
+          <button class="btn btn-primary btn-sm" id="latin-add">Ajouter</button>
+        </div>
+      </div>
+
+      <!-- Alexandrins (contexte Carnet) -->
+      <div class="sub-view" data-msub="alex" style="display:none">
+        <div class="note-form-card">
+          <textarea id="alex-text" placeholder="Ton alexandrin (12 syllabes)... le compteur t'aide en dessous"></textarea>
+          <hr class="note-form-sep">
+          <input type="text" id="alex-source" class="note-title-input" placeholder="Auteur (toi ou un autre)">
+        </div>
+        <div class="input-row" style="margin-top:8px;align-items:center">
+          <span id="alex-count" style="font-size:12px;color:var(--muted);flex:1">≈ 0 syllabe</span>
+          <button class="btn btn-primary btn-sm" id="alex-add">Ajouter</button>
+        </div>
+      </div>
+
+      <!-- À retenir (contexte Carnet) -->
+      <div class="sub-view" data-msub="keep" style="display:none">
+        <div class="input-row">
+          <input type="text" id="keep-text" placeholder="Un fait, une idée, un mot à retenir...">
+          <button class="btn btn-primary btn-sm" id="keep-add">+</button>
         </div>
       </div>
     </div>
@@ -3027,6 +3052,46 @@ tabs.forEach(t=>{
 });
 
 /* ═══════════════════════════════════════════════
+   SWIPE (mobile) : glisser à gauche ou à droite sur une page change de sous-onglet ;
+   une fois à la première/dernière position des sous-onglets (ou s'il n'y en a pas),
+   ça change d'onglet principal. Ignore les zones à scroll horizontal, les champs de
+   saisie et les modales — pour ne pas interférer avec leurs propres gestes.
+═══════════════════════════════════════════════ */
+(function initSwipeNav(){
+  const IGNORE_SEL = '.sub-tabs, .hfrise, .shelf, .flatshelf, .book-shelf-grid, input, textarea, select, '
+    + '.habit-overlay, .note-full-overlay, .add-cat-overlay, .tabbar, .fab';
+  let startX = 0, startY = 0, tracking = false;
+  document.addEventListener('touchstart', e=>{
+    if(e.touches.length !== 1 || e.target.closest(IGNORE_SEL)){ tracking = false; return; }
+    startX = e.touches[0].clientX; startY = e.touches[0].clientY;
+    tracking = true;
+  }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    if(!tracking) return;
+    tracking = false;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - startX, dy = t.clientY - startY;
+    if(Math.abs(dx) < 60 || Math.abs(dx) < Math.abs(dy) * 1.5) return;
+    swipeStep(dx < 0 ? 1 : -1); // glisse vers la gauche = avance (dir 1)
+  }, {passive:true});
+
+  function swipeStep(dir){
+    const activeView = document.querySelector('.view.active');
+    if(!activeView) return;
+    const subBtns = [...activeView.querySelectorAll('.view-inner > .sub-tabs > .sub-tab')];
+    if(subBtns.length){
+      const curIdx = subBtns.findIndex(b=>b.classList.contains('active'));
+      const nextIdx = curIdx + dir;
+      if(nextIdx >= 0 && nextIdx < subBtns.length){ subBtns[nextIdx].click(); return; }
+    }
+    const tabArr = [...tabs];
+    const curTabIdx = tabArr.findIndex(t=>t.dataset.view === currentView);
+    const nextTabIdx = curTabIdx + dir;
+    if(nextTabIdx >= 0 && nextTabIdx < tabArr.length) tabArr[nextTabIdx].click();
+  }
+})();
+
+/* ═══════════════════════════════════════════════
    BOUTON + FLOTTANT (Accueil / Lecture / Carnet)
    Accueil et Lecture : ouvre le panneau condensé #mgmt-modal (tâches/habitudes/
    rappels/emploi du temps, ou ajout livre), qui réutilise tel quel les formulaires
@@ -3069,9 +3134,21 @@ function mgmtShowSub(sub){
 document.querySelectorAll('#mgmt-home-tabs .sub-tab').forEach(b=>{
   b.addEventListener('click', ()=>mgmtShowSub(b.dataset.msub));
 });
+const CARNET_MSUB_MAP = {
+  'notes-list':'notes', 'lect-quotes':'quotes', 'lect-latin':'latin',
+  'lect-alex':'alex', 'lect-keep':'keep'
+};
+const CARNET_MSUB_TITLES = {
+  notes:'Ajouter une note', quotes:'Ajouter une citation', latin:'Ajouter du latin',
+  alex:'Ajouter un alexandrin', keep:'Ajouter à retenir'
+};
+const CARNET_MSUB_FOCUS = {
+  notes:'note-title', quotes:'quote-text', latin:'latin-text', alex:'alex-text', keep:'keep-text'
+};
 function openMgmt(context){
   const modal = document.getElementById('mgmt-modal');
   const tabsRow = document.getElementById('mgmt-home-tabs');
+  let focusId = null;
   if(context === 'home'){
     document.getElementById('mgmt-eyebrow').textContent = 'Accueil';
     document.getElementById('mgmt-title').textContent = 'Tâches & habitudes';
@@ -3082,9 +3159,19 @@ function openMgmt(context){
     document.getElementById('mgmt-title').textContent = 'Ajouter un livre';
     tabsRow.style.display = 'none';
     document.querySelectorAll('#mgmt-body > .sub-view').forEach(v=>{ v.style.display = (v.dataset.msub==='book') ? 'block' : 'none'; });
+    focusId = 'book-title';
+  } else if(context === 'carnet'){
+    const activeSub = document.querySelector('.view[data-view="notes"] .sub-tab.active');
+    const sub = activeSub ? activeSub.dataset.sub : 'notes-list';
+    const msub = CARNET_MSUB_MAP[sub] || 'notes';
+    document.getElementById('mgmt-eyebrow').textContent = 'Carnet';
+    document.getElementById('mgmt-title').textContent = CARNET_MSUB_TITLES[msub];
+    tabsRow.style.display = 'none';
+    document.querySelectorAll('#mgmt-body > .sub-view').forEach(v=>{ v.style.display = (v.dataset.msub===msub) ? 'block' : 'none'; });
+    focusId = CARNET_MSUB_FOCUS[msub];
   }
   modal.style.display = 'flex';
-  if(context === 'book') setTimeout(()=>{ try{ document.getElementById('book-title').focus(); }catch(e){} }, 200);
+  if(focusId) setTimeout(()=>{ try{ document.getElementById(focusId).focus(); }catch(e){} }, 200);
 }
 function closeMgmt(){ document.getElementById('mgmt-modal').style.display = 'none'; }
 document.getElementById('mgmt-close').addEventListener('click', closeMgmt);
@@ -3093,15 +3180,7 @@ document.getElementById('mgmt-modal').addEventListener('click', e=>{ if(e.target
 document.getElementById('fab-add').addEventListener('click', ()=>{
   if(currentView === 'home'){ openMgmt('home'); return; }
   if(currentView === 'books'){ openMgmt('book'); return; }
-  if(currentView === 'notes'){
-    const activeSub = document.querySelector('.view[data-view="notes"] .sub-tab.active');
-    const sub = activeSub ? activeSub.dataset.sub : 'notes-list';
-    const targets = {
-      'notes-list':'note-title', 'lect-quotes':'quote-text', 'lect-latin':'latin-text',
-      'lect-alex':'alex-text', 'lect-keep':'keep-text'
-    };
-    focusField(targets[sub] || 'note-title');
-  }
+  if(currentView === 'notes'){ openMgmt('carnet'); return; }
 });
 
 /* ═══════════════════════════════════════════════
@@ -5957,7 +6036,7 @@ function renderBookShelf(hostId, list, opts={}){
       }).join('') + `</div></div>`;
     }
     host.innerHTML = html;
-    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>cycleBookStatus(+el.dataset.bidx, renderBooks)));
+    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
   }
 }
 function surnameOf(author){
@@ -6010,31 +6089,35 @@ document.addEventListener('keydown', e=>{
 document.getElementById('done-year-filter').addEventListener('change', renderBooks);
 
 /* ─── FILTRE + SELECT GENRES LIVRES DYNAMIQUES ─── */
+// Trieur par genre — présent à la fois sur "À lire" et "Terminés" (trieurs toujours
+// visibles), les deux instances pilotent le même état global `genreFilter`.
+const GENRE_FILTER_IDS = ['genre-filter', 'genre-filter-done'];
 function rebuildGenreFilter(){
-  const wrap = document.getElementById('genre-filter');
-  if(!wrap) return;
-  const customs = getCustomCats('books');
-  let html = '<button class="freq-btn" data-filter="all">Tous</button>';
-  for(const [key,label] of Object.entries(BOOK_GENRES)){
-    html += `<button class="freq-btn" data-filter="${key}">${label}</button>`;
-  }
-  for(const c of customs){
-    html += `<button class="freq-btn" data-filter="${c.id}" style="--cc:${c.color}">${escapeHtml(c.label)}</button>`;
-  }
-  html += '<button class="cat-add-btn" id="genre-cat-add" title="Nouveau genre">+</button>';
-  wrap.innerHTML = html;
-  wrap.querySelectorAll('.freq-btn').forEach(b=>{
-    b.classList.toggle('active', b.dataset.filter === genreFilter);
-    b.addEventListener('click', ()=>{
-      wrap.querySelectorAll('.freq-btn').forEach(x=>x.classList.remove('active'));
-      b.classList.add('active');
-      genreFilter = b.dataset.filter;
-      renderBooks();
+  GENRE_FILTER_IDS.forEach(id=>{
+    const wrap = document.getElementById(id);
+    if(!wrap) return;
+    const customs = getCustomCats('books');
+    let html = '<button class="freq-btn" data-filter="all">Tous</button>';
+    for(const [key,label] of Object.entries(BOOK_GENRES)){
+      html += `<button class="freq-btn" data-filter="${key}">${label}</button>`;
+    }
+    for(const c of customs){
+      html += `<button class="freq-btn" data-filter="${c.id}" style="--cc:${c.color}">${escapeHtml(c.label)}</button>`;
+    }
+    html += '<button class="cat-add-btn" title="Nouveau genre">+</button>';
+    wrap.innerHTML = html;
+    wrap.querySelectorAll('.freq-btn').forEach(b=>{
+      b.classList.toggle('active', b.dataset.filter === genreFilter);
+      b.addEventListener('click', ()=>{
+        genreFilter = b.dataset.filter;
+        rebuildGenreFilter();
+        renderBooks();
+      });
     });
-  });
-  if(!wrap.querySelector('.freq-btn.active')) wrap.querySelector('[data-filter="all"]')?.classList.add('active');
-  document.getElementById('genre-cat-add')?.addEventListener('click', ()=>{
-    openAddCatModal('books', ()=>{ rebuildGenreFilter(); rebuildGenreSelect(); });
+    if(!wrap.querySelector('.freq-btn.active')) wrap.querySelector('[data-filter="all"]')?.classList.add('active');
+    wrap.querySelector('.cat-add-btn')?.addEventListener('click', ()=>{
+      openAddCatModal('books', ()=>{ rebuildGenreFilter(); rebuildGenreSelect(); });
+    });
   });
 }
 function rebuildGenreSelect(){
