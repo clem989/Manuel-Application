@@ -33,9 +33,9 @@
     --tabbar-bg:#0E0E10;
     --safe-bottom:env(safe-area-inset-bottom,0px);
     --safe-top:env(safe-area-inset-top,0px);
-    --tabbar-h:68px;
+    --tabbar-h:52px;
     --app-header-h:108px;
-    --subbar-h:25px;
+    --subbar-h:33px;
   }
 
   /* Light mode override */
@@ -474,16 +474,25 @@
   }
 
   /* ── COMPÉTENCES (Accueil → sous-onglet) ──── */
-  .skillweb{display:block;margin:6px auto 2px;max-width:300px;width:100%}
+  .skillweb{display:block;margin:6px auto 2px;max-width:320px;width:100%}
   .sk-base-note{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
   .sk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-  .sk-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}
-  .sk-card-icon{width:36px;height:36px;border-radius:10px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;background:color-mix(in srgb, var(--sk) 18%, transparent)}
+  .sk-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px 12px 12px 10px;display:flex;align-items:center;gap:11px;
+    box-shadow:0 1px 0 rgba(0,0,0,.03)}
+  /* Blason hexagonal derrière l'émoji, adapté de manuel-medieval.html (.skill-emb) dans le vocabulaire de l'app */
+  .sk-card-icon{width:42px;height:48px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:19px;
+    clip-path:polygon(50% 0,100% 12%,100% 72%,50% 100%,0 72%,0 12%);
+    background:linear-gradient(180deg,color-mix(in srgb, var(--sk) 55%, var(--surface) 45%),color-mix(in srgb, var(--sk) 16%, var(--surface) 84%));
+    border:1px solid color-mix(in srgb, var(--sk) 55%, var(--line) 45%);
+    box-shadow:inset 0 0 8px rgba(0,0,0,.22)}
   .sk-card-body{flex:1;min-width:0}
-  .sk-card-name{font-size:13px;font-weight:600;color:var(--ink)}
-  .sk-card-lvl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:1px}
-  .sk-card-bar{height:5px;background:var(--surface-3);border-radius:4px;overflow:hidden;margin-top:6px}
-  .sk-card-fill{height:100%;background:var(--sk)}
+  .sk-card-name{font-family:'Instrument Serif',serif;font-size:17px;line-height:1.15;color:var(--ink)}
+  .sk-card-domain{font-size:10px;color:var(--muted);font-style:italic;margin-top:1px}
+  .sk-card-lvl{display:flex;align-items:baseline;gap:5px;margin-top:5px}
+  .sk-card-lvl-num{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:700;color:var(--sk)}
+  .sk-card-lvl-xp{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted)}
+  .sk-card-bar{height:6px;background:var(--surface-3);border-radius:4px;overflow:hidden;margin-top:6px}
+  .sk-card-fill{height:100%;background:linear-gradient(90deg,var(--sk),color-mix(in srgb, var(--sk) 65%, white 25%))}
   .week-bars{
     display:grid;grid-template-columns:repeat(7,1fr);
     gap:8px;align-items:end;height:140px;margin-bottom:8px;
@@ -652,10 +661,10 @@
     position:fixed;left:0;right:0;bottom:calc(var(--tabbar-h) + var(--safe-bottom));
     z-index:97;max-width:680px;margin:0 auto;
     border-radius:0;border:none;border-top:1px solid var(--line);
-    background:var(--bg);padding:2px 16px;
+    background:var(--bg);padding:4px 16px;
   }
-  /* Barre de sous-onglets deux fois moins haute (mobile uniquement). */
-  .view-inner > .sub-tabs .sub-tab{padding:3px 12px;font-size:11px}
+  /* Barre de sous-onglets réduite (mobile uniquement), légèrement remontée. */
+  .view-inner > .sub-tabs .sub-tab{padding:5px 12px;font-size:11.5px}
   .view:has(> .view-inner > .sub-tabs){
     padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h));
   }
@@ -1292,9 +1301,9 @@
   /* ── BOUTON + FLOTTANT (Accueil / Lecture / Carnet) ─── */
   .fab{
     position:fixed;right:16px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h) + 18px);
-    width:54px;height:54px;border-radius:50%;
-    background:var(--accent);color:#fff;font-size:28px;line-height:1;
-    display:none;align-items:center;justify-content:center;padding-bottom:2px;
+    width:42px;height:42px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:21px;line-height:1;
+    display:none;align-items:center;justify-content:center;padding-bottom:1px;
     box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:96;
   }
   .fab.show{display:flex}
@@ -1308,9 +1317,9 @@
   .tab{
     flex:1;background:transparent;border:none;
     display:flex;flex-direction:column;align-items:center;justify-content:center;
-    gap:3px;cursor:pointer;
+    gap:2px;cursor:pointer;
     color:var(--muted);font-family:inherit;
-    transition:color .2s;padding:8px 4px;
+    transition:color .2s;padding:3px 4px;
   }
   .tab svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
   .tab.active{color:var(--accent)}
@@ -1391,39 +1400,91 @@
   }
   .book-detail{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
   .book-item.expanded .book-detail{display:block}
+  /* ── LUTRIN (livre en cours) — grosse couverture + pourcentage, façon manuel-medieval.html
+     mais dans le vocabulaire visuel original (jamais ses polices/couleurs) ── */
+  .lectern-panel{
+    background:var(--surface);border:1px solid var(--line);border-radius:14px;
+    padding:16px;position:relative;margin-bottom:14px;
+  }
+  .lectern-panel::before{
+    content:"";position:absolute;inset:5px;border:1px solid var(--line);border-radius:10px;
+    pointer-events:none;opacity:.6;
+  }
+  .lectern{display:flex;gap:14px;align-items:stretch;position:relative;z-index:1}
+  .lectern-cover{
+    width:96px;min-height:150px;flex:0 0 auto;border-radius:4px 10px 10px 4px;position:relative;
+    box-shadow:inset 6px 0 10px rgba(0,0,0,.35),inset -3px 0 6px rgba(255,255,255,.08),3px 3px 10px rgba(0,0,0,.3);
+    border:1px solid rgba(0,0,0,.4);
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;
+    padding:12px 8px;text-align:center;
+  }
+  .lectern-cover::before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb, var(--gold) 70%, transparent);border-radius:3px 8px 8px 3px}
+  /* Ligne de reliure verticale près du bord gauche, comme la couverture de manuel-medieval.html */
+  .lectern-cover::after{content:"";position:absolute;top:0;bottom:0;left:9px;width:2px;background:rgba(0,0,0,.4)}
+  .lectern-cover-title{font-family:'Instrument Serif',serif;font-size:14px;line-height:1.2;color:#F7F1E6;text-shadow:0 1px 3px rgba(0,0,0,.5);position:relative;z-index:1}
+  .lectern-cover-orn{font-size:13px;color:color-mix(in srgb, var(--gold) 75%, white 25%);position:relative;z-index:1}
+  .lectern-cover-author{font-size:9px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#F1E8D8;position:relative;z-index:1}
+  .lectern-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center}
+  .lectern-eyebrow{font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .lectern-title{font-family:'Instrument Serif',serif;font-size:20px;line-height:1.2;color:var(--ink);margin-top:2px}
+  .lectern-author{font-size:13px;color:var(--ink-soft);margin-top:2px}
+  .lectern-coll{font-size:10px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+  .lectern-pct-row{display:flex;align-items:center;gap:8px;margin-top:10px}
+  .lectern-pct-rail{flex:1;height:8px;background:var(--surface-2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .lectern-pct-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));transition:width .4s}
+  .lectern-pct-num{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--ink)}
+  .lectern-actions{display:flex;gap:8px;margin-top:10px}
+  /* Fiche de lecture (En cours) : même cadre décoratif que le lutrin, léger espace
+     entre les deux (margin-bottom du lutrin ci-dessus). */
+  .book-item.fiche-panel{position:relative;padding:20px 18px}
+  .book-item.fiche-panel::before{
+    content:"";position:absolute;inset:5px;border:1px solid var(--line);border-radius:8px;
+    pointer-events:none;opacity:.6;
+  }
+  .book-item.fiche-panel .swipe-content{position:relative;z-index:1}
   /* ── ÉTAGÈRES (À lire / Terminés) — dos de livres + couvertures à plat, planche bois ── */
-  .shelf-row{position:relative;margin:0 0 24px;padding-top:16px}
-  .shelf{display:flex;align-items:flex-end;gap:6px;min-height:150px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none;
-    background:linear-gradient(180deg,transparent 82%,#150C04 82%)}
+  .shelf-row{position:relative;margin:0 0 24px;padding-top:16px;padding-bottom:12px}
+  .shelf{display:flex;align-items:flex-end;gap:6px;min-height:175px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
   .shelf::-webkit-scrollbar{display:none}
-  .shelf-row::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;
+  .shelf-row::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;z-index:0;
     background:linear-gradient(180deg,#4A2F14,#2A1A08);border-radius:0 0 6px 6px;box-shadow:0 4px 8px rgba(0,0,0,.5)}
-  .tome{width:42px;border-radius:4px 4px 0 0;position:relative;flex:0 0 auto;cursor:pointer;
+  .tome{width:44px;border-radius:4px 4px 0 0;position:relative;flex:0 0 auto;cursor:pointer;
     border:1px solid rgba(0,0,0,.35);border-bottom:none;
     box-shadow:inset 3px 0 6px rgba(255,255,255,.08),inset -4px 0 8px rgba(0,0,0,.35);
-    display:flex;flex-direction:column;align-items:center;padding:9px 2px 7px;overflow:hidden}
-  .tome::before,.tome::after{content:"";position:absolute;left:4px;right:4px;height:2px;background:rgba(255,255,255,.28)}
-  .tome::before{top:5px}.tome::after{bottom:4px}
-  .tome-title{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%}
+    display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:10px 2px 8px}
+  .tome::before,.tome::after{content:"";position:absolute;left:4px;right:4px;height:2px;background:color-mix(in srgb, var(--gold) 75%, white 25%);z-index:2}
+  .tome::before{top:6px}.tome::after{bottom:5px}
+  /* Bandes de reliure (cordes de couture d'un dos de livre ancien) */
+  .tome-bands{position:absolute;left:1px;right:1px;top:30%;bottom:30%;z-index:1;pointer-events:none;
+    background:repeating-linear-gradient(180deg,
+      rgba(0,0,0,.32) 0,rgba(0,0,0,.32) 2px,
+      rgba(255,255,255,.14) 2px,rgba(255,255,255,.14) 3px,
+      transparent 3px,transparent 22px);}
+  .tome-title{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%;max-height:130px;position:relative;z-index:2}
   .tome-title span{writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap;
     font-family:'Instrument Serif',serif;font-size:12px;color:#F7F1E6;text-shadow:0 1px 2px rgba(0,0,0,.55);
     max-height:100%;overflow:hidden;text-overflow:ellipsis}
-  .tome-author{font-size:7px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#F1E8D8;opacity:.9;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+  .tome-author{flex:0 0 auto;font-size:7px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#F1E8D8;opacity:.9;text-shadow:0 1px 2px rgba(0,0,0,.5);position:relative;z-index:2}
   .tome-coll{position:absolute;top:-14px;left:0;font-size:8px;letter-spacing:.06em;text-transform:uppercase;
     font-weight:700;color:var(--ink-soft);white-space:nowrap}
-  .flatshelf{display:flex;align-items:flex-end;gap:12px;min-height:160px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none;
-    background:linear-gradient(180deg,transparent 82%,#150C04 82%)}
+  .flatshelf{display:flex;align-items:flex-end;gap:12px;min-height:185px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
   .flatshelf::-webkit-scrollbar{display:none}
-  .flat{width:84px;flex:0 0 auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
-  .flat-cover{width:82px;height:114px;border-radius:4px 9px 9px 4px;position:relative;
+  .flat{width:84px;flex:0 0 auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;position:relative}
+  .flat-cover{width:88px;height:136px;border-radius:4px 9px 9px 4px;position:relative;
     border:1px solid rgba(0,0,0,.4);box-shadow:inset 5px 0 8px rgba(0,0,0,.35),3px 3px 10px rgba(0,0,0,.3);
-    display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:8px 6px;text-align:center}
-  .flat-cover::before{content:"";position:absolute;inset:4px;border:1px solid rgba(255,255,255,.28);border-radius:2px 6px 6px 2px}
-  .flat-title{font-family:'Instrument Serif',serif;font-size:11.5px;line-height:1.16;color:#F7F1E6;
-    text-shadow:0 1px 3px rgba(0,0,0,.55);position:relative;z-index:1;
-    display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+    display:flex;flex-direction:column;align-items:center;padding:9px 6px 8px;text-align:center}
+  .flat-cover::before{content:"";position:absolute;inset:4px;border:1px solid color-mix(in srgb, var(--gold) 70%, transparent);border-radius:2px 6px 6px 2px}
+  .flat-cover::after{content:"";position:absolute;top:0;bottom:0;left:8px;width:2px;background:rgba(0,0,0,.35)}
+  .flat-title{flex:1;display:flex;align-items:center;justify-content:center;width:100%;
+    font-family:'Instrument Serif',serif;font-size:11.5px;line-height:1.2;color:#F7F1E6;
+    text-shadow:0 1px 3px rgba(0,0,0,.55);position:relative;z-index:1;overflow:hidden}
+  .flat-orn{font-size:11px;color:color-mix(in srgb, var(--gold) 75%, white 25%);position:relative;z-index:1}
   .flat-author{font-size:7px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#F1E8D8;position:relative;z-index:1}
-  .flat-date{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  /* La date "posée sur l'étagère" : ancrée au bas de .flat, dans la zone de la planche. */
+  /* La date, posée comme une petite plaque au ras de la couverture (contre la planche),
+     plutôt qu'un texte flottant au-dessus du livre. */
+  .flat-date{margin-top:3px;font-size:8px;color:#E8D8B8;background:rgba(0,0,0,.28);
+    padding:1px 7px;border-radius:3px;font-family:'JetBrains Mono',monospace;line-height:1.4}
   .flat-coll{position:absolute;top:-14px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:.06em;
     text-transform:uppercase;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .book-detail h6{
@@ -1439,8 +1500,8 @@
   .book-field.bf-grow{overflow:hidden;line-height:1.45}
   .book-field::placeholder{color:var(--muted)}
   /* En-tête de fiche + cadenas */
-  .book-fiche-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
-  .book-fiche-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .book-fiche-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+  .book-fiche-title{font-family:'Instrument Serif',serif;font-size:20px;font-weight:400;color:var(--ink)}
   .book-lock{
     background:var(--surface-2);border:1px solid var(--line);border-radius:8px;
     width:32px;height:32px;font-size:15px;cursor:pointer;line-height:1;
@@ -1772,7 +1833,7 @@
       <div class="sub-view" data-sub="skills" style="display:none">
         <div class="week-chart" style="text-align:center">
           <h4>Toile des compétences</h4>
-          <svg class="skillweb" id="skillweb" viewBox="0 0 300 270"></svg>
+          <svg class="skillweb" id="skillweb" viewBox="0 0 320 320"></svg>
           <div class="sk-base-note" id="sk-base-note"></div>
         </div>
         <div class="sk-grid" id="skills-grid"></div>
@@ -1972,6 +2033,7 @@
       <div class="sub-view" data-sub="lect-done" style="display:none">
         <div class="freq-filter" id="genre-filter-done"></div>
         <div class="input-row" style="justify-content:flex-end">
+          <select id="done-coll-filter" class="btn btn-sm" style="display:none"></select>
           <select id="done-year-filter" class="btn btn-sm" style="display:none"></select>
         </div>
         <div id="books-done"></div>
@@ -2711,21 +2773,31 @@ const checks = [
   {id:"protein", text:"Petit-déj protéiné", note:"œufs, yaourt, fromage blanc"},
   {id:"move", text:"30 min de mouvement", note:"marche, sport, vélo"},
   {id:"recall", text:"1 session de révision active", note:"questions/réponses"},
-  {id:"screen", text:"Pas d'écran 1h avant le coucher", note:"papier, conversation"},
-  {id:"bed", text:"Au lit avant 23h", note:"même heure que la veille"}
+  {id:"bed", text:"Au lit avant 23h", note:"même heure que la veille"},
+  // Une habitude par compétence, directement affiliée (§ compétences) — non supprimables
+  // comme les précédentes, mais modifiables (texte/détail/horaire/fréquence/icône/compétences).
+  {id:"sk_intel",   text:"Lire 1 heure minimum", note:""},
+  {id:"sk_volonte", text:"Se lever tôt, 8h30", note:""},
+  {id:"sk_force",   text:"Étirements tous les jours", note:"S'étirer chaque jour pour améliorer la mobilité et la récupération"},
+  {id:"sk_prosper", text:"Avancer sur mes projets", note:""},
+  {id:"sk_social",  text:"Prendre des nouvelles d'un proche", note:""},
+  {id:"sk_sagesse", text:"20 minutes d'introspection ou de méditation", note:"Écrire dans mon autobiographie"}
 ];
+// Compétence "cœur" de chaque habitude préenregistrée dédiée — sert au calcul de déclin
+// (2 périodes ratées de suite, selon la fréquence propre de CETTE habitude).
+const SKILL_CORE_HABIT = {intel:'sk_intel', volonte:'sk_volonte', force:'sk_force', prosper:'sk_prosper', social:'sk_social', sagesse:'sk_sagesse'};
 
 /* ═══════════════════════════════════════════════
    COMPÉTENCES — Force / Intelligence / Volonté / Sagesse / Social / Prospérité
    (logique portée depuis manuel-proto.html, habillage entièrement original)
 ═══════════════════════════════════════════════ */
 const SKILLS = [
-  {id:'force',   name:'Force',        icon:'💪', color:'#A8475A'},
-  {id:'intel',   name:'Intelligence', icon:'🧠', color:'#5B8DB8'},
-  {id:'volonte', name:'Volonté',      icon:'🔥', color:'#C7913A'},
-  {id:'sagesse', name:'Sagesse',      icon:'🦉', color:'#4F6B4E'},
-  {id:'social',  name:'Social',       icon:'🤝', color:'#7B6FB8'},
-  {id:'prosper', name:'Prospérité',   icon:'👑', color:'#D4A45A'}
+  {id:'force',   name:'Force',        icon:'💪', color:'#A8475A', domain:'Santé, mouvement, sport'},
+  {id:'intel',   name:'Intelligence', icon:'🧠', color:'#5B8DB8', domain:'Apprentissage, créativité, curiosité'},
+  {id:'volonte', name:'Volonté',      icon:'🔥', color:'#C7913A', domain:'Motivation, discipline, concentration'},
+  {id:'sagesse', name:'Sagesse',      icon:'🦉', color:'#4F6B4E', domain:'Introspection, calme, gratitude'},
+  {id:'social',  name:'Social',       icon:'🤝', color:'#7B6FB8', domain:'Relations, amitié, famille'},
+  {id:'prosper', name:'Prospérité',   icon:'👑', color:'#D4A45A', domain:'Projets, finances, ambition'}
 ];
 const skillById = id => SKILLS.find(s=>s.id===id);
 const xpForLevel = lvl => 50 + (lvl-1)*20; // 50 XP au niveau 1, +20 XP requis par niveau
@@ -2752,14 +2824,24 @@ function loseSkillLevel(id){
   s.xp = 0;
   saveSkillsState(st);
 }
-// Déclin : une compétence dont aucune habitude liée n'a été cochée depuis 4 jours perd un niveau
-// (une seule fois par période manquée, pour ne pas punir plusieurs fois le même relâchement).
+// Déclin : si l'habitude "cœur" d'une compétence (§ compétences) est délaissée pendant
+// 2 périodes de suite selon SA PROPRE fréquence (quotidien → 2 j, hebdo → 2 sem.,
+// mensuel → 2 mois — ex. "je ne lis pas un livre tous les deux mois" → Intelligence perd
+// 1 niveau), la compétence perd 1 niveau (une seule fois par période manquée).
+function habitFreqSpanMs(freq){
+  if(freq === 'weekly') return 7*86400000;
+  if(freq === 'monthly') return 30*86400000;
+  return 86400000; // daily
+}
 function checkSkillDecay(){
   const last = STORE.get('manuel-skill-last', {});
   const lost = STORE.get('manuel-skill-decay', {});
   const now = Date.now();
-  const span = 4*86400000;
   SKILLS.forEach(s=>{
+    const coreId = SKILL_CORE_HABIT[s.id];
+    const coreHabit = coreId ? checks.find(c=>c.id===coreId) : null;
+    const freq = coreHabit ? enrichHabitMeta(coreHabit).freq : 'daily';
+    const span = 2 * habitFreqSpanMs(freq);
     const l = last[s.id] || STORE.get('manuel-birth', now);
     const missed = Math.floor((now-l)/span);
     if(now - l > span && lost[s.id] !== missed){
@@ -2772,19 +2854,43 @@ function checkSkillDecay(){
 if(STORE.get('manuel-birth', null) === null) STORE.set('manuel-birth', Date.now());
 
 // Habitudes par défaut (verrouillées : non supprimables, modifiables) → compétence liée + icône
-const DEFAULT_HABIT_SKILLS = { light:'sagesse', water:'force', protein:'force', move:'force', recall:'intel', screen:'volonte', bed:'volonte' };
-const DEFAULT_HABIT_ICONS  = { light:'☀️', water:'💧', protein:'🍳', move:'🏃', recall:'🧠', screen:'📵', bed:'🛌' };
+const DEFAULT_HABIT_SKILLS = { light:'sagesse', water:'force', protein:'force', move:'force', recall:'intel', bed:'volonte',
+  sk_intel:'intel', sk_volonte:'volonte', sk_force:'force', sk_prosper:'prosper', sk_social:'social', sk_sagesse:'sagesse' };
+const DEFAULT_HABIT_ICONS  = { light:'☀️', water:'💧', protein:'🍳', move:'🏃', recall:'🧠', bed:'🛌',
+  sk_intel:'📖', sk_volonte:'⏰', sk_force:'🧘', sk_prosper:'💼', sk_social:'📞', sk_sagesse:'🕯️' };
+const DEFAULT_HABIT_FREQ = { light:'daily', water:'daily', protein:'daily', move:'daily', recall:'daily', bed:'daily',
+  sk_intel:'daily', sk_volonte:'daily', sk_force:'daily', sk_prosper:'daily', sk_social:'daily', sk_sagesse:'daily' };
+const LOCKED_HABIT_IDS = new Set(checks.map(c=>c.id));
+// Les habitudes préenregistrées sont modifiables (texte/détail/moment/fréquence/icône/
+// difficulté/compétences) sans être des enregistrements séparés : les changements sont
+// stockés comme un patch par-dessus la donnée de base, pour ne jamais toucher aux clés
+// utilisées par les stats (checks.forEach, checkState, etc. — voir plus bas).
+function getHabitOverride(id){ return (STORE.get('manuel-habit-overrides', {}))[id] || {}; }
+function setHabitOverride(id, patch){
+  const all = STORE.get('manuel-habit-overrides', {});
+  all[id] = Object.assign({}, all[id], patch);
+  STORE.set('manuel-habit-overrides', all);
+}
+function effectiveMomentOf(id){
+  const ov = getHabitOverride(id);
+  if(ov.moment) return ov.moment;
+  return habitMomentOf(id);
+}
 function enrichHabitMeta(h){
-  return Object.assign({}, h, {
-    icon: h.icon || DEFAULT_HABIT_ICONS[h.id] || '☑️',
-    diff: (h.diff!=null) ? h.diff : 10,
-    skills: Array.isArray(h.skills) ? h.skills : (DEFAULT_HABIT_SKILLS[h.id] ? [DEFAULT_HABIT_SKILLS[h.id]] : [])
+  const ov = LOCKED_HABIT_IDS.has(h.id) ? getHabitOverride(h.id) : {};
+  return Object.assign({}, h, ov, {
+    text: (ov.text !== undefined) ? ov.text : h.text,
+    note: (ov.note !== undefined) ? ov.note : h.note,
+    icon: ov.icon || h.icon || DEFAULT_HABIT_ICONS[h.id] || '☑️',
+    diff: (ov.diff != null) ? ov.diff : (h.diff != null ? h.diff : 10),
+    skills: Array.isArray(ov.skills) ? ov.skills : (Array.isArray(h.skills) ? h.skills : (DEFAULT_HABIT_SKILLS[h.id] ? [DEFAULT_HABIT_SKILLS[h.id]] : [])),
+    freq: ov.freq || h.freq || DEFAULT_HABIT_FREQ[h.id] || 'daily'
   });
 }
 
 // Icônes au choix (grille de 40, reprises de manuel-proto.html) + niveaux de difficulté
 // (le badge n'affiche jamais l'XP, seulement le terme — voir diffLabel()).
-const ICONS = ['📖','✏️','🏃','🧘','💧','🍳','🥗','🧹','💪','🎯','📚','🗓️','⏰','🧠','🔬','🎨','🎵','🧺','🛏️','🚿','💊','🌱','📞','💌','💼','💻','🧾','🏦','🎓','🧩','🚴','🏋️','🧑‍🍳','🪥','🕯️','🌙','☕','🧶','🛠️','🐾'];
+const ICONS = ['📖','✏️','🏃','🧘','💧','🍳','🥗','🧹','💪','🎯','📚','🗓️','⏰','🧠','🔬','🎨','🎵','📵','🛏️','🚿','💊','🌱','📞','💌','💼','💻','🧾','🏦','🎓','🧩','🚴','🏋️','🧑‍🍳','🇬🇧','🕯️','🌙','☕','🇫🇷','🛠️','🐾'];
 const DIFFS = [[2,'Très facile'],[5,'Facile'],[10,'Moyen'],[25,'Difficile'],[50,'Épique']];
 const diffLabel = v => (DIFFS.find(d=>d[0]===v) || DIFFS[2])[1];
 
@@ -2828,7 +2934,7 @@ let taskIconMsel=null, taskDiffMsel=null, habitIconMsel=null, habitDiffMsel=null
 function buildSkillsRow(hostId, getSel, setSel){
   const host = document.getElementById(hostId);
   if(!host) return;
-  host.innerHTML = SKILLS.map(s=>`<button type="button" class="freq-btn${getSel().includes(s.id)?' active':''}" data-sk="${s.id}" style="--cc:${s.color}">${s.icon} ${s.name}</button>`).join('');
+  host.innerHTML = SKILLS.map(s=>`<button type="button" class="freq-btn${getSel().includes(s.id)?' active':''}" data-sk="${s.id}" style="--cc:${s.color}" title="${escapeHtml(s.domain)}">${s.icon} ${s.name}</button>`).join('');
   host.querySelectorAll('[data-sk]').forEach(b=>{
     b.addEventListener('click', ()=>{
       const id = b.dataset.sk;
@@ -2887,7 +2993,7 @@ function renderSkillWeb(){
   const svg = document.getElementById('skillweb');
   if(!svg) return;
   const st = getSkillsState();
-  const cx=150, cy=140, R=100;
+  const cx=160, cy=150, R=90;
   const minL = Math.min(...SKILLS.map(s=>st[s.id].lvl));
   const base = minL; // toile relative : l'anneau 1 correspond au niveau le plus bas commun
   const rel = l => Math.max(0.35, Math.min(5, l-base+1));
@@ -2896,11 +3002,19 @@ function renderSkillWeb(){
   const spokes = pts.map(p=>`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="var(--line)" stroke-width="1"/>`).join('');
   const aura = `<polygon points="${pts.map(p=>{ const r=R*rel(st[p.s.id].lvl)/5; return `${cx+Math.cos(p.a)*r},${cy+Math.sin(p.a)*r}`; }).join(' ')}" fill="color-mix(in srgb, var(--accent) 18%, transparent)" stroke="var(--accent)" stroke-width="2"/>`;
   const nodes = pts.map(p=>{
-    const lx = cx+Math.cos(p.a)*(R+30), ly = cy+Math.sin(p.a)*(R+30);
+    // Place chaque étiquette en la poussant hors du centre plutôt qu'en la centrant sur le rayon :
+    // évite que le texte des nœuds diagonaux ne retombe sur l'icône voisine, et que les
+    // nœuds haut/bas ne sortent du viewBox.
+    const cosA = Math.cos(p.a), sinA = Math.sin(p.a);
+    let anchor='middle', nx=p.x, nameY, lvlY;
+    if(sinA < -0.6){ nameY = p.y-32; lvlY = p.y-18; }
+    else if(sinA > 0.6){ nameY = p.y+30; lvlY = p.y+44; }
+    else if(cosA > 0){ anchor='start'; nx = p.x+18; nameY = p.y-3; lvlY = p.y+12; }
+    else { anchor='end'; nx = p.x-18; nameY = p.y-3; lvlY = p.y+12; }
     return `<circle cx="${p.x}" cy="${p.y}" r="15" fill="var(--surface)" stroke="${p.s.color}" stroke-width="2"/>`+
       `<text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="13">${p.s.icon}</text>`+
-      `<text x="${lx}" y="${ly}" text-anchor="middle" font-family="Schibsted Grotesk" font-size="10.5" fill="var(--ink-soft)">${escapeHtml(p.s.name)}</text>`+
-      `<text x="${lx}" y="${ly+13}" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="var(--accent)">niv. ${st[p.s.id].lvl}</text>`;
+      `<text x="${nx}" y="${nameY}" text-anchor="${anchor}" font-family="Schibsted Grotesk" font-size="10.5" fill="var(--ink-soft)">${escapeHtml(p.s.name)}</text>`+
+      `<text x="${nx}" y="${lvlY}" text-anchor="${anchor}" font-family="JetBrains Mono" font-size="12" fill="var(--accent)">niv. ${st[p.s.id].lvl}</text>`;
   }).join('');
   svg.innerHTML = rings + spokes + aura + nodes;
   const note = document.getElementById('sk-base-note');
@@ -2918,6 +3032,7 @@ function renderSkillCards(){
       <div class="sk-card-icon">${s.icon}</div>
       <div class="sk-card-body">
         <div class="sk-card-name">${escapeHtml(s.name)}</div>
+        <div class="sk-card-domain">${escapeHtml(s.domain)}</div>
         <div class="sk-card-lvl">Niveau ${cur.lvl} · ${cur.xp}/${need} XP</div>
         <div class="sk-card-bar"><div class="sk-card-fill" style="width:${pct}%"></div></div>
       </div>
@@ -3058,8 +3173,13 @@ tabs.forEach(t=>{
    saisie et les modales — pour ne pas interférer avec leurs propres gestes.
 ═══════════════════════════════════════════════ */
 (function initSwipeNav(){
+  // Exclu du swipe global : tout ce qui a déjà son propre geste (tap/glisser) —
+  // livres (étagères + lutrin + fiche), journée (day-cal-block), tâches, et les
+  // bulles de notes/citations/latin/alexandrins/à-retenir (glisser = supprimer).
   const IGNORE_SEL = '.sub-tabs, .hfrise, .shelf, .flatshelf, .book-shelf-grid, input, textarea, select, '
-    + '.habit-overlay, .note-full-overlay, .add-cat-overlay, .tabbar, .fab';
+    + '.habit-overlay, .note-full-overlay, .add-cat-overlay, .tabbar, .fab, '
+    + '.book-item, .tome, .flat, .lectern, .day-cal-block, .day-calendar, '
+    + '.quest-card, .obj-item, .note-item, .quote-item, .reminder-item';
   let startX = 0, startY = 0, tracking = false;
   document.addEventListener('touchstart', e=>{
     if(e.touches.length !== 1 || e.target.closest(IGNORE_SEL)){ tracking = false; return; }
@@ -3788,13 +3908,14 @@ function renderUnifiedTasks(){
    OVERLAY HABITUDES — 1× par moment (matin/aprem/soir)
 ═══════════════════════════════════════════════ */
 const HABIT_MOMENTS = {
-  matin: {ids:['light','water','protein'], label:'Ce matin', title:'Bien démarrer la journée', range:[4,12]},
-  aprem: {ids:['move','recall'], label:'Cet après-midi', title:'Le corps et la mémoire', range:[12,18]},
-  soir:  {ids:['screen','bed'], label:'Ce soir', title:'Préparer la nuit', range:[18,28]}
+  matin: {ids:['light','water','protein','sk_intel','sk_volonte','sk_force'], label:'Ce matin', title:'Bien démarrer la journée', range:[4,12]},
+  aprem: {ids:['move','recall','sk_prosper'], label:'Cet après-midi', title:'Le corps et la mémoire', range:[12,18]},
+  soir:  {ids:['bed','sk_social','sk_sagesse'], label:'Ce soir', title:'Préparer la nuit', range:[18,28]}
 };
 const MOMENT_LABEL = {matin:'Matin', aprem:'Après-midi', soir:'Soir'};
 
-// Moment (matin/aprem/soir) d'une habitude par son id (intégrée ou personnalisée)
+// Moment (matin/aprem/soir) d'une habitude par son id (intégrée ou personnalisée) — le
+// moment "de base" ; un override utilisateur (déplacement) est appliqué par effectiveMomentOf().
 function habitMomentOf(id){
   for(const m of ['matin','aprem','soir']){ if(HABIT_MOMENTS[m].ids.includes(id)) return m; }
   const h = getCustomHabits().find(x=>x.id===id);
@@ -3803,9 +3924,8 @@ function habitMomentOf(id){
 
 function getCustomHabits(){ return STORE.get('manuel-custom-habits', []); }
 function habitsForMoment(moment){
-  const cfg = HABIT_MOMENTS[moment];
   return [
-    ...checks.filter(c => cfg.ids.includes(c.id)),
+    ...checks.filter(c => effectiveMomentOf(c.id) === moment),
     ...getCustomHabits().filter(h => h.moment === moment)
   ];
 }
@@ -4043,20 +4163,84 @@ function renderHabitsManager(){
     container.innerHTML += `<div class="empty-state"><div class="icon">☑️</div><div class="text">Ajoute tes propres habitudes — elles rejoindront l'overlay du moment choisi.</div></div>`;
   }
 
-  // Habitudes par défaut (lecture seule)
+  // Habitudes par défaut : non supprimables, mais modifiables (texte/détail/moment/
+  // fréquence/icône/difficulté/compétences) — le changement est stocké en override.
   const h1 = document.createElement('div');
   h1.style.cssText = 'font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:24px 0 8px;font-weight:600';
   h1.textContent = 'Habitudes par défaut';
   container.appendChild(h1);
-  Object.entries(HABIT_MOMENTS).forEach(([moment, cfg])=>{
-    checks.filter(c => cfg.ids.includes(c.id)).map(enrichHabitMeta).forEach(c=>{
-      const el = document.createElement('div');
-      el.className = 'reminder-item';
-      el.innerHTML = `
-        <div class="reminder-text">${questIconHtml(c)}${c.text}<small>${c.note} · ${MOMENT_LABEL[moment]}</small>${questMetaHtml(c)}</div>
+  checks.map(enrichHabitMeta).forEach(c=>{
+    const moment = effectiveMomentOf(c.id);
+    const el = document.createElement('div');
+    el.className = 'note-item';
+    el.innerHTML = `
+      <div class="note-content">
+        <div class="note-header">
+          <span class="note-item-title">${questIconHtml(c)}${escapeHtml(c.text)}</span>
+          <button class="btn btn-sm btn-ghost" data-act="edit" style="font-size:12px;padding:2px 8px">✏️</button>
+        </div>
+        ${c.note ? `<div class="note-text" style="font-size:12px">${escapeHtml(c.note)}</div>` : ''}
+        <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;align-items:center">
+          <span class="note-cat-badge ${moment==='matin'?'hm-matin':moment==='aprem'?'hm-aprem':'hm-soir'}">${MOMENT_LABEL[moment]}</span>
+          <span class="freq-badge ${c.freq}">${getFreqLabel(c.freq)}</span>
+          ${questMetaHtml(c)}
+        </div>
+      </div>
+    `;
+    el.querySelector('[data-act="edit"]').addEventListener('click', ()=>{
+      const content = el.querySelector('.note-content');
+      content.innerHTML = `
+        <input class="note-edit-title" value="${escapeHtml(c.text)}" placeholder="Habitude">
+        <hr class="note-form-sep" style="margin:6px 0">
+        <input class="note-edit-title" data-f="note" style="font-weight:400;font-size:13px" value="${escapeHtml(c.note||'')}" placeholder="Détail (optionnel)">
+        <div class="input-row" style="margin-top:8px">
+          <div id="ledit-icon-host" style="flex:1;min-width:0"></div>
+          <div id="ledit-diff-host" style="flex:1;min-width:0"></div>
+        </div>
+        <div class="freq-filter" id="ledit-skills-row" style="margin-top:8px"></div>
+        <div class="input-row" style="margin-top:8px">
+          <select class="btn btn-sm" data-f="moment" style="flex:1">
+            <option value="matin"${moment==='matin'?' selected':''}>🌅 Matin</option>
+            <option value="aprem"${moment==='aprem'?' selected':''}>☀️ Après-midi</option>
+            <option value="soir"${moment==='soir'?' selected':''}>🌙 Soir</option>
+          </select>
+          <select class="btn btn-sm" data-f="freq" style="flex:1">
+            <option value="daily"${c.freq==='daily'?' selected':''}>Quotidien</option>
+            <option value="weekly"${c.freq==='weekly'?' selected':''}>Hebdo</option>
+            <option value="monthly"${c.freq==='monthly'?' selected':''}>Mensuel</option>
+          </select>
+        </div>
+        <div class="note-edit-actions">
+          <button class="btn btn-sm btn-ghost" data-act="cancel">Annuler</button>
+          <button class="btn btn-sm btn-primary" data-act="save">Sauvegarder</button>
+        </div>
       `;
-      container.appendChild(el);
+      let editIcon = c.icon, editDiff = (c.diff!=null ? c.diff : 10), editSkills = Array.isArray(c.skills) ? c.skills.slice() : [];
+      content.querySelector('#ledit-icon-host').appendChild(
+        makeMsel({options:ICONS.map(ic=>({value:ic,label:ic})), value:editIcon, onChange:v=>editIcon=v, placeholder:'Icône'})
+      );
+      content.querySelector('#ledit-diff-host').appendChild(
+        makeMsel({options:DIFFS.map(d=>({value:String(d[0]),label:d[1]})), value:String(editDiff), onChange:v=>editDiff=parseInt(v,10), placeholder:'Difficulté'})
+      );
+      buildSkillsRow('ledit-skills-row', ()=>editSkills, v=>editSkills=v);
+      content.querySelector('[data-act="cancel"]').addEventListener('click', renderHabitsManager);
+      content.querySelector('[data-act="save"]').addEventListener('click', ()=>{
+        const text = content.querySelector('.note-edit-title').value.trim();
+        if(!text) return;
+        setHabitOverride(c.id, {
+          text,
+          note: content.querySelector('[data-f="note"]').value.trim(),
+          moment: content.querySelector('[data-f="moment"]').value,
+          freq: content.querySelector('[data-f="freq"]').value,
+          icon: editIcon,
+          diff: editDiff,
+          skills: editSkills
+        });
+        renderHabitsManager();
+        renderUnifiedTasks();
+      });
     });
+    container.appendChild(el);
   });
 }
 document.getElementById('habit-add').addEventListener('click', ()=>{
@@ -4072,6 +4256,7 @@ document.getElementById('habit-add').addEventListener('click', ()=>{
     icon: habitFormIcon,
     diff: habitFormDiff,
     skills: habitFormSkills.slice(),
+    freq: 'daily',
     createdAt: Date.now()
   });
   STORE.set('manuel-custom-habits', arr);
@@ -5733,6 +5918,7 @@ const BOOK_BADGE = {todo:'À lire', reading:'En cours', done:'Terminé ✓'};
 const BOOK_EMPTY = {todo:'aucun livre à lire', reading:'aucun livre en cours', done:'aucun livre terminé'};
 const BOOK_GENRES = {roman:'Roman', essai:'Essai', politique:'Politique', droit:'Droit', histoire:'Histoire', philo:'Philosophie', bio:'Biographie', autre:'Autre'};
 let genreFilter = 'all';
+let doneCollFilter = 'all';
 
 function bookFieldsHtml(b){
   const ideas  = b.ideas  || ['','',''];
@@ -5759,6 +5945,51 @@ function bookFieldsHtml(b){
   `;
 }
 
+// Lutrin du livre en cours (façon manuel-medieval.html) : grosse couverture colorée avec
+// titre/auteur centrés, barre de pourcentage + boutons -5%/+5% — dans le vocabulaire visuel
+// original (jamais les polices/couleurs médiévales). Toujours séparé de la fiche de lecture.
+function renderLecternHtml(b){
+  const c = bookDisplayColor(b);
+  const pct = b.pct || 0;
+  return `
+    <div class="lectern-panel">
+      <div class="lectern">
+        <div class="lectern-cover" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
+          <div class="lectern-cover-title">${escapeHtml(b.title)}</div>
+          <div class="lectern-cover-orn">❦</div>
+          <div class="lectern-cover-author">${escapeHtml(b.author||'auteur inconnu')}</div>
+        </div>
+        <div class="lectern-info">
+          <div class="lectern-eyebrow">Ouvrage en cours</div>
+          <div class="lectern-title">${escapeHtml(b.title)}</div>
+          <div class="lectern-author">${escapeHtml(b.author||'auteur inconnu')}${b.coll?` · <span class="lectern-coll">${escapeHtml(b.coll)}</span>`:''}</div>
+          <div class="lectern-pct-row">
+            <div class="lectern-pct-rail"><div class="lectern-pct-fill" style="width:${pct}%"></div></div>
+            <span class="lectern-pct-num">${pct}%</span>
+          </div>
+          <div class="lectern-actions">
+            <button class="btn btn-sm" data-adv="-5">−5%</button>
+            <button class="btn btn-sm" data-adv="5">+5%</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+function wireLectern(el, b){
+  el.querySelectorAll('[data-adv]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const all = STORE.get('manuel-books', []);
+      const bk = all[b.idx];
+      if(!bk) return;
+      bk.pct = Math.max(0, Math.min(100, (bk.pct||0) + parseInt(btn.dataset.adv)));
+      if(bk.pct === 100){ bk.status = 'done'; if(!bk.finishedAt) bk.finishedAt = Date.now(); }
+      STORE.set('manuel-books', all);
+      renderStats();
+      renderBooks();
+    });
+  });
+}
 function renderBooks(){
   const books = STORE.get('manuel-books', []);
   const sections = {todo:[], reading:[], done:[]};
@@ -5766,6 +5997,28 @@ function renderBooks(){
     if(genreFilter !== 'all' && (b.genre||'autre') !== genreFilter) return;
     sections[b.status||'todo'].push({...b,idx});
   });
+
+  // Sélecteur de collection (livres terminés) — à gauche du sélecteur d'année.
+  const collSel = document.getElementById('done-coll-filter');
+  const doneColls = [...new Set(sections.done.map(b=>b.coll).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+  if(collSel){
+    if(doneColls.length >= 1){
+      const prevColl = doneColls.includes(collSel.value) ? collSel.value : 'all';
+      collSel.innerHTML = `<option value="all">Toutes les collections</option>` +
+        doneColls.map(c=>`<option value="${escapeHtml(c)}">📚 ${escapeHtml(c)}</option>`).join('');
+      collSel.value = prevColl;
+      (collSel._msel || collSel).style.display = '';
+    } else {
+      collSel.innerHTML = '<option value="all">Toutes les collections</option>';
+      collSel.value = 'all';
+      (collSel._msel || collSel).style.display = 'none';
+    }
+    syncUpgradedSelect('done-coll-filter');
+  }
+  doneCollFilter = (collSel && collSel.value) ? collSel.value : 'all';
+  if(doneCollFilter !== 'all'){
+    sections.done = sections.done.filter(b => b.coll === doneCollFilter);
+  }
 
   // Sélecteur d'année (livres terminés)
   const yearSel = document.getElementById('done-year-filter');
@@ -5783,27 +6036,35 @@ function renderBooks(){
           return `<option value="${y}">${y}\u00a0(${n}\u00a0livre${n>1?'s':''})</option>`;
         }).join('');
       yearSel.value = prev;
-      yearSel.style.display = '';
+      (yearSel._msel || yearSel).style.display = '';
     } else {
       yearSel.innerHTML = '<option value="all">Toutes</option>';
       yearSel.value = 'all';
-      yearSel.style.display = 'none';
+      (yearSel._msel || yearSel).style.display = 'none';
     }
+    syncUpgradedSelect('done-year-filter');
   }
   const yearFilter = (yearSel && yearSel.value) ? yearSel.value : 'all';
   if(yearFilter !== 'all'){
     sections.done = sections.done.filter(b => b.finishedAt && new Date(b.finishedAt).getFullYear() === +yearFilter);
   }
 
-  // "En cours" garde la carte originale (book-item + fiche bookFieldsHtml), mais toujours
-  // dépliée, sans lien séparé — le livre et sa fiche complète sont visibles l'un sous l'autre.
+  // "En cours" : lutrin (grosse couverture + pourcentage) séparé de la fiche de lecture —
+  // deux blocs distincts l'un sous l'autre, comme dans manuel-medieval.html.
   const readingContainer = document.getElementById('books-reading');
   readingContainer.innerHTML = '';
   document.getElementById('count-reading').textContent = sections.reading.length;
   if(sections.reading.length===0){
     readingContainer.innerHTML = `<div class="empty-state" style="padding:16px 8px"><div class="text" style="font-size:12px">Pas encore de lecture — ${BOOK_EMPTY.reading}.</div></div>`;
   } else {
-    sections.reading.forEach(b=>readingContainer.appendChild(buildBookCard(b, 'reading', {forceExpanded:true})));
+    sections.reading.forEach(b=>{
+      const wrap = document.createElement('div');
+      wrap.innerHTML = renderLecternHtml(b);
+      const lecternEl = wrap.firstElementChild;
+      readingContainer.appendChild(lecternEl);
+      wireLectern(lecternEl, b);
+      readingContainer.appendChild(buildBookCard(b, 'reading', {forceExpanded:true, hideHeader:true}));
+    });
   }
 
   // "À lire" et "Terminés" : étagères (grille de couvertures colorées) — tap pour ouvrir
@@ -5836,7 +6097,7 @@ function cycleBookStatus(idx, cb){
 // forceExpanded=true : pas de lien "Fiche & notes" séparé, tout est visible d'emblée.
 function buildBookCard(b, status, opts={}){
   const el = document.createElement('div');
-  el.className = `book-item ${status}` + (opts.forceExpanded ? ' expanded' : '');
+  el.className = `book-item ${status}` + (opts.forceExpanded ? ' expanded' : '') + (opts.hideHeader ? ' fiche-panel' : '');
 
   let starsHtml = '';
   if(status==='done'){
@@ -5852,9 +6113,9 @@ function buildBookCard(b, status, opts={}){
   const expandHint = opts.forceExpanded ? '' :
     `<div class="book-expand-hint" data-act="expand">📓 Fiche de lecture ${filled>0 ? `· ${filled}/7 rempli${filled>1?'s':''}` : ''} <span data-arrow>▾</span></div>`;
 
-  el.style.position = 'relative';
-  el.innerHTML = `
-    <div class="swipe-content">
+  // hideHeader : le titre/auteur/statut vivent déjà dans le lutrin au-dessus (En cours) —
+  // la carte ne montre alors que la fiche de lecture elle-même.
+  const headerHtml = opts.hideHeader ? '' : `
       <div class="book-header">
         <div style="min-width:0;flex:1">
           <div class="book-title">${escapeHtml(b.title)}</div>
@@ -5865,7 +6126,11 @@ function buildBookCard(b, status, opts={}){
           <span class="book-status-badge ${status}" data-act="status-cycle">${BOOK_BADGE[status]}</span>
           ${finishedSmall}
         </div>
-      </div>
+      </div>`;
+  el.style.position = 'relative';
+  el.innerHTML = `
+    <div class="swipe-content">
+      ${headerHtml}
       ${starsHtml}
       ${expandHint}
       ${bookFieldsHtml(b)}
@@ -5951,7 +6216,7 @@ function buildBookCard(b, status, opts={}){
   });
 
   // Badge cliquable — cycle todo → reading → done → todo
-  el.querySelector('[data-act="status-cycle"]').addEventListener('click', e=>{
+  el.querySelector('[data-act="status-cycle"]')?.addEventListener('click', e=>{
     e.stopPropagation();
     cycleBookStatus(b.idx, ()=>{ if(opts.onChange) opts.onChange(); else renderBooks(); });
   });
@@ -6012,8 +6277,8 @@ function renderBookShelf(hostId, list, opts={}){
         return `<div class="flat" data-bidx="${b.idx}">
           ${collLabel ? `<span class="flat-coll">📚 ${escapeHtml(collLabel)}</span>` : ''}
           <div class="flat-cover" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
-            <span></span>
             <div class="flat-title">${escapeHtml(b.title)}</div>
+            <div class="flat-orn">❦</div>
             <div class="flat-author">${escapeHtml(b.author||'auteur inconnu')}</div>
           </div>
           ${dateStr ? `<div class="flat-date">${dateStr}</div>` : ''}
@@ -6028,15 +6293,16 @@ function renderBookShelf(hostId, list, opts={}){
       const chunk = list.slice(i, i+per);
       html += `<div class="shelf-row"><div class="shelf">` + chunk.map(b=>{
         const c = bookDisplayColor(b);
-        const h = 118 + ([...b.title].reduce((x,ch)=>x+ch.charCodeAt(0),0) % 26);
+        const h = 142 + ([...b.title].reduce((x,ch)=>x+ch.charCodeAt(0),0) % 30);
         return `<div class="tome" data-bidx="${b.idx}" style="height:${h}px;background:linear-gradient(90deg,color-mix(in srgb,${c} 80%,#000),${c} 45%,color-mix(in srgb,${c} 85%,#fff 10%))">
+          <div class="tome-bands"></div>
           <div class="tome-title"><span>${escapeHtml(b.title)}</span></div>
           <div class="tome-author">${escapeHtml(surnameOf(b.author))}</div>
         </div>`;
       }).join('') + `</div></div>`;
     }
     host.innerHTML = html;
-    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
+    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openStatusChooser(+el.dataset.bidx)));
   }
 }
 function surnameOf(author){
@@ -6048,6 +6314,50 @@ function surnameOf(author){
 
 // Fenêtre de fiche complète, ouverte depuis une étagère (réutilise le chrome de
 // .note-full-overlay et la carte/bookFieldsHtml — jamais de style différent).
+// Petit choix de statut (À lire) : tap sur un dos de livre ne propose QUE de changer
+// son état — pas la fiche complète (ça, c'est réservé au tap sur "Terminés").
+function openStatusChooser(idx){
+  let modal = document.getElementById('status-chooser-modal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'status-chooser-modal';
+    modal.className = 'habit-overlay';
+    modal.style.display = 'none';
+    modal.innerHTML = `<div class="habit-sheet slide-up">
+      <div class="habit-sheet-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+        <div><div class="eyebrow">Changer le statut</div><h2 id="sc-title">—</h2></div>
+        <button class="note-full-close" id="sc-close" aria-label="Fermer">✕</button>
+      </div>
+      <div class="input-row" id="sc-status-row" style="margin-top:4px">
+        <button class="btn btn-sm" data-st="todo" style="flex:1">📚 À lire</button>
+        <button class="btn btn-sm" data-st="reading" style="flex:1">📖 En cours</button>
+        <button class="btn btn-sm" data-st="done" style="flex:1">✓ Terminé</button>
+      </div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e=>{ if(e.target===modal) modal.style.display='none'; });
+    modal.querySelector('#sc-close').addEventListener('click', ()=>{ modal.style.display='none'; });
+  }
+  const all = STORE.get('manuel-books', []);
+  const b = all[idx];
+  if(!b) return;
+  modal.querySelector('#sc-title').textContent = b.title;
+  modal.querySelectorAll('[data-st]').forEach(btn=>{
+    btn.classList.toggle('btn-primary', btn.dataset.st === (b.status||'todo'));
+    btn.onclick = ()=>{
+      const all2 = STORE.get('manuel-books', []);
+      const bk = all2[idx];
+      if(!bk) return;
+      bk.status = btn.dataset.st;
+      if(btn.dataset.st === 'done' && !bk.finishedAt) bk.finishedAt = Date.now();
+      STORE.set('manuel-books', all2);
+      renderStats();
+      renderBooks();
+      modal.style.display = 'none';
+    };
+  });
+  modal.style.display = 'flex';
+}
 function openBookModal(idx){
   let modal = document.getElementById('book-shelf-modal');
   if(!modal){
@@ -6087,6 +6397,7 @@ document.addEventListener('keydown', e=>{
 });
 
 document.getElementById('done-year-filter').addEventListener('change', renderBooks);
+document.getElementById('done-coll-filter').addEventListener('change', renderBooks);
 
 /* ─── FILTRE + SELECT GENRES LIVRES DYNAMIQUES ─── */
 // Trieur par genre — présent à la fois sur "À lire" et "Terminés" (trieurs toujours
@@ -7306,6 +7617,8 @@ function init(){
   renderNotes();
   initBookColorPicker();
   renderBooks();
+  upgradeSelect('done-coll-filter');
+  upgradeSelect('done-year-filter');
   renderQuotes();
   renderLatin();
   renderAlex();
