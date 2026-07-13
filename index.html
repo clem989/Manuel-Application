@@ -34,6 +34,7 @@
     --safe-bottom:env(safe-area-inset-bottom,0px);
     --safe-top:env(safe-area-inset-top,0px);
     --tabbar-h:68px;
+    --app-header-h:108px;
   }
 
   /* Light mode override */
@@ -105,13 +106,13 @@
   /* ── APP SHELL ───────────────────────────── */
   #app{
     position:fixed;inset:0;
-    padding-top:var(--safe-top);
+    padding-top:0;
     padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom));
     overflow:hidden;
   }
   .view{
     position:absolute;inset:0;
-    padding-top:var(--safe-top);
+    padding-top:var(--app-header-h);
     padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom));
     overflow-y:auto;
     overflow-x:hidden;
@@ -119,6 +120,29 @@
     opacity:0;visibility:hidden;
     transition:opacity .25s ease, visibility .25s;
   }
+
+  /* ── EN-TÊTE PERSISTANT (visible sur tous les onglets) ────── */
+  #app-header{
+    position:fixed;top:0;left:0;right:0;z-index:95;
+    padding:calc(var(--safe-top) + 10px) 16px 10px;
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .ah-row{display:flex;align-items:flex-start;gap:11px}
+  .ah-crest{
+    width:34px;height:34px;border-radius:10px;flex:0 0 auto;margin-top:1px;
+    background:var(--accent);color:#FAF5E8;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;
+  }
+  .ah-mid{flex:1;min-width:0}
+  .ah-date{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
+  .ah-greet{font-family:'Instrument Serif',serif;font-weight:400;font-size:19px;line-height:1.2;color:var(--ink)}
+  .ah-greet em{color:var(--accent);font-style:italic}
+  .ah-sub{font-size:12px;color:var(--ink-soft);margin-top:1px;font-style:italic}
+  .ah-actions{display:flex;gap:7px;flex:0 0 auto;margin-top:1px}
+  .ah-gauge{margin-top:9px;height:5px;background:var(--surface-2);border-radius:4px;overflow:hidden}
+  .ah-gauge-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));transition:width .4s}
   .view.active{opacity:1;visibility:visible}
   .view::-webkit-scrollbar{width:0;display:none}
   .view-inner{padding:20px 20px 40px;max-width:680px;margin:0 auto;overflow-x:hidden}
@@ -349,6 +373,12 @@
   .task-reminder-row{gap:8px;margin-top:8px;flex-wrap:wrap}
   .task-reminder-row select,.task-reminder-row input[type="number"],.task-reminder-row input[type="time"]{flex:1;min-width:80px}
   .rem-badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;color:var(--sage);font-family:'JetBrains Mono',monospace;margin-top:2px;font-weight:600}
+  /* ── Icône / difficulté / compétences (tâches & habitudes) ─── */
+  .quest-icon{font-size:15px;margin-right:6px;vertical-align:-2px;display:inline-block}
+  .quest-meta{display:inline-flex;flex-wrap:wrap;gap:4px;margin-top:5px}
+  .diff-chip{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:8px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
+  .sk-badge{font-size:9.5px;font-weight:700;letter-spacing:.02em;padding:2px 7px;border-radius:8px;white-space:nowrap;
+    background:color-mix(in srgb, var(--sk) 16%, transparent);color:var(--sk);border:1px solid color-mix(in srgb, var(--sk) 45%, transparent)}
   .check-items{list-style:none}
   .check-item{
     display:flex;align-items:center;gap:12px;
@@ -425,6 +455,18 @@
     font-family:'Instrument Serif',serif;
     font-size:18px;font-weight:400;margin-bottom:18px;
   }
+
+  /* ── COMPÉTENCES (Accueil → sous-onglet) ──── */
+  .skillweb{display:block;margin:6px auto 2px;max-width:300px;width:100%}
+  .sk-base-note{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
+  .sk-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+  .sk-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:12px;display:flex;align-items:center;gap:10px}
+  .sk-card-icon{width:36px;height:36px;border-radius:10px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;font-size:17px;background:color-mix(in srgb, var(--sk) 18%, transparent)}
+  .sk-card-body{flex:1;min-width:0}
+  .sk-card-name{font-size:13px;font-weight:600;color:var(--ink)}
+  .sk-card-lvl{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted);margin-top:1px}
+  .sk-card-bar{height:5px;background:var(--surface-3);border-radius:4px;overflow:hidden;margin-top:6px}
+  .sk-card-fill{height:100%;background:var(--sk)}
   .week-bars{
     display:grid;grid-template-columns:repeat(7,1fr);
     gap:8px;align-items:end;height:140px;margin-bottom:8px;
@@ -1213,6 +1255,16 @@
   }
   /* Bandeau opaque sous la tabbar, couvrant la zone des boutons système
      du téléphone. Même couleur que la tabbar pour une continuité parfaite. */
+  /* ── BOUTON + FLOTTANT (Accueil / Lecture / Carnet) ─── */
+  .fab{
+    position:fixed;right:16px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + 18px);
+    width:54px;height:54px;border-radius:50%;
+    background:var(--accent);color:#fff;font-size:28px;line-height:1;
+    display:none;align-items:center;justify-content:center;padding-bottom:2px;
+    box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:96;
+  }
+  .fab.show{display:flex}
+  .fab:active{transform:scale(.94)}
   .nav-bottom-fill{
     position:fixed;bottom:0;left:0;right:0;
     height:var(--safe-bottom);
@@ -1305,6 +1357,17 @@
   }
   .book-detail{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
   .book-item.expanded .book-detail{display:block}
+  /* ── ÉTAGÈRES (À lire / Terminés) — grille de couvertures colorées ── */
+  .book-shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-bottom:6px}
+  .book-tile{border-radius:12px;border:1px solid var(--line);padding:12px 10px;min-height:118px;
+    display:flex;flex-direction:column;justify-content:flex-end;gap:3px;cursor:pointer;
+    position:relative;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.18)}
+  .book-tile-coll{align-self:flex-start;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;
+    font-weight:700;color:#fff;background:rgba(0,0,0,.32);padding:2px 7px;border-radius:8px;margin-bottom:auto}
+  .book-tile-title{font-family:'Instrument Serif',serif;font-size:14px;line-height:1.18;color:#fff;
+    text-shadow:0 1px 3px rgba(0,0,0,.5);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .book-tile-author{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.88)}
+  .book-tile-date{font-size:9px;color:rgba(255,255,255,.75);font-family:'JetBrains Mono',monospace;margin-top:1px}
   .book-detail h6{
     font-size:10px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--muted);margin:10px 0 6px;font-weight:600;
@@ -1393,7 +1456,7 @@
   .day-calendar{display:flex;flex-direction:column;gap:10px;margin-top:8px;margin-bottom:8px}
   .day-cal-empty{color:var(--muted);font-size:13px;padding:24px 12px;text-align:center}
   .day-cal-block{display:flex;background:var(--surface-2);border:1px solid var(--line);border-left:4px solid var(--block-color);border-radius:12px;overflow:hidden}
-  .day-cal-block.now{box-shadow:0 6px 18px color-mix(in srgb, var(--block-color) 30%, transparent);border-left-width:6px;background:color-mix(in srgb, var(--block-color) 16%, var(--surface-2));transform:scale(1.02);position:relative;z-index:2}
+  .day-cal-block.now{box-shadow:0 6px 18px color-mix(in srgb, var(--block-color) 30%, transparent);border-left-width:6px;background:color-mix(in srgb, var(--block-color) 16%, var(--surface-2));transform:scale(1.03);margin:-6px 0;position:relative;z-index:2}
   .day-cal-block.now .dcb-time{font-size:13px}
   .day-cal-block.now .dcb-title{font-size:16px}
   .day-cal-block.now .dcb-body{padding:14px 14px}
@@ -1434,15 +1497,29 @@
   <div class="splash-sub">Routine personnelle</div>
 </div>
 
-<!-- ═══ FLOATING ACTIONS ═══ -->
-<div class="float-actions">
-  <button class="float-btn" id="quicknote-btn" aria-label="Note rapide">
-    <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
-  </button>
-  <button class="float-btn" id="pillars-btn" aria-label="Accès aux six piliers">
-    <svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V9M9 20V9M15 20V9M20 20V9M2 9l10-6 10 6z"/></svg>
-  </button>
-</div>
+<!-- ═══ EN-TÊTE PERSISTANT (visible sur tous les onglets) ═══ -->
+<header id="app-header">
+  <div class="ah-row">
+    <div class="ah-crest">M</div>
+    <div class="ah-mid">
+      <div class="ah-date" id="today-date">—</div>
+      <h1 class="ah-greet"><span id="greet-word">Bonjour</span> <em id="greet-name">Clément</em></h1>
+      <p class="ah-sub" id="greet-sub">—</p>
+    </div>
+    <div class="ah-actions">
+      <button class="float-btn" id="quicknote-btn" aria-label="Note rapide">
+        <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>
+      </button>
+      <button class="float-btn" id="pillars-btn" aria-label="Accès aux six piliers">
+        <svg viewBox="0 0 24 24"><path d="M2 20h20M4 20V9M9 20V9M15 20V9M20 20V9M2 9l10-6 10 6z"/></svg>
+      </button>
+      <button class="float-btn" id="settings-open" aria-label="Réglages">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="ah-gauge"><div class="ah-gauge-fill" id="header-gauge-fill"></div></div>
+</header>
 
 <!-- ═══ HABIT OVERLAY (s'affiche à l'ouverture, 1×/moment) ═══ -->
 <div id="habit-overlay" class="habit-overlay" style="display:none">
@@ -1573,13 +1650,11 @@
   <!-- ═════ HOME ═════ -->
   <section class="view active" data-view="home">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow" id="today-date">—</div>
-        <h1><span id="greet-word">Bonjour</span> <em id="greet-name">Clément</em></h1>
-        <p class="sub" id="greet-sub">—</p>
-        <p id="sleep-alert" style="display:none;margin-top:8px;font-family:'Instrument Serif',serif;font-size:22px;line-height:1.25;color:var(--accent)">Il est très très tard, va dormir bordel !!!</p>
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="today">📅 Aujourd'hui</button>
+        <button class="sub-tab" data-sub="skills">⚔️ Compétences</button>
       </div>
-
+      <div class="sub-view" data-sub="today">
       <!-- NOW CARD -->
       <div class="now-card slide-up" id="now-card">
         <div class="now-meta">
@@ -1632,6 +1707,17 @@
         </div>
         <div class="check-bar"><div class="check-fill" id="unified-fill"></div></div>
         <ul class="check-items" id="unified-list"></ul>
+      </div>
+      </div>
+
+      <!-- COMPÉTENCES -->
+      <div class="sub-view" data-sub="skills" style="display:none">
+        <div class="week-chart" style="text-align:center">
+          <h4>Toile des compétences</h4>
+          <svg class="skillweb" id="skillweb" viewBox="0 0 300 270"></svg>
+          <div class="sk-base-note" id="sk-base-note"></div>
+        </div>
+        <div class="sk-grid" id="skills-grid"></div>
       </div>
     </div>
   </section>
@@ -1696,11 +1782,6 @@
           </label>
         </div>
       </div>
-
-      <button class="btn" id="settings-open" style="width:100%;margin-top:8px;margin-bottom:16px;display:flex;align-items:center;justify-content:center;gap:8px">
-        <svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
-        Paramètres
-      </button>
 
     </div>
   </section>
@@ -1804,6 +1885,11 @@
           <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
         </div>
         <div class="input-row" style="margin-top:8px">
+          <div id="habit-icon-host" style="flex:1;min-width:0"></div>
+          <div id="habit-diff-host" style="flex:1;min-width:0"></div>
+        </div>
+        <div class="freq-filter" id="habit-skills-row" style="margin-top:8px"></div>
+        <div class="input-row" style="margin-top:8px">
           <select id="habit-moment" class="btn btn-sm" style="flex:1">
             <option value="matin">🌅 Matin</option>
             <option value="aprem">☀️ Après-midi</option>
@@ -1872,6 +1958,11 @@
           </select>
           <input type="time" id="task-rem-time" value="09:00">
         </div>
+        <div class="input-row" style="margin-top:8px">
+          <div id="task-icon-host" style="flex:1;min-width:0"></div>
+          <div id="task-diff-host" style="flex:1;min-width:0"></div>
+        </div>
+        <div class="freq-filter" id="task-skills-row" style="margin-top:8px"></div>
         <div class="freq-filter" id="task-filter">
           <button class="freq-btn active" data-filter="all">Toutes</button>
           <button class="freq-btn" data-filter="daily">Quotidien</button>
@@ -1943,6 +2034,10 @@
             <div class="book-entry-sep"></div>
             <input type="text" id="book-author" placeholder="Auteur">
           </div>
+          <div class="input-row" style="margin-top:8px">
+            <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
+          </div>
+          <div class="sched-colors" id="book-color-row" style="margin-top:8px"></div>
           <div class="book-form-row">
             <div id="book-genre-host" style="flex:1;min-width:0"></div>
             <div id="book-init-status-host" style="flex:1;min-width:0"></div>
@@ -2089,19 +2184,19 @@
 <!-- ═══ TAB BAR ═══ -->
 <nav class="tabbar">
   <button class="tab active" data-view="home">
-    <svg viewBox="0 0 24 24"><path d="M3 12l9-9 9 9M5 10v10h14V10"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10.5V20h13v-9.5"/><path d="M10 20v-5h4v5"/></svg>
     <span>Aujourd'hui</span>
   </button>
   <button class="tab" data-view="pomo">
-    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M12 5v2"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="7.5"/><path d="M12 9.5V13l2.5 2"/><path d="M9.5 3h5"/></svg>
     <span>Focus</span>
   </button>
   <button class="tab" data-view="books">
-    <svg viewBox="0 0 24 24"><path d="M2 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H2zM22 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8z"/></svg>
+    <svg viewBox="0 0 24 24"><path d="M12 6.5C10.5 5 8.5 4.5 4 4.5v14c4.5 0 6.5.5 8 2 1.5-1.5 3.5-2 8-2v-14c-4.5 0-6.5.5-8 2z"/><path d="M12 6.5v14"/><path d="M6.5 8.5c1.8.1 3 .3 4 .8M6.5 12c1.8.1 3 .3 4 .8"/></svg>
     <span>Lecture</span>
   </button>
   <button class="tab" data-view="notes">
-    <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z M4 9h16 M9 4v16"/></svg>
+    <svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 3.5v17"/><path d="M12 8.5l6-1M12 12l6-1M12 15.5l4-.7"/></svg>
     <span>Carnet</span>
   </button>
   <button class="tab" data-view="stats">
@@ -2109,10 +2204,11 @@
     <span>Stats</span>
   </button>
   <button class="tab" data-view="guide">
-    <svg viewBox="0 0 24 24"><path d="M4 4h12a4 4 0 0 1 4 4v12H8a4 4 0 0 1-4-4V4z M4 16a4 4 0 0 1 4-4h12"/></svg>
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.3 8.7l-2.1 5-5 2.1 2.1-5z"/><path d="M12 3.5v2M12 18.5v2M3.5 12h2M18.5 12h2"/></svg>
     <span>Guide</span>
   </button>
 </nav>
+<button class="fab" id="fab-add" aria-label="Ajouter">+</button>
 <div class="nav-bottom-fill"></div>
 
 <!-- ═══ MODALE NOTE COMPLÈTE ═══ -->
@@ -2397,7 +2493,12 @@ function renderDayCalendar(){
     host.innerHTML = '<div class="day-cal-empty">Aucun créneau prévu aujourd\'hui. Ajoute-en dans le Carnet → Emploi du temps.</div>';
     return;
   }
-  host.innerHTML = blocks.map(b=>{
+  // Raccourci : seulement 3 blocs affichés — le précédent, celui en cours (ou le suivant
+  // s'il n'y en a pas en cours), et le suivant. Le bloc .now chevauche ses voisins (voir CSS).
+  let ci = blocks.findIndex(b => nowDec >= hourToDecimal(b.start) && nowDec < hourToDecimal(b.end));
+  if(ci < 0){ ci = blocks.findIndex(b => hourToDecimal(b.start) > nowDec); if(ci < 0) ci = blocks.length - 1; }
+  const visibleBlocks = [blocks[ci-1], blocks[ci], blocks[ci+1]].filter(Boolean);
+  host.innerHTML = visibleBlocks.map(b=>{
     const sDec = hourToDecimal(b.start), eDec = hourToDecimal(b.end);
     const isNow = nowDec >= sDec && nowDec < eDec;
     const items = itemsInRange(sDec, eDec);
@@ -2525,6 +2626,199 @@ const checks = [
   {id:"screen", text:"Pas d'écran 1h avant le coucher", note:"papier, conversation"},
   {id:"bed", text:"Au lit avant 23h", note:"même heure que la veille"}
 ];
+
+/* ═══════════════════════════════════════════════
+   COMPÉTENCES — Force / Intelligence / Volonté / Sagesse / Social / Prospérité
+   (logique portée depuis manuel-proto.html, habillage entièrement original)
+═══════════════════════════════════════════════ */
+const SKILLS = [
+  {id:'force',   name:'Force',        icon:'💪', color:'#A8475A'},
+  {id:'intel',   name:'Intelligence', icon:'🧠', color:'#5B8DB8'},
+  {id:'volonte', name:'Volonté',      icon:'🔥', color:'#C7913A'},
+  {id:'sagesse', name:'Sagesse',      icon:'🦉', color:'#4F6B4E'},
+  {id:'social',  name:'Social',       icon:'🤝', color:'#7B6FB8'},
+  {id:'prosper', name:'Prospérité',   icon:'👑', color:'#D4A45A'}
+];
+const skillById = id => SKILLS.find(s=>s.id===id);
+const xpForLevel = lvl => 50 + (lvl-1)*20; // 50 XP au niveau 1, +20 XP requis par niveau
+function getSkillsState(){
+  const st = STORE.get('manuel-skills', {});
+  SKILLS.forEach(s=>{ if(!st[s.id]) st[s.id] = {lvl:1, xp:0}; });
+  return st;
+}
+function saveSkillsState(st){ STORE.set('manuel-skills', st); }
+function addSkillXp(id, amount){
+  const st = getSkillsState();
+  const s = st[id]; if(!s) return;
+  s.xp += (amount||10);
+  while(s.xp >= xpForLevel(s.lvl)){ s.xp -= xpForLevel(s.lvl); s.lvl++; }
+  saveSkillsState(st);
+  const last = STORE.get('manuel-skill-last', {});
+  last[id] = Date.now();
+  STORE.set('manuel-skill-last', last);
+}
+function loseSkillLevel(id){
+  const st = getSkillsState();
+  const s = st[id]; if(!s) return;
+  if(s.lvl > 1) s.lvl--;
+  s.xp = 0;
+  saveSkillsState(st);
+}
+// Déclin : une compétence dont aucune habitude liée n'a été cochée depuis 4 jours perd un niveau
+// (une seule fois par période manquée, pour ne pas punir plusieurs fois le même relâchement).
+function checkSkillDecay(){
+  const last = STORE.get('manuel-skill-last', {});
+  const lost = STORE.get('manuel-skill-decay', {});
+  const now = Date.now();
+  const span = 4*86400000;
+  SKILLS.forEach(s=>{
+    const l = last[s.id] || STORE.get('manuel-birth', now);
+    const missed = Math.floor((now-l)/span);
+    if(now - l > span && lost[s.id] !== missed){
+      loseSkillLevel(s.id);
+      lost[s.id] = missed;
+      STORE.set('manuel-skill-decay', lost);
+    }
+  });
+}
+if(STORE.get('manuel-birth', null) === null) STORE.set('manuel-birth', Date.now());
+
+// Habitudes par défaut (verrouillées : non supprimables, modifiables) → compétence liée + icône
+const DEFAULT_HABIT_SKILLS = { light:'sagesse', water:'force', protein:'force', move:'force', recall:'intel', screen:'volonte', bed:'volonte' };
+const DEFAULT_HABIT_ICONS  = { light:'☀️', water:'💧', protein:'🍳', move:'🏃', recall:'🧠', screen:'📵', bed:'🛌' };
+function enrichHabitMeta(h){
+  return Object.assign({}, h, {
+    icon: h.icon || DEFAULT_HABIT_ICONS[h.id] || '☑️',
+    diff: (h.diff!=null) ? h.diff : 10,
+    skills: Array.isArray(h.skills) ? h.skills : (DEFAULT_HABIT_SKILLS[h.id] ? [DEFAULT_HABIT_SKILLS[h.id]] : [])
+  });
+}
+
+// Icônes au choix (grille de 40, reprises de manuel-proto.html) + niveaux de difficulté
+// (le badge n'affiche jamais l'XP, seulement le terme — voir diffLabel()).
+const ICONS = ['📖','✏️','🏃','🧘','💧','🍳','🥗','🧹','💪','🎯','📚','🗓️','⏰','🧠','🔬','🎨','🎵','🧺','🛏️','🚿','💊','🌱','📞','💌','💼','💻','🧾','🏦','🎓','🧩','🚴','🏋️','🧑‍🍳','🪥','🕯️','🌙','☕','🧶','🛠️','🐾'];
+const DIFFS = [[2,'Très facile'],[5,'Facile'],[10,'Moyen'],[25,'Difficile'],[50,'Épique']];
+const diffLabel = v => (DIFFS.find(d=>d[0]===v) || DIFFS[2])[1];
+
+// Petit rendu réutilisable : icône + badge difficulté + badges compétences, pour une carte
+// de tâche/habitude (Accueil, Carnet → Tâches/Habitudes, overlay du moment).
+function questMetaHtml(item){
+  const skHtml = (item.skills||[]).filter(Boolean).map(id=>{
+    const s = skillById(id);
+    return s ? `<span class="sk-badge" style="--sk:${s.color}">${s.icon} ${escapeHtml(s.name)}</span>` : '';
+  }).join('');
+  const diffHtml = (item.diff!=null) ? `<span class="diff-chip">${diffLabel(item.diff)}</span>` : '';
+  return (diffHtml || skHtml) ? `<span class="quest-meta">${diffHtml}${skHtml}</span>` : '';
+}
+function questIconHtml(item){
+  return item.icon ? `<span class="quest-icon">${item.icon}</span>` : '';
+}
+
+// État courant des formulaires Tâches / Habitudes (icône, difficulté, compétences liées).
+// Les sélecteurs (makeMsel) sont montés au init() dans les hosts prévus dans le HTML.
+let taskFormIcon = ICONS[0], taskFormDiff = 10, taskFormSkills = [];
+let habitFormIcon = ICONS[0], habitFormDiff = 10, habitFormSkills = [];
+let taskIconMsel=null, taskDiffMsel=null, habitIconMsel=null, habitDiffMsel=null;
+function buildSkillsRow(hostId, getSel, setSel){
+  const host = document.getElementById(hostId);
+  if(!host) return;
+  host.innerHTML = SKILLS.map(s=>`<button type="button" class="freq-btn${getSel().includes(s.id)?' active':''}" data-sk="${s.id}" style="--cc:${s.color}">${s.icon} ${s.name}</button>`).join('');
+  host.querySelectorAll('[data-sk]').forEach(b=>{
+    b.addEventListener('click', ()=>{
+      const id = b.dataset.sk;
+      let sel = getSel();
+      if(sel.includes(id)) sel = sel.filter(x=>x!==id);
+      else if(sel.length < 2) sel = sel.concat(id);
+      setSel(sel);
+      buildSkillsRow(hostId, getSel, setSel);
+    });
+  });
+}
+function initQuestPickers(){
+  const iconOpts = ICONS.map(ic=>({value:ic, label:ic}));
+  const diffOpts = DIFFS.map(d=>({value:String(d[0]), label:d[1]}));
+  const tIconHost = document.getElementById('task-icon-host');
+  if(tIconHost && !tIconHost.firstChild){
+    taskIconMsel = makeMsel({options:iconOpts, value:taskFormIcon, onChange:v=>taskFormIcon=v, placeholder:'Icône'});
+    tIconHost.appendChild(taskIconMsel);
+  }
+  const tDiffHost = document.getElementById('task-diff-host');
+  if(tDiffHost && !tDiffHost.firstChild){
+    taskDiffMsel = makeMsel({options:diffOpts, value:String(taskFormDiff), onChange:v=>taskFormDiff=parseInt(v,10), placeholder:'Difficulté'});
+    tDiffHost.appendChild(taskDiffMsel);
+  }
+  buildSkillsRow('task-skills-row', ()=>taskFormSkills, v=>taskFormSkills=v);
+
+  const hIconHost = document.getElementById('habit-icon-host');
+  if(hIconHost && !hIconHost.firstChild){
+    habitIconMsel = makeMsel({options:iconOpts, value:habitFormIcon, onChange:v=>habitFormIcon=v, placeholder:'Icône'});
+    hIconHost.appendChild(habitIconMsel);
+  }
+  const hDiffHost = document.getElementById('habit-diff-host');
+  if(hDiffHost && !hDiffHost.firstChild){
+    habitDiffMsel = makeMsel({options:diffOpts, value:String(habitFormDiff), onChange:v=>habitFormDiff=parseInt(v,10), placeholder:'Difficulté'});
+    hDiffHost.appendChild(habitDiffMsel);
+  }
+  buildSkillsRow('habit-skills-row', ()=>habitFormSkills, v=>habitFormSkills=v);
+}
+function resetTaskForm(){
+  taskFormIcon = ICONS[0]; taskFormDiff = 10; taskFormSkills = [];
+  if(taskIconMsel) taskIconMsel.setValue(taskFormIcon);
+  if(taskDiffMsel) taskDiffMsel.setValue(String(taskFormDiff));
+  buildSkillsRow('task-skills-row', ()=>taskFormSkills, v=>taskFormSkills=v);
+}
+function resetHabitForm(){
+  habitFormIcon = ICONS[0]; habitFormDiff = 10; habitFormSkills = [];
+  if(habitIconMsel) habitIconMsel.setValue(habitFormIcon);
+  if(habitDiffMsel) habitDiffMsel.setValue(String(habitFormDiff));
+  buildSkillsRow('habit-skills-row', ()=>habitFormSkills, v=>habitFormSkills=v);
+}
+
+/* ═══════════════════════════════════════════════
+   COMPÉTENCES — toile SVG + cartes (Accueil → sous-onglet)
+═══════════════════════════════════════════════ */
+function renderSkillWeb(){
+  const svg = document.getElementById('skillweb');
+  if(!svg) return;
+  const st = getSkillsState();
+  const cx=150, cy=140, R=100;
+  const minL = Math.min(...SKILLS.map(s=>st[s.id].lvl));
+  const base = minL; // toile relative : l'anneau 1 correspond au niveau le plus bas commun
+  const rel = l => Math.max(0.35, Math.min(5, l-base+1));
+  const pts = SKILLS.map((s,i)=>{ const a=-Math.PI/2 + i*Math.PI/3; return {s,a,x:cx+Math.cos(a)*R, y:cy+Math.sin(a)*R}; });
+  const rings = [1,2,3,4,5].map(f=>`<polygon points="${pts.map(p=>`${cx+Math.cos(p.a)*R*f/5},${cy+Math.sin(p.a)*R*f/5}`).join(' ')}" fill="none" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const spokes = pts.map(p=>`<line x1="${cx}" y1="${cy}" x2="${p.x}" y2="${p.y}" stroke="var(--line)" stroke-width="1"/>`).join('');
+  const aura = `<polygon points="${pts.map(p=>{ const r=R*rel(st[p.s.id].lvl)/5; return `${cx+Math.cos(p.a)*r},${cy+Math.sin(p.a)*r}`; }).join(' ')}" fill="color-mix(in srgb, var(--accent) 18%, transparent)" stroke="var(--accent)" stroke-width="2"/>`;
+  const nodes = pts.map(p=>{
+    const lx = cx+Math.cos(p.a)*(R+30), ly = cy+Math.sin(p.a)*(R+30);
+    return `<circle cx="${p.x}" cy="${p.y}" r="15" fill="var(--surface)" stroke="${p.s.color}" stroke-width="2"/>`+
+      `<text x="${p.x}" y="${p.y+5}" text-anchor="middle" font-size="13">${p.s.icon}</text>`+
+      `<text x="${lx}" y="${ly}" text-anchor="middle" font-family="Schibsted Grotesk" font-size="10.5" fill="var(--ink-soft)">${escapeHtml(p.s.name)}</text>`+
+      `<text x="${lx}" y="${ly+13}" text-anchor="middle" font-family="JetBrains Mono" font-size="12" fill="var(--accent)">niv. ${st[p.s.id].lvl}</text>`;
+  }).join('');
+  svg.innerHTML = rings + spokes + aura + nodes;
+  const note = document.getElementById('sk-base-note');
+  if(note) note.textContent = base>1 ? `Anneau 1 = niveau ${base} (toutes les compétences ont dépassé ce cap)` : '';
+}
+function renderSkillCards(){
+  const host = document.getElementById('skills-grid');
+  if(!host) return;
+  const st = getSkillsState();
+  host.innerHTML = SKILLS.map(s=>{
+    const cur = st[s.id];
+    const need = xpForLevel(cur.lvl);
+    const pct = Math.max(2, Math.round(cur.xp/need*100));
+    return `<div class="sk-card" style="--sk:${s.color}">
+      <div class="sk-card-icon">${s.icon}</div>
+      <div class="sk-card-body">
+        <div class="sk-card-name">${escapeHtml(s.name)}</div>
+        <div class="sk-card-lvl">Niveau ${cur.lvl} · ${cur.xp}/${need} XP</div>
+        <div class="sk-card-bar"><div class="sk-card-fill" style="width:${pct}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderSkillsTab(){ renderSkillWeb(); renderSkillCards(); }
 
 /* ═══════════════════════════════════════════════
    DATA — Default reminders
@@ -2656,12 +2950,66 @@ tabs.forEach(t=>{
     // Scroll to top of view
     const activeView = document.querySelector(`.view[data-view="${v}"]`);
     if(activeView) activeView.scrollTop = 0;
+    updateGreeting(); // commentaire contextuel de l'en-tête persistant, propre à l'onglet
+    updateFabVisibility();
   });
+});
+
+/* ═══════════════════════════════════════════════
+   BOUTON + FLOTTANT (Accueil / Lecture / Carnet)
+   Reconstruit simple et sans friction : plutôt que de recréer des formulaires,
+   il amène directement au bon champ d'ajout déjà existant (originaux, inchangés)
+   et le met le focus dessus.
+═══════════════════════════════════════════════ */
+const FAB_VIEWS = new Set(['home','books','notes']);
+function updateFabVisibility(){
+  const fab = document.getElementById('fab-add');
+  if(fab) fab.classList.toggle('show', FAB_VIEWS.has(currentView));
+}
+function focusField(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'center'});
+  setTimeout(()=>{ try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }, 260);
+}
+document.getElementById('fab-add').addEventListener('click', ()=>{
+  if(currentView === 'home'){
+    // L'ajout de tâches/habitudes se fait dans le Carnet — on y amène directement.
+    document.querySelector('.tab[data-view="notes"]').click();
+    const tasksTab = document.querySelector('.view[data-view="notes"] [data-sub="tasks"]');
+    if(tasksTab) tasksTab.click();
+    setTimeout(()=>focusField('task-text'), 220);
+    return;
+  }
+  if(currentView === 'books'){
+    const booksTab = document.querySelector('.view[data-view="books"] [data-sub="lect-books"]');
+    if(booksTab) booksTab.click();
+    focusField('book-title');
+    return;
+  }
+  if(currentView === 'notes'){
+    const activeSub = document.querySelector('.view[data-view="notes"] .sub-tab.active');
+    const sub = activeSub ? activeSub.dataset.sub : 'notes-list';
+    const targets = {
+      'notes-list':'note-title', 'tasks':'task-text', 'reminders':'rem-text',
+      'habits':'habit-text', 'schedule':'schedule-add'
+    };
+    focusField(targets[sub] || 'note-title');
+  }
 });
 
 /* ═══════════════════════════════════════════════
    HOME — Today date & greeting
 ═══════════════════════════════════════════════ */
+// Petit commentaire contextuel affiché sous le nom, pour les onglets autres qu'Accueil
+// (sur Accueil, le commentaire lié au moment de la journée reste inchangé — voir plus bas).
+const TAB_COMMENTS = {
+  pomo:  "Un pomodoro à la fois, une tâche à la fois.",
+  books: "Un chapitre de plus, un peu de toi en plus.",
+  notes: "Ce qui est noté n'est plus perdu.",
+  stats: "Ce qui se mesure s'améliore.",
+  guide: "Relis, ajuste, avance."
+};
 function updateGreeting(){
   const now = new Date();
   const dayNames = ["Dimanche","Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi"];
@@ -2682,6 +3030,11 @@ function updateGreeting(){
   else if(h<20) sub = "Place aux révisions actives";
   else if(h<22) sub = "Sas du soir, baisse les lumières";
   else sub = "Pense au coucher — repos avant tout";
+  // Sur les autres onglets (hors Accueil), un commentaire contextuel remplace celui lié
+  // au moment de la journée — sauf l'alerte sommeil, toujours prioritaire (voir plus bas).
+  if(typeof currentView !== 'undefined' && currentView !== 'home' && TAB_COMMENTS[currentView]){
+    sub = TAB_COMMENTS[currentView];
+  }
   const sleepMsg = "Il est très très tard, va dormir bordel !!!";
   const _sub = document.getElementById('greet-sub');
   if(_sub){
@@ -2693,6 +3046,12 @@ function updateGreeting(){
   const sleepAlert = document.getElementById('sleep-alert');
   if(sleepAlert) sleepAlert.style.display = 'none';
 }
+// Mesure la hauteur réelle de l'en-tête persistant pour caler le contenu des vues en dessous.
+function syncHeaderHeight(){
+  const el = document.getElementById('app-header');
+  if(el) document.documentElement.style.setProperty('--app-header-h', el.offsetHeight+'px');
+}
+window.addEventListener('resize', syncHeaderHeight);
 
 /* ═══════════════════════════════════════════════
    TIMELINE & NOW CARD
@@ -3087,9 +3446,19 @@ function getCustomTaskState(taskId, freq){
 function setCustomTaskState(taskId, freq, done){
   const states = STORE.get('manuel-custom-task-states', {});
   const key = `${taskId}__${getPeriodKey(freq)}`;
+  const wasDone = states[key] === true;
   if(done) states[key] = true;
   else delete states[key];
   STORE.set('manuel-custom-task-states', states);
+
+  // XP de compétence(s) — uniquement au passage non-fait → fait
+  if(done && !wasDone){
+    const t = getCustomTasks().find(x=>x.id===taskId);
+    if(t && Array.isArray(t.skills) && t.skills.length){
+      t.skills.forEach(skId=>addSkillXp(skId, t.diff||10));
+      if(typeof renderSkillsTab === 'function') renderSkillsTab();
+    }
+  }
 
   // Mémorise le JOUR réel du cochage (pour le graphique de la semaine),
   // quelle que soit la fréquence — utile pour hebdo/mensuel/annuel cochés un autre jour.
@@ -3177,13 +3546,14 @@ function renderUnifiedTasks(){
       li.innerHTML = `<div class="check-box"></div><div class="check-text">${escapeHtml(r.text)}<small><span class="rem-badge">🔔 ${r.time}</span></small></div>`;
     } else {
       const t = item.data;
+      const icon = questIconHtml(t), meta = questMetaHtml(t);
       if(t.freq === 'once'){
         const remBadge = t.onceTime ? `<span class="rem-badge">🔔 ${t.onceTime}</span>` : '';
-        li.innerHTML = `<div class="check-box"></div><div class="check-text">${escapeHtml(t.text)}<small><span class="freq-badge once">Unique</span></small>${remBadge}</div>`;
+        li.innerHTML = `<div class="check-box"></div><div class="check-text">${icon}${escapeHtml(t.text)}<small><span class="freq-badge once">Unique</span></small>${remBadge}${meta}</div>`;
       } else {
         const remText = t.reminder?.time ? formatTaskReminder(t) : '';
         const remBadge = remText ? `<span class="rem-badge">🔔 ${remText}</span>` : '';
-        li.innerHTML = `<div class="check-box"></div><div class="check-text">${escapeHtml(t.text)}<small><span class="freq-badge ${t.freq}">${getFreqLabel(t.freq)}</span></small>${remBadge}</div>`;
+        li.innerHTML = `<div class="check-box"></div><div class="check-text">${icon}${escapeHtml(t.text)}<small><span class="freq-badge ${t.freq}">${getFreqLabel(t.freq)}</span></small>${remBadge}${meta}</div>`;
       }
     }
     li.addEventListener('click', item.toggle.bind(item));
@@ -3224,6 +3594,9 @@ function renderUnifiedTasks(){
   const total = items.length + checks.length + getCustomHabits().length;
   document.getElementById('unified-stat').textContent = `${doneTotal}/${total}`;
   document.getElementById('unified-fill').style.width = ((doneTotal/Math.max(1,total))*100)+'%';
+  // Jauge "progression du jour" dans l'en-tête persistant (identique, tous onglets)
+  const hgf = document.getElementById('header-gauge-fill');
+  if(hgf) hgf.style.width = ((doneTotal/Math.max(1,total))*100)+'%';
 }
 
 /* ═══════════════════════════════════════════════
@@ -3322,15 +3695,20 @@ function renderHabitOverlayList(){
   const checkState = getCheckState();
   const list = document.getElementById('habit-overlay-list');
   list.innerHTML = '';
-  habitsForMoment(moment).forEach(c=>{
+  habitsForMoment(moment).map(enrichHabitMeta).forEach(c=>{
     const li = document.createElement('li');
     const done = checkState[c.id] === true;
     li.className = 'check-item' + (done ? ' done' : '');
-    li.innerHTML = `<div class="check-box"></div><div class="check-text">${escapeHtml(c.text)}${c.note ? `<small>${escapeHtml(c.note)}</small>` : ''}</div>`;
+    li.innerHTML = `<div class="check-box"></div><div class="check-text">${questIconHtml(c)}${escapeHtml(c.text)}${c.note ? `<small>${escapeHtml(c.note)}</small>` : ''}${questMetaHtml(c)}</div>`;
     li.addEventListener('click', ()=>{
       const st = getCheckState();
-      st[c.id] = !st[c.id];
+      const wasDone = !!st[c.id];
+      st[c.id] = !wasDone;
       saveCheckState(st);
+      if(!wasDone && Array.isArray(c.skills) && c.skills.length){
+        c.skills.forEach(skId=>addSkillXp(skId, c.diff||10));
+        if(typeof renderSkillsTab === 'function') renderSkillsTab();
+      }
       renderHabitOverlayList();
       renderUnifiedTasks();
     });
@@ -3403,17 +3781,17 @@ function renderHabitsManager(){
     h2.style.cssText = 'font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px;font-weight:600';
     h2.textContent = 'Tes habitudes';
     container.appendChild(h2);
-    customs.forEach(h=>{
+    customs.map(enrichHabitMeta).forEach(h=>{
       const el = document.createElement('div');
       el.className = 'note-item';
       el.innerHTML = `
         <div class="note-content">
           <div class="note-header">
-            <span class="note-item-title">${escapeHtml(h.text)}</span>
+            <span class="note-item-title">${questIconHtml(h)}${escapeHtml(h.text)}</span>
             <button class="btn btn-sm btn-ghost" data-act="edit" style="font-size:12px;padding:2px 8px">✏️</button>
           </div>
           ${h.note ? `<div class="note-text" style="font-size:12px">${escapeHtml(h.note)}</div>` : ''}
-          <div style="margin-top:6px"><span class="note-cat-badge ${h.moment==='matin'?'hm-matin':h.moment==='aprem'?'hm-aprem':'hm-soir'}">${MOMENT_LABEL[h.moment]}</span></div>
+          <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:4px;align-items:center"><span class="note-cat-badge ${h.moment==='matin'?'hm-matin':h.moment==='aprem'?'hm-aprem':'hm-soir'}">${MOMENT_LABEL[h.moment]}</span>${questMetaHtml(h)}</div>
         </div>
         <button class="note-del-btn" aria-label="Supprimer">Supprimer</button>
       `;
@@ -3424,6 +3802,11 @@ function renderHabitsManager(){
           <input class="note-edit-title" value="${escapeHtml(h.text)}" placeholder="Habitude">
           <hr class="note-form-sep" style="margin:6px 0">
           <input class="note-edit-title" data-f="note" style="font-weight:400;font-size:13px" value="${escapeHtml(h.note||'')}" placeholder="Détail (optionnel)">
+          <div class="input-row" style="margin-top:8px">
+            <div id="hedit-icon-host" style="flex:1;min-width:0"></div>
+            <div id="hedit-diff-host" style="flex:1;min-width:0"></div>
+          </div>
+          <div class="freq-filter" id="hedit-skills-row" style="margin-top:8px"></div>
           <div class="input-row" style="margin-top:8px">
             <select class="btn btn-sm" data-f="moment" style="flex:1">
               <option value="matin"${h.moment==='matin'?' selected':''}>🌅 Matin</option>
@@ -3436,6 +3819,14 @@ function renderHabitsManager(){
             <button class="btn btn-sm btn-primary" data-act="save">Sauvegarder</button>
           </div>
         `;
+        let editIcon = h.icon, editDiff = (h.diff!=null ? h.diff : 10), editSkills = Array.isArray(h.skills) ? h.skills.slice() : [];
+        content.querySelector('#hedit-icon-host').appendChild(
+          makeMsel({options:ICONS.map(ic=>({value:ic,label:ic})), value:editIcon, onChange:v=>editIcon=v, placeholder:'Icône'})
+        );
+        content.querySelector('#hedit-diff-host').appendChild(
+          makeMsel({options:DIFFS.map(d=>({value:String(d[0]),label:d[1]})), value:String(editDiff), onChange:v=>editDiff=parseInt(v,10), placeholder:'Difficulté'})
+        );
+        buildSkillsRow('hedit-skills-row', ()=>editSkills, v=>editSkills=v);
         content.querySelector('[data-act="cancel"]').addEventListener('click', renderHabitsManager);
         content.querySelector('[data-act="save"]').addEventListener('click', ()=>{
           const text = content.querySelector('.note-edit-title').value.trim();
@@ -3446,6 +3837,9 @@ function renderHabitsManager(){
             target.text = text;
             target.note = content.querySelector('[data-f="note"]').value.trim();
             target.moment = content.querySelector('[data-f="moment"]').value;
+            target.icon = editIcon;
+            target.diff = editDiff;
+            target.skills = editSkills;
             STORE.set('manuel-custom-habits', arr);
           }
           renderHabitsManager();
@@ -3470,11 +3864,11 @@ function renderHabitsManager(){
   h1.textContent = 'Habitudes par défaut';
   container.appendChild(h1);
   Object.entries(HABIT_MOMENTS).forEach(([moment, cfg])=>{
-    checks.filter(c => cfg.ids.includes(c.id)).forEach(c=>{
+    checks.filter(c => cfg.ids.includes(c.id)).map(enrichHabitMeta).forEach(c=>{
       const el = document.createElement('div');
       el.className = 'reminder-item';
       el.innerHTML = `
-        <div class="reminder-text">${c.text}<small>${c.note} · ${MOMENT_LABEL[moment]}</small></div>
+        <div class="reminder-text">${questIconHtml(c)}${c.text}<small>${c.note} · ${MOMENT_LABEL[moment]}</small>${questMetaHtml(c)}</div>
       `;
       container.appendChild(el);
     });
@@ -3490,11 +3884,15 @@ document.getElementById('habit-add').addEventListener('click', ()=>{
     text,
     note: document.getElementById('habit-note').value.trim(),
     moment: document.getElementById('habit-moment').value,
+    icon: habitFormIcon,
+    diff: habitFormDiff,
+    skills: habitFormSkills.slice(),
     createdAt: Date.now()
   });
   STORE.set('manuel-custom-habits', arr);
   textEl.value = '';
   document.getElementById('habit-note').value = '';
+  resetHabitForm();
   renderHabitsManager();
   renderUnifiedTasks();
   renderStats();
@@ -3863,11 +4261,12 @@ function renderTaskItem(task){
     <div class="swipe-content">
       <div class="check-box"></div>
       <div class="obj-text">
-        ${escapeHtml(task.text)}
+        ${questIconHtml(task)}${escapeHtml(task.text)}
         <div class="obj-meta">
           <span class="freq-badge ${task.freq}">${getFreqLabel(task.freq)}</span>
           ${remStr ? `<span class="rem-badge">🔔 ${remStr}</span>` : ''}
         </div>
+        ${questMetaHtml(task)}
       </div>
     </div>
     <button class="swipe-del-btn" aria-label="Supprimer">Supprimer</button>
@@ -3951,12 +4350,14 @@ document.getElementById('task-add').addEventListener('click', ()=>{
       text, freq:'once',
       onceDate, onceTime: onceTime || null,
       reminder: onceTime ? {time: onceTime, onceDate} : null,
+      icon: taskFormIcon, diff: taskFormDiff, skills: taskFormSkills.slice(),
       createdAt:Date.now()
     });
     STORE.set('manuel-custom-tasks', tasks);
     input.value = '';
     document.getElementById('task-once-time').value = '';
     if(notifsEnabled) scheduleNextReminder();
+    resetTaskForm();
     renderCustomTasks();
     refreshAllTaskViews();
     return;
@@ -3974,10 +4375,12 @@ document.getElementById('task-add').addEventListener('click', ()=>{
   }
   const tasks = getCustomTasks();
   const interval = Math.max(1, parseInt(document.getElementById('task-interval').value) || 1);
-  tasks.push({id:'task-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), text, freq, reminder, interval, anchor:Date.now(), createdAt:Date.now()});
+  tasks.push({id:'task-'+Date.now()+'-'+Math.random().toString(36).slice(2,7), text, freq, reminder, interval, anchor:Date.now(),
+    icon: taskFormIcon, diff: taskFormDiff, skills: taskFormSkills.slice(), createdAt:Date.now()});
   STORE.set('manuel-custom-tasks', tasks);
   input.value = '';
   if(notifsEnabled) scheduleNextReminder();
+  resetTaskForm();
   renderCustomTasks();
   refreshAllTaskViews();
 });
@@ -4661,6 +5064,7 @@ document.querySelectorAll('.sub-tab').forEach(b=>{
       v.style.display = (v.dataset.sub === target) ? 'block' : 'none';
     });
     if(target === 'schedule') renderScheduleEditor();
+    if(target === 'skills') renderSkillsTab();
   });
 });
 
@@ -5211,152 +5615,236 @@ function renderBooks(){
     sections.done = sections.done.filter(b => b.finishedAt && new Date(b.finishedAt).getFullYear() === +yearFilter);
   }
 
-  ['reading','todo','done'].forEach(status=>{
-    const container = document.getElementById('books-'+status);
-    container.innerHTML = '';
-    const arr = sections[status];
-    document.getElementById('count-'+status).textContent = arr.length;
-    if(arr.length===0){
-      container.innerHTML = `<div class="empty-state" style="padding:16px 8px"><div class="text" style="font-size:12px">Pas encore de lecture — ${BOOK_EMPTY[status]}.</div></div>`;
-      return;
-    }
-    arr.forEach(b=>{
-      const el = document.createElement('div');
-      el.className = `book-item ${status}`;
+  // "En cours" garde la carte originale (book-item + fiche bookFieldsHtml), mais toujours
+  // dépliée, sans lien séparé — le livre et sa fiche complète sont visibles l'un sous l'autre.
+  const readingContainer = document.getElementById('books-reading');
+  readingContainer.innerHTML = '';
+  document.getElementById('count-reading').textContent = sections.reading.length;
+  if(sections.reading.length===0){
+    readingContainer.innerHTML = `<div class="empty-state" style="padding:16px 8px"><div class="text" style="font-size:12px">Pas encore de lecture — ${BOOK_EMPTY.reading}.</div></div>`;
+  } else {
+    sections.reading.forEach(b=>readingContainer.appendChild(buildBookCard(b, 'reading', {forceExpanded:true})));
+  }
 
-      // Étoiles (livres terminés)
-      let starsHtml = '';
-      if(status==='done'){
-        const r = b.rating||0;
-        starsHtml = '<div class="book-rating">';
-        for(let i=1;i<=5;i++) starsHtml += `<span class="star${i<=r?' on':''}" data-star="${i}">★</span>`;
-        starsHtml += '</div>';
-      }
+  // "À lire" et "Terminés" : étagères (grille de couvertures colorées) — tap pour ouvrir
+  // la fiche complète dans une fenêtre dédiée (réutilise bookFieldsHtml).
+  document.getElementById('count-todo').textContent = sections.todo.length;
+  document.getElementById('count-done').textContent = sections.done.length;
+  renderBookShelf('books-todo', sections.todo, {emptyKey:'todo'});
+  renderBookShelf('books-done', sections.done, {emptyKey:'done', showDate:true});
+}
 
-      const finishedSmall = (status==='done' && b.finishedAt)
-        ? `<div class="book-finished-small">${new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}</div>`
-        : '';
+// Couleur d'affichage d'un livre : sa couleur choisie, sinon une couleur stable dérivée
+// de son titre (pour les livres créés avant l'ajout de ce champ).
+function hashStr(s){ s=String(s||''); let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; }
+function bookDisplayColor(b){ return b.color || SCHEDULE_COLORS[Math.abs(hashStr(b.title))%SCHEDULE_COLORS.length]; }
 
-      const filled = (b.ideas||[]).filter(Boolean).length + (b.quotes||[]).filter(Boolean).length + (b.opening?1:0);
+// Carte complète (utilisée pour "En cours" ET dans la fenêtre de fiche ouverte depuis l'étagère).
+// forceExpanded=true : pas de lien "Fiche & notes" séparé, tout est visible d'emblée.
+function buildBookCard(b, status, opts={}){
+  const el = document.createElement('div');
+  el.className = `book-item ${status}` + (opts.forceExpanded ? ' expanded' : '');
 
-      el.style.position = 'relative';
-      el.innerHTML = `
-        <div class="swipe-content">
-          <div class="book-header">
-            <div style="min-width:0;flex:1">
-              <div class="book-title">${escapeHtml(b.title)}</div>
-              <div class="book-author">${b.author ? escapeHtml(b.author) : 'auteur inconnu'}</div>
-              ${(()=>{ const cc=findCustomCat('books', b.genre); return cc ? `<span class="book-genre-badge" style="color:${cc.color};border-color:${cc.color}">${escapeHtml(cc.label)}</span>` : `<span class="book-genre-badge">${BOOK_GENRES[b.genre||'autre']}</span>`; })()}
-            </div>
-            <div class="book-status-col">
-              <span class="book-status-badge ${status}" data-act="status-cycle">${BOOK_BADGE[status]}</span>
-              ${finishedSmall}
-            </div>
-          </div>
-          ${starsHtml}
-          <div class="book-expand-hint" data-act="expand">📓 Fiche de lecture ${filled>0 ? `· ${filled}/7 rempli${filled>1?'s':''}` : ''} <span data-arrow>▾</span></div>
-          ${bookFieldsHtml(b)}
+  let starsHtml = '';
+  if(status==='done'){
+    const r = b.rating||0;
+    starsHtml = '<div class="book-rating">';
+    for(let i=1;i<=5;i++) starsHtml += `<span class="star${i<=r?' on':''}" data-star="${i}">★</span>`;
+    starsHtml += '</div>';
+  }
+  const finishedSmall = (status==='done' && b.finishedAt)
+    ? `<div class="book-finished-small">${new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'})}</div>`
+    : '';
+  const filled = (b.ideas||[]).filter(Boolean).length + (b.quotes||[]).filter(Boolean).length + (b.opening?1:0);
+  const expandHint = opts.forceExpanded ? '' :
+    `<div class="book-expand-hint" data-act="expand">📓 Fiche de lecture ${filled>0 ? `· ${filled}/7 rempli${filled>1?'s':''}` : ''} <span data-arrow>▾</span></div>`;
+
+  el.style.position = 'relative';
+  el.innerHTML = `
+    <div class="swipe-content">
+      <div class="book-header">
+        <div style="min-width:0;flex:1">
+          <div class="book-title">${escapeHtml(b.title)}</div>
+          <div class="book-author">${b.author ? escapeHtml(b.author) : 'auteur inconnu'}${b.coll ? ` · <span style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)">${escapeHtml(b.coll)}</span>` : ''}</div>
+          ${(()=>{ const cc=findCustomCat('books', b.genre); return cc ? `<span class="book-genre-badge" style="color:${cc.color};border-color:${cc.color}">${escapeHtml(cc.label)}</span>` : `<span class="book-genre-badge">${BOOK_GENRES[b.genre||'autre']}</span>`; })()}
         </div>
-        <button class="swipe-del-btn" aria-label="Supprimer">Supprimer</button>
-      `;
+        <div class="book-status-col">
+          <span class="book-status-badge ${status}" data-act="status-cycle">${BOOK_BADGE[status]}</span>
+          ${finishedSmall}
+        </div>
+      </div>
+      ${starsHtml}
+      ${expandHint}
+      ${bookFieldsHtml(b)}
+    </div>
+    <button class="swipe-del-btn" aria-label="Supprimer">Supprimer</button>
+  `;
 
-      // Expand / collapse fiche
-      el.querySelector('[data-act="expand"]').addEventListener('click', ()=>{
-        el.classList.toggle('expanded');
-        el.querySelector('[data-arrow]').textContent = el.classList.contains('expanded') ? '▴' : '▾';
-        // Ajuster la hauteur des champs une fois la fiche visible
-        if(el.classList.contains('expanded')){
-          requestAnimationFrame(()=>{
-            el.querySelectorAll('.book-field.bf-grow').forEach(f=>{ f.style.height='auto'; f.style.height=f.scrollHeight+'px'; });
-          });
-        }
-      });
-
-      // Cadenas : verrouille/déverrouille les champs de la fiche
-      const lockBtn = el.querySelector('[data-act="lock"]');
-      if(lockBtn){
-        lockBtn.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const all = STORE.get('manuel-books',[]);
-          const bk = all[b.idx];
-          if(!bk) return;
-          const ideas = bk.ideas||['','','']; const quotes = bk.quotes||['','',''];
-          const filled = ideas.filter(x=>x).length + quotes.filter(x=>x).length + (bk.opening?1:0);
-          const currentlyLocked = (bk.locked === undefined) ? (filled > 0) : !!bk.locked;
-          bk.locked = !currentlyLocked;
-          STORE.set('manuel-books', all);
-          const detail = el.querySelector('.book-detail');
-          const nowLocked = bk.locked;
-          detail.classList.toggle('locked', nowLocked);
-          lockBtn.textContent = nowLocked ? '🔒' : '🔓';
-          lockBtn.title = nowLocked ? 'Déverrouiller pour modifier' : 'Verrouiller';
-          el.querySelectorAll('.book-field').forEach(f=>{
-            if(nowLocked) f.setAttribute('readonly','');
-            else { f.removeAttribute('readonly'); }
-          });
+  // Expand / collapse fiche (absent si forceExpanded : toujours visible)
+  const expandBtn = el.querySelector('[data-act="expand"]');
+  if(expandBtn){
+    expandBtn.addEventListener('click', ()=>{
+      el.classList.toggle('expanded');
+      el.querySelector('[data-arrow]').textContent = el.classList.contains('expanded') ? '▴' : '▾';
+      if(el.classList.contains('expanded')){
+        requestAnimationFrame(()=>{
+          el.querySelectorAll('.book-field.bf-grow').forEach(f=>{ f.style.height='auto'; f.style.height=f.scrollHeight+'px'; });
         });
       }
+    });
+  } else {
+    requestAnimationFrame(()=>{
+      el.querySelectorAll('.book-field.bf-grow').forEach(f=>{ f.style.height='auto'; f.style.height=f.scrollHeight+'px'; });
+    });
+  }
 
-      // Sauvegarde des champs structurés au blur
-      el.querySelectorAll('.book-field').forEach(field=>{
-        field.addEventListener('blur', ()=>{
-          const all = STORE.get('manuel-books',[]);
-          const bk = all[b.idx];
-          if(!bk) return;
-          bk.ideas  = bk.ideas  || ['','',''];
-          bk.quotes = bk.quotes || ['','',''];
-          const tag = field.dataset.bf;
-          if(tag.startsWith('idea-'))  bk.ideas[parseInt(tag.split('-')[1])]  = field.value.trim();
-          if(tag.startsWith('quote-')) bk.quotes[parseInt(tag.split('-')[1])] = field.value.trim();
-          if(tag==='opening') bk.opening = field.value.trim();
-          STORE.set('manuel-books', all);
-        });
+  // Cadenas : verrouille/déverrouille les champs de la fiche
+  const lockBtn = el.querySelector('[data-act="lock"]');
+  if(lockBtn){
+    lockBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const all = STORE.get('manuel-books',[]);
+      const bk = all[b.idx];
+      if(!bk) return;
+      const ideas = bk.ideas||['','','']; const quotes = bk.quotes||['','',''];
+      const filled2 = ideas.filter(x=>x).length + quotes.filter(x=>x).length + (bk.opening?1:0);
+      const currentlyLocked = (bk.locked === undefined) ? (filled2 > 0) : !!bk.locked;
+      bk.locked = !currentlyLocked;
+      STORE.set('manuel-books', all);
+      const detail = el.querySelector('.book-detail');
+      const nowLocked = bk.locked;
+      detail.classList.toggle('locked', nowLocked);
+      lockBtn.textContent = nowLocked ? '🔒' : '🔓';
+      lockBtn.title = nowLocked ? 'Déverrouiller pour modifier' : 'Verrouiller';
+      el.querySelectorAll('.book-field').forEach(f=>{
+        if(nowLocked) f.setAttribute('readonly','');
+        else { f.removeAttribute('readonly'); }
       });
+    });
+  }
 
-      // Auto-agrandissement : la hauteur du champ suit le texte (s'étend si ça dépasse)
-      el.querySelectorAll('.book-field.bf-grow').forEach(field=>{
-        const grow = ()=>{ field.style.height='auto'; field.style.height=(field.scrollHeight)+'px'; };
-        field.addEventListener('input', grow);
-        // ajuste à l'ouverture de la fiche (si du texte est déjà présent)
-        requestAnimationFrame(grow);
-      });
-
-      // Étoiles
-      el.querySelectorAll('.star').forEach(star=>{
-        star.addEventListener('click', (e)=>{
-          e.stopPropagation();
-          const all = STORE.get('manuel-books',[]);
-          all[b.idx].rating = parseInt(star.dataset.star);
-          STORE.set('manuel-books', all);
-          renderBooks();
-        });
-      });
-
-      // Badge cliquable — cycle todo → reading → done → todo
-      const cycle = {todo:'reading', reading:'done', done:'todo'};
-      el.querySelector('[data-act="status-cycle"]').addEventListener('click', e=>{
-        e.stopPropagation();
-        const all = STORE.get('manuel-books',[]);
-        const next = cycle[all[b.idx].status||'todo'];
-        all[b.idx].status = next;
-        if(next==='done') all[b.idx].finishedAt = Date.now();
-        STORE.set('manuel-books', all);
-        renderBooks();
-        renderStats();
-      });
-      // Swipe to delete
-      addSwipeDelete(el, ()=>{
-        const all = STORE.get('manuel-books',[]);
-        all.splice(b.idx,1);
-        STORE.set('manuel-books',all);
-        renderBooks();
-        renderStats();
-      }, '.swipe-content', '.swipe-del-btn');
-
-      container.appendChild(el);
+  // Sauvegarde des champs structurés au blur
+  el.querySelectorAll('.book-field').forEach(field=>{
+    field.addEventListener('blur', ()=>{
+      const all = STORE.get('manuel-books',[]);
+      const bk = all[b.idx];
+      if(!bk) return;
+      bk.ideas  = bk.ideas  || ['','',''];
+      bk.quotes = bk.quotes || ['','',''];
+      const tag = field.dataset.bf;
+      if(tag.startsWith('idea-'))  bk.ideas[parseInt(tag.split('-')[1])]  = field.value.trim();
+      if(tag.startsWith('quote-')) bk.quotes[parseInt(tag.split('-')[1])] = field.value.trim();
+      if(tag==='opening') bk.opening = field.value.trim();
+      STORE.set('manuel-books', all);
     });
   });
+
+  // Auto-agrandissement : la hauteur du champ suit le texte (s'étend si ça dépasse)
+  el.querySelectorAll('.book-field.bf-grow').forEach(field=>{
+    const grow = ()=>{ field.style.height='auto'; field.style.height=(field.scrollHeight)+'px'; };
+    field.addEventListener('input', grow);
+    requestAnimationFrame(grow);
+  });
+
+  // Étoiles
+  el.querySelectorAll('.star').forEach(star=>{
+    star.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const all = STORE.get('manuel-books',[]);
+      all[b.idx].rating = parseInt(star.dataset.star);
+      STORE.set('manuel-books', all);
+      if(opts.onChange) opts.onChange(); else renderBooks();
+    });
+  });
+
+  // Badge cliquable — cycle todo → reading → done → todo
+  const cycle = {todo:'reading', reading:'done', done:'todo'};
+  el.querySelector('[data-act="status-cycle"]').addEventListener('click', e=>{
+    e.stopPropagation();
+    const all = STORE.get('manuel-books',[]);
+    const next = cycle[all[b.idx].status||'todo'];
+    all[b.idx].status = next;
+    if(next==='done') all[b.idx].finishedAt = Date.now();
+    STORE.set('manuel-books', all);
+    renderStats();
+    if(opts.onChange) opts.onChange(); else renderBooks();
+  });
+  // Swipe to delete
+  addSwipeDelete(el, ()=>{
+    const all = STORE.get('manuel-books',[]);
+    all.splice(b.idx,1);
+    STORE.set('manuel-books',all);
+    renderStats();
+    if(opts.onDelete) opts.onDelete(); else renderBooks();
+  }, '.swipe-content', '.swipe-del-btn');
+
+  return el;
 }
+
+// Étagère (grille de couvertures colorées) pour "À lire" / "Terminés". Le nom de la
+// collection s'affiche sur la couverture dès qu'elle contient ≥ 2 livres sur cette étagère.
+function renderBookShelf(hostId, list, opts={}){
+  const host = document.getElementById(hostId);
+  if(!host) return;
+  if(!list.length){
+    host.innerHTML = `<div class="empty-state" style="padding:16px 8px"><div class="text" style="font-size:12px">Pas encore de lecture — ${BOOK_EMPTY[opts.emptyKey||'todo']}.</div></div>`;
+    return;
+  }
+  const collCounts = {};
+  list.forEach(b=>{ if(b.coll) collCounts[b.coll] = (collCounts[b.coll]||0)+1; });
+  host.innerHTML = `<div class="book-shelf-grid">` + list.map(b=>{
+    const c = bookDisplayColor(b);
+    const showColl = b.coll && collCounts[b.coll] >= 2;
+    const dateStr = (opts.showDate && b.finishedAt) ? new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) : '';
+    return `<div class="book-tile" data-bidx="${b.idx}" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
+      ${showColl ? `<span class="book-tile-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
+      <div class="book-tile-title">${escapeHtml(b.title)}</div>
+      <div class="book-tile-author">${escapeHtml(b.author||'auteur inconnu')}</div>
+      ${dateStr ? `<div class="book-tile-date">${dateStr}</div>` : ''}
+    </div>`;
+  }).join('') + `</div>`;
+  host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
+}
+
+// Fenêtre de fiche complète, ouverte depuis une étagère (réutilise le chrome de
+// .note-full-overlay et la carte/bookFieldsHtml — jamais de style différent).
+function openBookModal(idx){
+  let modal = document.getElementById('book-shelf-modal');
+  if(!modal){
+    modal = document.createElement('div');
+    modal.id = 'book-shelf-modal';
+    modal.className = 'note-full-overlay';
+    modal.style.display = 'none';
+    modal.innerHTML = `<div class="note-full-sheet">
+      <div class="note-full-head">
+        <span class="note-full-title-el">Fiche de lecture</span>
+        <button class="note-full-close" id="bsm-close" aria-label="Fermer">✕</button>
+      </div>
+      <div class="note-full-body" id="bsm-body"></div>
+    </div>`;
+    document.body.appendChild(modal);
+    modal.addEventListener('click', e=>{ if(e.target===modal) modal.style.display='none'; });
+    modal.querySelector('#bsm-close').addEventListener('click', ()=>{ modal.style.display='none'; });
+  }
+  const rerender = ()=>{
+    const all = STORE.get('manuel-books', []);
+    const b = all[idx];
+    const body = modal.querySelector('#bsm-body');
+    if(!b){ modal.style.display='none'; return; }
+    body.innerHTML = '';
+    const status = b.status || 'todo';
+    body.appendChild(buildBookCard({...b, idx}, status, {
+      forceExpanded:true,
+      onChange: ()=>{ rerender(); renderBooks(); },
+      onDelete: ()=>{ modal.style.display='none'; renderBooks(); }
+    }));
+  };
+  rerender();
+  modal.style.display = 'flex';
+}
+document.addEventListener('keydown', e=>{
+  if(e.key==='Escape'){ const m=document.getElementById('book-shelf-modal'); if(m) m.style.display='none'; }
+});
 
 document.getElementById('done-year-filter').addEventListener('change', renderBooks);
 
@@ -5407,17 +5895,49 @@ function rebuildGenreSelect(){
 rebuildGenreFilter();
 rebuildGenreSelect();
 
+// Couleur du livre (davantage de choix qu'avant) + collection — voir le formulaire d'ajout.
+// Une collection = même couleur pour tous ses livres ; son nom s'affiche sur l'étagère
+// dès qu'elle contient au moins 2 livres (voir renderBookShelf()).
+let bookFormColor = SCHEDULE_COLORS[0];
+function initBookColorPicker(){
+  const host = document.getElementById('book-color-row');
+  if(!host || host.firstChild) return;
+  host.innerHTML = SCHEDULE_COLORS.map(c=>`<button type="button" class="sched-color${c===bookFormColor?' active':''}" data-color="${c}" style="background:${c}"></button>`).join('');
+  host.querySelectorAll('.sched-color').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      bookFormColor = btn.dataset.color;
+      host.querySelectorAll('.sched-color').forEach(x=>x.classList.toggle('active', x===btn));
+    });
+  });
+  const collInput = document.getElementById('book-coll');
+  if(collInput){
+    collInput.addEventListener('change', ()=>{
+      const name = collInput.value.trim();
+      if(!name) return;
+      const existing = STORE.get('manuel-books', []).find(b => (b.coll||'') === name && b.color);
+      if(existing){
+        bookFormColor = existing.color;
+        host.querySelectorAll('.sched-color').forEach(x=>x.classList.toggle('active', x.dataset.color === bookFormColor));
+      }
+    });
+  }
+}
 document.getElementById('book-add').addEventListener('click', ()=>{
   const title = document.getElementById('book-title').value.trim();
   const author = document.getElementById('book-author').value.trim();
   if(!title) return;
   const status = document.getElementById('book-init-status').value;
   const genre = document.getElementById('book-genre').value;
+  const coll = document.getElementById('book-coll').value.trim();
   const arr = STORE.get('manuel-books', []);
-  arr.push({title, author, status, genre, ideas:['','',''], quotes:['','',''], opening:'', addedAt:Date.now(), ...(status==='done'?{finishedAt:Date.now()}:{})});
+  arr.push({title, author, status, genre, color: bookFormColor, coll, ideas:['','',''], quotes:['','',''], opening:'', addedAt:Date.now(), ...(status==='done'?{finishedAt:Date.now()}:{})});
   STORE.set('manuel-books', arr);
   document.getElementById('book-title').value = '';
   document.getElementById('book-author').value = '';
+  document.getElementById('book-coll').value = '';
+  bookFormColor = SCHEDULE_COLORS[0];
+  const colorHost = document.getElementById('book-color-row');
+  if(colorHost) colorHost.querySelectorAll('.sched-color').forEach(x=>x.classList.toggle('active', x.dataset.color === bookFormColor));
   renderBooks();
 });
 
@@ -6539,6 +7059,9 @@ function init(){
     const _cm = document.getElementById('ctx-menu'); if(_cm) _cm.style.display='none';
   }catch(e){}
   purgeExpiredOnceTasks();   // nettoie les tâches uniques d'hier
+  updateFabVisibility();
+  syncHeaderHeight();
+  setTimeout(syncHeaderHeight, 300); // re-mesure une fois les polices chargées
   updateGreeting();
   renderNowCard();
   renderTimeline();
@@ -6547,12 +7070,16 @@ function init(){
   renderReminders();
   renderCustomTasks();
   renderNotes();
+  initBookColorPicker();
   renderBooks();
   renderQuotes();
   renderLatin();
   renderAlex();
   renderKeep();
   renderHabitsManager();
+  initQuestPickers();
+  checkSkillDecay();
+  renderSkillsTab();
   renderPillars();
   renderYouth();
   setGuideMode(STORE.get('manuel-guide-mode', 'pillars'));
