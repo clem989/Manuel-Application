@@ -35,6 +35,7 @@
     --safe-top:env(safe-area-inset-top,0px);
     --tabbar-h:68px;
     --app-header-h:108px;
+    --subbar-h:50px;
   }
 
   /* Light mode override */
@@ -379,6 +380,22 @@
   .diff-chip{font-size:9.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:2px 7px;border-radius:8px;border:1px solid var(--accent);color:var(--accent);white-space:nowrap}
   .sk-badge{font-size:9.5px;font-weight:700;letter-spacing:.02em;padding:2px 7px;border-radius:8px;white-space:nowrap;
     background:color-mix(in srgb, var(--sk) 16%, transparent);color:var(--sk);border:1px solid color-mix(in srgb, var(--sk) 45%, transparent)}
+  /* ── Carte tâche/habitude (icône encadrée / titre+fréquence+heure / compétences+difficulté / coche) ── */
+  .qc-icon{width:36px;height:36px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;
+    font-size:17px;border-radius:10px;background:var(--surface-2);border:1px solid var(--line)}
+  .qc-body{flex:1;min-width:0}
+  .qc-title{font-size:14px;font-weight:600;line-height:1.3}
+  .qc-freq{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-weight:600;margin-top:3px}
+  .qc-when{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:1px}
+  .qc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex:0 0 auto;max-width:120px}
+  .qc-check{width:24px;height:24px;flex:0 0 auto;border:1.5px solid var(--line);border-radius:7px;
+    display:flex;align-items:center;justify-content:center;color:transparent;transition:all .2s}
+  .quest-card{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid var(--line-soft);cursor:pointer;user-select:none}
+  .quest-card:last-child{border-bottom:none}
+  .quest-card.done, .obj-item.done .swipe-content{opacity:.6}
+  .quest-card.done .qc-title, .obj-item.done .qc-title{text-decoration:line-through;text-decoration-color:var(--accent);color:var(--muted)}
+  .quest-card.done .qc-check, .obj-item.done .qc-check{background:var(--accent);border-color:var(--accent)}
+  .quest-card.done .qc-check::after, .obj-item.done .qc-check::after{content:"✓";color:#fff;font-size:13px;font-weight:700}
   .check-items{list-style:none}
   .check-item{
     display:flex;align-items:center;gap:12px;
@@ -628,6 +645,18 @@
     transition:all .2s;white-space:nowrap;
   }
   .sub-tab.active{background:var(--surface-3);color:var(--ink)}
+  /* Barre de sous-onglets d'un onglet principal (Accueil/Lecture/Carnet/Guide) : fixe,
+     empilée juste au-dessus de la tabbar, toujours visible (mobile uniquement — le
+     panneau + du mgmt-modal, lui, garde ses onglets internes dans le flux normal). */
+  .view-inner > .sub-tabs{
+    position:fixed;left:0;right:0;bottom:calc(var(--tabbar-h) + var(--safe-bottom));
+    z-index:97;max-width:680px;margin:0 auto;
+    border-radius:0;border:none;border-top:1px solid var(--line);
+    background:var(--bg);padding:8px 16px;
+  }
+  .view:has(> .view-inner > .sub-tabs){
+    padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h));
+  }
 
   /* Badge de fréquence */
   .freq-badge{
@@ -1257,7 +1286,7 @@
      du téléphone. Même couleur que la tabbar pour une continuité parfaite. */
   /* ── BOUTON + FLOTTANT (Accueil / Lecture / Carnet) ─── */
   .fab{
-    position:fixed;right:16px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + 18px);
+    position:fixed;right:16px;bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h) + 18px);
     width:54px;height:54px;border-radius:50%;
     background:var(--accent);color:#fff;font-size:28px;line-height:1;
     display:none;align-items:center;justify-content:center;padding-bottom:2px;
@@ -1357,17 +1386,39 @@
   }
   .book-detail{display:none;margin-top:12px;border-top:1px dashed var(--line);padding-top:12px}
   .book-item.expanded .book-detail{display:block}
-  /* ── ÉTAGÈRES (À lire / Terminés) — grille de couvertures colorées ── */
-  .book-shelf-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px;margin-bottom:6px}
-  .book-tile{border-radius:12px;border:1px solid var(--line);padding:12px 10px;min-height:118px;
-    display:flex;flex-direction:column;justify-content:flex-end;gap:3px;cursor:pointer;
-    position:relative;overflow:hidden;box-shadow:0 3px 10px rgba(0,0,0,.18)}
-  .book-tile-coll{align-self:flex-start;font-size:8.5px;letter-spacing:.08em;text-transform:uppercase;
-    font-weight:700;color:#fff;background:rgba(0,0,0,.32);padding:2px 7px;border-radius:8px;margin-bottom:auto}
-  .book-tile-title{font-family:'Instrument Serif',serif;font-size:14px;line-height:1.18;color:#fff;
-    text-shadow:0 1px 3px rgba(0,0,0,.5);display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
-  .book-tile-author{font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;font-weight:700;color:rgba(255,255,255,.88)}
-  .book-tile-date{font-size:9px;color:rgba(255,255,255,.75);font-family:'JetBrains Mono',monospace;margin-top:1px}
+  /* ── ÉTAGÈRES (À lire / Terminés) — dos de livres + couvertures à plat, planche bois ── */
+  .shelf-row{position:relative;margin:0 0 24px;padding-top:16px}
+  .shelf{display:flex;align-items:flex-end;gap:6px;min-height:150px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
+  .shelf::-webkit-scrollbar{display:none}
+  .shelf-row::after{content:"";position:absolute;left:0;right:0;bottom:0;height:12px;
+    background:linear-gradient(180deg,#4A2F14,#2A1A08);border-radius:0 0 6px 6px;box-shadow:0 4px 8px rgba(0,0,0,.5)}
+  .tome{width:42px;border-radius:4px 4px 0 0;position:relative;flex:0 0 auto;cursor:pointer;
+    border:1px solid rgba(0,0,0,.35);border-bottom:none;
+    box-shadow:inset 3px 0 6px rgba(255,255,255,.08),inset -4px 0 8px rgba(0,0,0,.35);
+    display:flex;flex-direction:column;align-items:center;padding:9px 2px 7px;overflow:hidden}
+  .tome::before,.tome::after{content:"";position:absolute;left:4px;right:4px;height:2px;background:rgba(255,255,255,.28)}
+  .tome::before{top:5px}.tome::after{bottom:4px}
+  .tome-title{flex:1;display:flex;align-items:center;justify-content:center;overflow:hidden;width:100%}
+  .tome-title span{writing-mode:vertical-rl;text-orientation:mixed;white-space:nowrap;
+    font-family:'Instrument Serif',serif;font-size:12px;color:#F7F1E6;text-shadow:0 1px 2px rgba(0,0,0,.55);
+    max-height:100%;overflow:hidden;text-overflow:ellipsis}
+  .tome-author{font-size:7px;letter-spacing:.06em;text-transform:uppercase;font-weight:700;color:#F1E8D8;opacity:.9;text-shadow:0 1px 2px rgba(0,0,0,.5)}
+  .tome-coll{position:absolute;top:-14px;left:0;font-size:8px;letter-spacing:.06em;text-transform:uppercase;
+    font-weight:700;color:var(--ink-soft);white-space:nowrap}
+  .flatshelf{display:flex;align-items:flex-end;gap:12px;min-height:160px;padding:0 4px;position:relative;overflow-x:auto;scrollbar-width:none}
+  .flatshelf::-webkit-scrollbar{display:none}
+  .flat{width:84px;flex:0 0 auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+  .flat-cover{width:82px;height:114px;border-radius:4px 9px 9px 4px;position:relative;
+    border:1px solid rgba(0,0,0,.4);box-shadow:inset 5px 0 8px rgba(0,0,0,.35),3px 3px 10px rgba(0,0,0,.3);
+    display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:8px 6px;text-align:center}
+  .flat-cover::before{content:"";position:absolute;inset:4px;border:1px solid rgba(255,255,255,.28);border-radius:2px 6px 6px 2px}
+  .flat-title{font-family:'Instrument Serif',serif;font-size:11.5px;line-height:1.16;color:#F7F1E6;
+    text-shadow:0 1px 3px rgba(0,0,0,.55);position:relative;z-index:1;
+    display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+  .flat-author{font-size:7px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#F1E8D8;position:relative;z-index:1}
+  .flat-date{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+  .flat-coll{position:absolute;top:-14px;left:0;right:0;text-align:center;font-size:8px;letter-spacing:.06em;
+    text-transform:uppercase;font-weight:700;color:var(--ink-soft);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .book-detail h6{
     font-size:10px;letter-spacing:.14em;text-transform:uppercase;
     color:var(--muted);margin:10px 0 6px;font-weight:600;
@@ -1844,248 +1895,15 @@
       <div class="view-head">
         <div class="eyebrow">Personnel</div>
         <h1>Carnet</h1>
-        <p class="sub">Notes classées, tâches, rappels et habitudes.</p>
+        <p class="sub">Notes classées, citations, latin, alexandrins et choses à retenir.</p>
       </div>
 
       <div class="sub-tabs">
         <button class="sub-tab active" data-sub="notes-list">📝 Notes</button>
-        <button class="sub-tab" data-sub="tasks">✅ Tâches</button>
-        <button class="sub-tab" data-sub="reminders">⏰ Rappels</button>
-        <button class="sub-tab" data-sub="habits">☑️ Habitudes</button>
-        <button class="sub-tab" data-sub="schedule">📅 Emploi du temps</button>
-      </div>
-
-      <!-- Emploi du temps (planning Aujourd'hui) -->
-      <div class="sub-view" data-sub="schedule" style="display:none">
-        <div class="schedule-edit-head">
-          <span style="font-size:12px;color:var(--muted);flex:1">Planning « Aujourd'hui » — modifie tes créneaux.</span>
-          <div class="sched-head-btns">
-            <button class="btn btn-primary btn-sm" id="schedule-add">+ Ajouter</button>
-            <button class="btn btn-sm" id="schedule-reset">Réinitialiser</button>
-          </div>
-        </div>
-        <div class="sched-day-filter" id="schedule-day-filter">
-          <button class="freq-btn active" data-day="all">Tout</button>
-          <button class="freq-btn" data-day="1">Lun</button>
-          <button class="freq-btn" data-day="2">Mar</button>
-          <button class="freq-btn" data-day="3">Mer</button>
-          <button class="freq-btn" data-day="4">Jeu</button>
-          <button class="freq-btn" data-day="5">Ven</button>
-          <button class="freq-btn" data-day="6">Sam</button>
-          <button class="freq-btn" data-day="0">Dim</button>
-        </div>
-        <div id="schedule-editor"></div>
-      </div>
-
-      <!-- Habitudes -->
-      <div class="sub-view" data-sub="habits" style="display:none">
-        <div class="note-form-card">
-          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
-          <hr class="note-form-sep">
-          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
-        </div>
-        <div class="input-row" style="margin-top:8px">
-          <div id="habit-icon-host" style="flex:1;min-width:0"></div>
-          <div id="habit-diff-host" style="flex:1;min-width:0"></div>
-        </div>
-        <div class="freq-filter" id="habit-skills-row" style="margin-top:8px"></div>
-        <div class="input-row" style="margin-top:8px">
-          <select id="habit-moment" class="btn btn-sm" style="flex:1">
-            <option value="matin">🌅 Matin</option>
-            <option value="aprem">☀️ Après-midi</option>
-            <option value="soir">🌙 Soir</option>
-          </select>
-          <button class="btn btn-primary btn-sm" id="habit-add" style="flex:1">Ajouter</button>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin:10px 2px 0">Tes habitudes apparaissent dans l'overlay du moment à chaque ouverture de l'app, et comptent dans ta progression et tes stats. Touche ✏️ pour modifier.</p>
-        <div id="habits-list"></div>
-      </div>
-
-      <!-- Reminders -->
-      <div class="sub-view" data-sub="reminders" style="display:none">
-        <div class="input-row">
-          <input type="time" id="rem-time" value="18:00">
-          <input type="text" id="rem-text" placeholder="Mon rappel personnel...">
-          <button class="btn btn-primary btn-sm" id="rem-add">Ajouter</button>
-        </div>
-        <div id="rem-list"></div>
-      </div>
-
-      <!-- Tasks -->
-      <div class="sub-view" data-sub="tasks" style="display:none">
-        <div class="input-row">
-          <input type="text" id="task-text" placeholder="Nouvelle tâche...">
-          <select id="task-freq">
-            <option value="once">Unique (1 jour)</option>
-            <option value="daily">Quotidien</option>
-            <option value="weekly">Hebdo</option>
-            <option value="monthly">Mensuel</option>
-            <option value="yearly">Annuel</option>
-          </select>
-          <button class="btn btn-primary btn-sm" id="task-add">+</button>
-        </div>
-        <div class="input-row" id="task-once-row" style="display:none;align-items:center">
-          <span style="font-size:14px">📅</span>
-          <input type="date" id="task-once-date" style="flex:1">
-          <input type="time" id="task-once-time" style="flex:1">
-        </div>
-        <div class="input-row task-reminder-row" id="task-reminder-row">
-          <span style="font-size:14px">🔔</span>
-          <select id="task-rem-weekday" style="display:none">
-            <option value="1">Lundi</option><option value="2">Mardi</option>
-            <option value="3">Mercredi</option><option value="4">Jeudi</option>
-            <option value="5">Vendredi</option><option value="6">Samedi</option>
-            <option value="0">Dimanche</option>
-          </select>
-          <select id="task-rem-month" style="display:none">
-            <option value="1">Janvier</option><option value="2">Février</option>
-            <option value="3">Mars</option><option value="4">Avril</option>
-            <option value="5">Mai</option><option value="6">Juin</option>
-            <option value="7">Juillet</option><option value="8">Août</option>
-            <option value="9">Septembre</option><option value="10">Octobre</option>
-            <option value="11">Novembre</option><option value="12">Décembre</option>
-          </select>
-          <select id="task-rem-day" style="display:none">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
-          </select>
-          <select id="task-interval" style="display:none">
-            <option value="1">chaque</option>
-            <option value="2">toutes les 2</option>
-            <option value="3">toutes les 3</option>
-            <option value="4">toutes les 4</option>
-            <option value="5">toutes les 5</option>
-            <option value="6">toutes les 6</option>
-          </select>
-          <input type="time" id="task-rem-time" value="09:00">
-        </div>
-        <div class="input-row" style="margin-top:8px">
-          <div id="task-icon-host" style="flex:1;min-width:0"></div>
-          <div id="task-diff-host" style="flex:1;min-width:0"></div>
-        </div>
-        <div class="freq-filter" id="task-skills-row" style="margin-top:8px"></div>
-        <div class="freq-filter" id="task-filter">
-          <button class="freq-btn active" data-filter="all">Toutes</button>
-          <button class="freq-btn" data-filter="daily">Quotidien</button>
-          <button class="freq-btn" data-filter="weekly">Hebdo</button>
-          <button class="freq-btn" data-filter="monthly">Mensuel</button>
-          <button class="freq-btn" data-filter="yearly">Annuel</button>
-          <button class="freq-btn" data-filter="once">Unique (1j)</button>
-        </div>
-        <div id="tasks-list"></div>
-      </div>
-
-
-      <!-- Notes -->
-      <div class="sub-view" data-sub="notes-list">
-        <div class="note-form-card">
-          <input type="text" id="note-title" class="note-title-input" placeholder="Titre (optionnel)">
-          <hr class="note-form-sep">
-          <textarea id="note-text" placeholder="Une idée, une réflexion, un truc à retenir..."></textarea>
-        </div>
-        <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:8px 0 16px">
-          <select id="note-cat" class="btn btn-sm" style="flex:1;max-width:200px">
-            <option value="course">🛒 Course</option>
-            <option value="projets">🚀 Projets</option>
-            <option value="autobio">📔 Autobiographie</option>
-            <option value="politique">🏛️ Politique</option>
-            <option value="site">🌐 Site Internet</option>
-            <option value="moi">💭 Pour Moi</option>
-            <option value="autre" selected>📦 Autre</option>
-          </select>
-          <button class="btn btn-primary btn-sm" id="note-add">Ajouter la note</button>
-        </div>
-        <div class="freq-filter" id="note-filter">
-          <button class="freq-btn active" data-filter="all">Tout</button>
-          <button class="freq-btn" data-filter="course">Course</button>
-          <button class="freq-btn" data-filter="projets">Projets</button>
-          <button class="freq-btn" data-filter="autobio">Autobiographie</button>
-          <button class="freq-btn" data-filter="politique">Politique</button>
-          <button class="freq-btn" data-filter="site">Site Internet</button>
-          <button class="freq-btn" data-filter="moi">Pour Moi</button>
-          <button class="freq-btn" data-filter="autre">Autre</button>
-        </div>
-        <div id="notes-list-display"></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ═════ LECTURE ═════ -->
-  <section class="view" data-view="books">
-    <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Carnet culturel</div>
-        <h1>Lecture</h1>
-        <p class="sub">Livres, citations, alexandrins et choses à retenir.</p>
-      </div>
-
-      <div class="sub-tabs">
-        <button class="sub-tab active" data-sub="lect-books">📚 Livres</button>
         <button class="sub-tab" data-sub="lect-quotes">💬 Citations</button>
         <button class="sub-tab" data-sub="lect-latin">🏺 Latin</button>
         <button class="sub-tab" data-sub="lect-alex">✒️ Alexandrins</button>
         <button class="sub-tab" data-sub="lect-keep">🧠 À retenir</button>
-      </div>
-
-      <!-- Livres -->
-      <div class="sub-view" data-sub="lect-books">
-        <div class="book-form">
-          <div class="book-entry-card">
-            <input type="text" id="book-title" placeholder="Titre du livre">
-            <div class="book-entry-sep"></div>
-            <input type="text" id="book-author" placeholder="Auteur">
-          </div>
-          <div class="input-row" style="margin-top:8px">
-            <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
-          </div>
-          <div class="sched-colors" id="book-color-row" style="margin-top:8px"></div>
-          <div class="book-form-row">
-            <div id="book-genre-host" style="flex:1;min-width:0"></div>
-            <div id="book-init-status-host" style="flex:1;min-width:0"></div>
-            <select id="book-genre" class="btn btn-sm" style="display:none;flex:1">
-              <option value="roman">📕 Roman</option>
-              <option value="essai">💡 Essai</option>
-              <option value="politique">🏛️ Politique</option>
-              <option value="droit">⚖️ Droit</option>
-              <option value="histoire">📜 Histoire</option>
-              <option value="philo">🦉 Philosophie</option>
-              <option value="bio">👤 Biographie</option>
-              <option value="autre">📦 Autre</option>
-            </select>
-            <select id="book-init-status" class="btn btn-sm" style="display:none;flex:1">
-              <option value="todo">📚 À lire</option>
-              <option value="reading">📖 En cours</option>
-              <option value="done">✓ Terminé</option>
-            </select>
-            <button class="btn btn-primary btn-sm" id="book-add" style="flex-shrink:0;white-space:nowrap">Ajouter</button>
-          </div>
-        </div>
-
-        <div class="freq-filter" id="genre-filter">
-          <button class="freq-btn active" data-filter="all">Tous</button>
-          <button class="freq-btn" data-filter="roman">Roman</button>
-          <button class="freq-btn" data-filter="essai">Essai</button>
-          <button class="freq-btn" data-filter="politique">Politique</button>
-          <button class="freq-btn" data-filter="droit">Droit</button>
-          <button class="freq-btn" data-filter="histoire">Histoire</button>
-          <button class="freq-btn" data-filter="philo">Philo</button>
-          <button class="freq-btn" data-filter="bio">Bio</button>
-          <button class="freq-btn" data-filter="autre">Autre</button>
-        </div>
-
-        <div class="book-section">
-          <h4>En cours <span class="count" id="count-reading">0</span></h4>
-          <div id="books-reading"></div>
-        </div>
-        <div class="book-section">
-          <h4>À lire <span class="count" id="count-todo">0</span></h4>
-          <div id="books-todo"></div>
-        </div>
-        <div class="book-section">
-          <h4 style="display:flex;align-items:center;gap:8px">Terminés <span class="count" id="count-done">0</span>
-            <select id="done-year-filter" class="btn btn-sm" style="margin-left:auto;display:none"></select>
-          </h4>
-          <div id="books-done"></div>
-        </div>
       </div>
 
       <!-- Citations -->
@@ -2143,6 +1961,84 @@
           <button class="btn btn-primary btn-sm" id="keep-add">+</button>
         </div>
         <div id="keep-list"></div>
+      </div>
+
+      <!-- Notes -->
+      <div class="sub-view" data-sub="notes-list">
+        <div class="note-form-card">
+          <input type="text" id="note-title" class="note-title-input" placeholder="Titre (optionnel)">
+          <hr class="note-form-sep">
+          <textarea id="note-text" placeholder="Une idée, une réflexion, un truc à retenir..."></textarea>
+        </div>
+        <div style="display:flex;gap:8px;justify-content:flex-end;align-items:center;margin:8px 0 16px">
+          <select id="note-cat" class="btn btn-sm" style="flex:1;max-width:200px">
+            <option value="course">🛒 Course</option>
+            <option value="projets">🚀 Projets</option>
+            <option value="autobio">📔 Autobiographie</option>
+            <option value="politique">🏛️ Politique</option>
+            <option value="site">🌐 Site Internet</option>
+            <option value="moi">💭 Pour Moi</option>
+            <option value="autre" selected>📦 Autre</option>
+          </select>
+          <button class="btn btn-primary btn-sm" id="note-add">Ajouter la note</button>
+        </div>
+        <div class="freq-filter" id="note-filter">
+          <button class="freq-btn active" data-filter="all">Tout</button>
+          <button class="freq-btn" data-filter="course">Course</button>
+          <button class="freq-btn" data-filter="projets">Projets</button>
+          <button class="freq-btn" data-filter="autobio">Autobiographie</button>
+          <button class="freq-btn" data-filter="politique">Politique</button>
+          <button class="freq-btn" data-filter="site">Site Internet</button>
+          <button class="freq-btn" data-filter="moi">Pour Moi</button>
+          <button class="freq-btn" data-filter="autre">Autre</button>
+        </div>
+        <div id="notes-list-display"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═════ LECTURE ═════ -->
+  <section class="view" data-view="books">
+    <div class="view-inner">
+      <div class="view-head">
+        <div class="eyebrow">Carnet culturel</div>
+        <h1>Lecture</h1>
+        <p class="sub">Ta bibliothèque — en cours, à lire, terminés.</p>
+      </div>
+
+      <div class="sub-tabs">
+        <button class="sub-tab active" data-sub="lect-books">📖 En cours</button>
+        <button class="sub-tab" data-sub="lect-todo">📚 À lire</button>
+        <button class="sub-tab" data-sub="lect-done">✓ Terminés</button>
+      </div>
+
+      <!-- En cours -->
+      <div class="sub-view" data-sub="lect-books">
+        <div id="books-reading"></div>
+      </div>
+
+      <!-- À lire -->
+      <div class="sub-view" data-sub="lect-todo" style="display:none">
+        <div class="freq-filter" id="genre-filter">
+          <button class="freq-btn active" data-filter="all">Tous</button>
+          <button class="freq-btn" data-filter="roman">Roman</button>
+          <button class="freq-btn" data-filter="essai">Essai</button>
+          <button class="freq-btn" data-filter="politique">Politique</button>
+          <button class="freq-btn" data-filter="droit">Droit</button>
+          <button class="freq-btn" data-filter="histoire">Histoire</button>
+          <button class="freq-btn" data-filter="philo">Philo</button>
+          <button class="freq-btn" data-filter="bio">Bio</button>
+          <button class="freq-btn" data-filter="autre">Autre</button>
+        </div>
+        <div id="books-todo"></div>
+      </div>
+
+      <!-- Terminés -->
+      <div class="sub-view" data-sub="lect-done" style="display:none">
+        <div class="input-row" style="justify-content:flex-end">
+          <select id="done-year-filter" class="btn btn-sm" style="display:none"></select>
+        </div>
+        <div id="books-done"></div>
       </div>
     </div>
   </section>
@@ -2211,6 +2107,185 @@
 <button class="fab" id="fab-add" aria-label="Ajouter">+</button>
 <div class="nav-bottom-fill"></div>
 
+<!-- ═══ PANNEAU + CONTEXTUEL (Accueil : tâches/habitudes/rappels/emploi du temps — Lecture : ajout livre) ═══ -->
+<div id="mgmt-modal" class="habit-overlay" style="display:none">
+  <div class="habit-sheet slide-up">
+    <div class="habit-sheet-head" style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px">
+      <div>
+        <div class="eyebrow" id="mgmt-eyebrow">Accueil</div>
+        <h2 id="mgmt-title">Gérer</h2>
+      </div>
+      <button class="note-full-close" id="mgmt-close" aria-label="Fermer">✕</button>
+    </div>
+
+    <div class="sub-tabs" id="mgmt-home-tabs">
+      <button class="sub-tab active" data-msub="tasks">✅ Tâches</button>
+      <button class="sub-tab" data-msub="habits">☑️ Habitudes</button>
+      <button class="sub-tab" data-msub="reminders">⏰ Rappels</button>
+      <button class="sub-tab" data-msub="schedule">📅 Emploi du temps</button>
+    </div>
+
+    <div id="mgmt-body">
+      <!-- Tasks -->
+      <div class="sub-view" data-msub="tasks">
+        <div class="input-row">
+          <input type="text" id="task-text" placeholder="Nouvelle tâche...">
+          <select id="task-freq">
+            <option value="once">Unique (1 jour)</option>
+            <option value="daily">Quotidien</option>
+            <option value="weekly">Hebdo</option>
+            <option value="monthly">Mensuel</option>
+            <option value="yearly">Annuel</option>
+          </select>
+          <button class="btn btn-primary btn-sm" id="task-add">+</button>
+        </div>
+        <div class="input-row" id="task-once-row" style="display:none;align-items:center">
+          <span style="font-size:14px">📅</span>
+          <input type="date" id="task-once-date" style="flex:1">
+          <input type="time" id="task-once-time" style="flex:1">
+        </div>
+        <div class="input-row task-reminder-row" id="task-reminder-row">
+          <span style="font-size:14px">🔔</span>
+          <select id="task-rem-weekday" style="display:none">
+            <option value="1">Lundi</option><option value="2">Mardi</option>
+            <option value="3">Mercredi</option><option value="4">Jeudi</option>
+            <option value="5">Vendredi</option><option value="6">Samedi</option>
+            <option value="0">Dimanche</option>
+          </select>
+          <select id="task-rem-month" style="display:none">
+            <option value="1">Janvier</option><option value="2">Février</option>
+            <option value="3">Mars</option><option value="4">Avril</option>
+            <option value="5">Mai</option><option value="6">Juin</option>
+            <option value="7">Juillet</option><option value="8">Août</option>
+            <option value="9">Septembre</option><option value="10">Octobre</option>
+            <option value="11">Novembre</option><option value="12">Décembre</option>
+          </select>
+          <select id="task-rem-day" style="display:none">
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option>
+          </select>
+          <select id="task-interval" style="display:none">
+            <option value="1">chaque</option>
+            <option value="2">toutes les 2</option>
+            <option value="3">toutes les 3</option>
+            <option value="4">toutes les 4</option>
+            <option value="5">toutes les 5</option>
+            <option value="6">toutes les 6</option>
+          </select>
+          <input type="time" id="task-rem-time" value="09:00">
+        </div>
+        <div class="input-row" style="margin-top:8px">
+          <div id="task-icon-host" style="flex:1;min-width:0"></div>
+          <div id="task-diff-host" style="flex:1;min-width:0"></div>
+        </div>
+        <div class="freq-filter" id="task-skills-row" style="margin-top:8px"></div>
+        <div class="freq-filter" id="task-filter">
+          <button class="freq-btn active" data-filter="all">Toutes</button>
+          <button class="freq-btn" data-filter="daily">Quotidien</button>
+          <button class="freq-btn" data-filter="weekly">Hebdo</button>
+          <button class="freq-btn" data-filter="monthly">Mensuel</button>
+          <button class="freq-btn" data-filter="yearly">Annuel</button>
+          <button class="freq-btn" data-filter="once">Unique (1j)</button>
+        </div>
+        <div id="tasks-list"></div>
+      </div>
+
+      <!-- Habitudes -->
+      <div class="sub-view" data-msub="habits" style="display:none">
+        <div class="note-form-card">
+          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
+          <hr class="note-form-sep">
+          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
+        </div>
+        <div class="input-row" style="margin-top:8px">
+          <div id="habit-icon-host" style="flex:1;min-width:0"></div>
+          <div id="habit-diff-host" style="flex:1;min-width:0"></div>
+        </div>
+        <div class="freq-filter" id="habit-skills-row" style="margin-top:8px"></div>
+        <div class="input-row" style="margin-top:8px">
+          <select id="habit-moment" class="btn btn-sm" style="flex:1">
+            <option value="matin">🌅 Matin</option>
+            <option value="aprem">☀️ Après-midi</option>
+            <option value="soir">🌙 Soir</option>
+          </select>
+          <button class="btn btn-primary btn-sm" id="habit-add" style="flex:1">Ajouter</button>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin:10px 2px 0">Tes habitudes apparaissent dans l'overlay du moment à chaque ouverture de l'app, et comptent dans ta progression et tes stats. Touche ✏️ pour modifier.</p>
+        <div id="habits-list"></div>
+      </div>
+
+      <!-- Reminders -->
+      <div class="sub-view" data-msub="reminders" style="display:none">
+        <div class="input-row">
+          <input type="time" id="rem-time" value="18:00">
+          <input type="text" id="rem-text" placeholder="Mon rappel personnel...">
+          <button class="btn btn-primary btn-sm" id="rem-add">Ajouter</button>
+        </div>
+        <div id="rem-list"></div>
+      </div>
+
+      <!-- Emploi du temps -->
+      <div class="sub-view" data-msub="schedule" style="display:none">
+        <div class="schedule-edit-head">
+          <span style="font-size:12px;color:var(--muted);flex:1">Planning « Aujourd'hui » — modifie tes créneaux.</span>
+          <div class="sched-head-btns">
+            <button class="btn btn-primary btn-sm" id="schedule-add">+ Ajouter</button>
+            <button class="btn btn-sm" id="schedule-reset">Réinitialiser</button>
+          </div>
+        </div>
+        <div class="sched-day-filter" id="schedule-day-filter">
+          <button class="freq-btn active" data-day="all">Tout</button>
+          <button class="freq-btn" data-day="1">Lun</button>
+          <button class="freq-btn" data-day="2">Mar</button>
+          <button class="freq-btn" data-day="3">Mer</button>
+          <button class="freq-btn" data-day="4">Jeu</button>
+          <button class="freq-btn" data-day="5">Ven</button>
+          <button class="freq-btn" data-day="6">Sam</button>
+          <button class="freq-btn" data-day="0">Dim</button>
+        </div>
+        <div id="schedule-editor"></div>
+      </div>
+
+      <!-- Ajout livre (contexte Lecture) -->
+      <div class="sub-view" data-msub="book" style="display:none">
+        <div class="book-form">
+          <div class="book-entry-card">
+            <input type="text" id="book-title" placeholder="Titre du livre">
+            <div class="book-entry-sep"></div>
+            <input type="text" id="book-author" placeholder="Auteur">
+          </div>
+          <div class="input-row" style="margin-top:8px">
+            <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
+          </div>
+          <div class="sched-colors" id="book-color-row" style="margin-top:8px"></div>
+          <div class="book-form-row">
+            <div id="book-genre-host" style="flex:1;min-width:0"></div>
+            <div id="book-init-status-host" style="flex:1;min-width:0"></div>
+            <select id="book-genre" class="btn btn-sm" style="display:none;flex:1">
+              <option value="roman">📕 Roman</option>
+              <option value="essai">💡 Essai</option>
+              <option value="politique">🏛️ Politique</option>
+              <option value="droit">⚖️ Droit</option>
+              <option value="histoire">📜 Histoire</option>
+              <option value="philo">🦉 Philosophie</option>
+              <option value="bio">👤 Biographie</option>
+              <option value="autre">📦 Autre</option>
+            </select>
+            <select id="book-init-status" class="btn btn-sm" style="display:none;flex:1">
+              <option value="todo">📚 À lire</option>
+              <option value="reading">📖 En cours</option>
+              <option value="done">✓ Terminé</option>
+            </select>
+            <button class="btn btn-primary btn-sm" id="book-add" style="flex-shrink:0;white-space:nowrap">Ajouter</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<span id="count-reading" style="display:none">0</span>
+<span id="count-todo" style="display:none">0</span>
+<span id="count-done" style="display:none">0</span>
+
 <!-- ═══ MODALE NOTE COMPLÈTE ═══ -->
 <div id="note-full-modal" class="note-full-overlay" style="display:none" role="dialog" aria-modal="true">
   <div class="note-full-sheet">
@@ -2244,6 +2319,16 @@
 </div>
 
 <script>
+/* ═══════════════════════════════════════════════
+   STORAGE HELPERS
+═══════════════════════════════════════════════ */
+const STORE = {
+  get(key, def){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def }catch(e){return def} },
+  set(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} },
+  del(key){ try{ localStorage.removeItem(key); }catch(e){} }
+};
+const todayKey = ()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` };
+
 /* ═══════════════════════════════════════════════
    DATA — Timelines (study & vacation)
 ═══════════════════════════════════════════════ */
@@ -2713,6 +2798,24 @@ function questMetaHtml(item){
 function questIconHtml(item){
   return item.icon ? `<span class="quest-icon">${item.icon}</span>` : '';
 }
+// Carte tâche/habitude façon proto : icône encadrée à gauche, titre/fréquence/heure
+// empilés, compétences+difficulté en colonne à droite, coche tout à droite (clic
+// n'importe où sur la carte = coche, comportement inchangé — seul le visuel change).
+function questCardInner(opts){
+  const skHtml = (opts.skills||[]).filter(Boolean).map(id=>{
+    const s = skillById(id);
+    return s ? `<span class="sk-badge" style="--sk:${s.color}">${s.icon} ${escapeHtml(s.name)}</span>` : '';
+  }).join('');
+  const diffHtml = (opts.diff!=null) ? `<span class="diff-chip">${diffLabel(opts.diff)}</span>` : '';
+  return `<div class="qc-icon">${opts.icon || '📌'}</div>
+    <div class="qc-body">
+      <div class="qc-title">${escapeHtml(opts.title)}</div>
+      ${opts.freqLabel ? `<div class="qc-freq">${escapeHtml(opts.freqLabel)}</div>` : ''}
+      ${opts.when ? `<div class="qc-when">🔔 ${escapeHtml(opts.when)}</div>` : ''}
+    </div>
+    <div class="qc-right">${skHtml}${diffHtml}</div>
+    <div class="qc-check"></div>`;
+}
 
 // État courant des formulaires Tâches / Habitudes (icône, difficulté, compétences liées).
 // Les sélecteurs (makeMsel) sont montés au init() dans les hosts prévus dans le HTML.
@@ -2843,16 +2946,6 @@ const vacationReminders = [
 ];
 
 /* ═══════════════════════════════════════════════
-   STORAGE HELPERS
-═══════════════════════════════════════════════ */
-const STORE = {
-  get(key, def){ try{ const v=localStorage.getItem(key); return v?JSON.parse(v):def }catch(e){return def} },
-  set(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} },
-  del(key){ try{ localStorage.removeItem(key); }catch(e){} }
-};
-const todayKey = ()=>{ const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}` };
-
-/* ═══════════════════════════════════════════════
    THEME (dark / light)
 ═══════════════════════════════════════════════ */
 function applyTheme(theme, save = true){
@@ -2957,9 +3050,10 @@ tabs.forEach(t=>{
 
 /* ═══════════════════════════════════════════════
    BOUTON + FLOTTANT (Accueil / Lecture / Carnet)
-   Reconstruit simple et sans friction : plutôt que de recréer des formulaires,
-   il amène directement au bon champ d'ajout déjà existant (originaux, inchangés)
-   et le met le focus dessus.
+   Accueil et Lecture : ouvre le panneau condensé #mgmt-modal (tâches/habitudes/
+   rappels/emploi du temps, ou ajout livre), qui réutilise tel quel les formulaires
+   originaux. Carnet : les formulaires d'ajout restent inline (déjà visibles en haut
+   de chaque sous-onglet) — le + y fait juste défiler et poser le focus dessus.
 ═══════════════════════════════════════════════ */
 const FAB_VIEWS = new Set(['home','books','notes']);
 function updateFabVisibility(){
@@ -2972,27 +3066,48 @@ function focusField(id){
   el.scrollIntoView({behavior:'smooth', block:'center'});
   setTimeout(()=>{ try{ el.focus({preventScroll:true}); }catch(e){ el.focus(); } }, 260);
 }
+
+function mgmtShowSub(sub){
+  document.querySelectorAll('#mgmt-home-tabs .sub-tab').forEach(b=>b.classList.toggle('active', b.dataset.msub===sub));
+  document.querySelectorAll('#mgmt-body > .sub-view').forEach(v=>{ v.style.display = (v.dataset.msub===sub) ? 'block' : 'none'; });
+  if(sub==='tasks') renderCustomTasks();
+  if(sub==='habits') renderHabitsManager();
+  if(sub==='reminders') renderReminders();
+  if(sub==='schedule') renderScheduleEditor();
+}
+document.querySelectorAll('#mgmt-home-tabs .sub-tab').forEach(b=>{
+  b.addEventListener('click', ()=>mgmtShowSub(b.dataset.msub));
+});
+function openMgmt(context){
+  const modal = document.getElementById('mgmt-modal');
+  const tabsRow = document.getElementById('mgmt-home-tabs');
+  if(context === 'home'){
+    document.getElementById('mgmt-eyebrow').textContent = 'Accueil';
+    document.getElementById('mgmt-title').textContent = 'Tâches & habitudes';
+    tabsRow.style.display = 'flex';
+    mgmtShowSub('tasks');
+  } else if(context === 'book'){
+    document.getElementById('mgmt-eyebrow').textContent = 'Lecture';
+    document.getElementById('mgmt-title').textContent = 'Ajouter un livre';
+    tabsRow.style.display = 'none';
+    document.querySelectorAll('#mgmt-body > .sub-view').forEach(v=>{ v.style.display = (v.dataset.msub==='book') ? 'block' : 'none'; });
+  }
+  modal.style.display = 'flex';
+  if(context === 'book') setTimeout(()=>{ try{ document.getElementById('book-title').focus(); }catch(e){} }, 200);
+}
+function closeMgmt(){ document.getElementById('mgmt-modal').style.display = 'none'; }
+document.getElementById('mgmt-close').addEventListener('click', closeMgmt);
+document.getElementById('mgmt-modal').addEventListener('click', e=>{ if(e.target.id==='mgmt-modal') closeMgmt(); });
+
 document.getElementById('fab-add').addEventListener('click', ()=>{
-  if(currentView === 'home'){
-    // L'ajout de tâches/habitudes se fait dans le Carnet — on y amène directement.
-    document.querySelector('.tab[data-view="notes"]').click();
-    const tasksTab = document.querySelector('.view[data-view="notes"] [data-sub="tasks"]');
-    if(tasksTab) tasksTab.click();
-    setTimeout(()=>focusField('task-text'), 220);
-    return;
-  }
-  if(currentView === 'books'){
-    const booksTab = document.querySelector('.view[data-view="books"] [data-sub="lect-books"]');
-    if(booksTab) booksTab.click();
-    focusField('book-title');
-    return;
-  }
+  if(currentView === 'home'){ openMgmt('home'); return; }
+  if(currentView === 'books'){ openMgmt('book'); return; }
   if(currentView === 'notes'){
     const activeSub = document.querySelector('.view[data-view="notes"] .sub-tab.active');
     const sub = activeSub ? activeSub.dataset.sub : 'notes-list';
     const targets = {
-      'notes-list':'note-title', 'tasks':'task-text', 'reminders':'rem-text',
-      'habits':'habit-text', 'schedule':'schedule-add'
+      'notes-list':'note-title', 'lect-quotes':'quote-text', 'lect-latin':'latin-text',
+      'lect-alex':'alex-text', 'lect-keep':'keep-text'
     };
     focusField(targets[sub] || 'note-title');
   }
@@ -3537,23 +3652,21 @@ function renderUnifiedTasks(){
 
   let doneCount = 0;
 
-  // Construit un <li> pour un item (tâche ou rappel)
+  // Construit un <li> pour un item (tâche ou rappel) — carte façon proto (icône encadrée,
+  // titre/fréquence/heure, compétences+difficulté à droite, coche tout à droite).
   function buildItemLi(item){
     const li = document.createElement('li');
-    li.className = 'check-item' + (item.isDone ? ' done' : '');
+    li.className = 'quest-card' + (item.isDone ? ' done' : '');
     if(item.kind === 'reminder'){
       const r = item.data;
-      li.innerHTML = `<div class="check-box"></div><div class="check-text">${escapeHtml(r.text)}<small><span class="rem-badge">🔔 ${r.time}</span></small></div>`;
+      li.innerHTML = questCardInner({icon:'🔔', title:r.text, freqLabel:'Rappel', when:r.time});
     } else {
       const t = item.data;
-      const icon = questIconHtml(t), meta = questMetaHtml(t);
       if(t.freq === 'once'){
-        const remBadge = t.onceTime ? `<span class="rem-badge">🔔 ${t.onceTime}</span>` : '';
-        li.innerHTML = `<div class="check-box"></div><div class="check-text">${icon}${escapeHtml(t.text)}<small><span class="freq-badge once">Unique</span></small>${remBadge}${meta}</div>`;
+        li.innerHTML = questCardInner({icon:t.icon, title:t.text, freqLabel:'Unique', when:t.onceTime||'', diff:t.diff, skills:t.skills});
       } else {
         const remText = t.reminder?.time ? formatTaskReminder(t) : '';
-        const remBadge = remText ? `<span class="rem-badge">🔔 ${remText}</span>` : '';
-        li.innerHTML = `<div class="check-box"></div><div class="check-text">${icon}${escapeHtml(t.text)}<small><span class="freq-badge ${t.freq}">${getFreqLabel(t.freq)}</span></small>${remBadge}${meta}</div>`;
+        li.innerHTML = questCardInner({icon:t.icon, title:t.text, freqLabel:getFreqLabel(t.freq), when:remText, diff:t.diff, skills:t.skills});
       }
     }
     li.addEventListener('click', item.toggle.bind(item));
@@ -4257,17 +4370,11 @@ function renderTaskItem(task){
   const el = document.createElement('div');
   el.className = 'obj-item' + (isDone ? ' done' : '');
   const remStr = formatTaskReminder(task);
+  const freqLabel = task.freq === 'once' ? 'Unique' : getFreqLabel(task.freq);
+  const when = task.freq === 'once' ? (task.onceTime||'') : remStr;
   el.innerHTML = `
     <div class="swipe-content">
-      <div class="check-box"></div>
-      <div class="obj-text">
-        ${questIconHtml(task)}${escapeHtml(task.text)}
-        <div class="obj-meta">
-          <span class="freq-badge ${task.freq}">${getFreqLabel(task.freq)}</span>
-          ${remStr ? `<span class="rem-badge">🔔 ${remStr}</span>` : ''}
-        </div>
-        ${questMetaHtml(task)}
-      </div>
+      ${questCardInner({icon:task.icon, title:task.text, freqLabel, when, diff:task.diff, skills:task.skills})}
     </div>
     <button class="swipe-del-btn" aria-label="Supprimer">Supprimer</button>
   `;
@@ -5057,6 +5164,7 @@ document.getElementById('backup-import-input').addEventListener('change', e=>{
 ═══════════════════════════════════════════════ */
 document.querySelectorAll('.sub-tab').forEach(b=>{
   b.addEventListener('click', ()=>{
+    if(!b.dataset.sub) return; // boutons pilotés autrement (ex. data-msub du panneau +)
     const target = b.dataset.sub;
     const scope = b.closest('.view') || document;
     scope.querySelectorAll('.sub-tab').forEach(x=>x.classList.toggle('active', x===b));
@@ -5630,8 +5738,8 @@ function renderBooks(){
   // la fiche complète dans une fenêtre dédiée (réutilise bookFieldsHtml).
   document.getElementById('count-todo').textContent = sections.todo.length;
   document.getElementById('count-done').textContent = sections.done.length;
-  renderBookShelf('books-todo', sections.todo, {emptyKey:'todo'});
-  renderBookShelf('books-done', sections.done, {emptyKey:'done', showDate:true});
+  renderBookShelf('books-todo', sections.todo, {emptyKey:'todo', variant:'spine'});
+  renderBookShelf('books-done', sections.done, {emptyKey:'done', showDate:true, variant:'flat'});
 }
 
 // Couleur d'affichage d'un livre : sa couleur choisie, sinon une couleur stable dérivée
@@ -5783,6 +5891,9 @@ function buildBookCard(b, status, opts={}){
 
 // Étagère (grille de couvertures colorées) pour "À lire" / "Terminés". Le nom de la
 // collection s'affiche sur la couverture dès qu'elle contient ≥ 2 livres sur cette étagère.
+// Étagères façon bibliothèque : dos de livres verticaux ("À lire") ou couvertures posées
+// à plat ("Terminés"), regroupées par tranches sur des planches en bois. Couleur reprise
+// du système existant (bookDisplayColor / palette étendue), jamais les couleurs du proto.
 function renderBookShelf(hostId, list, opts={}){
   const host = document.getElementById(hostId);
   if(!host) return;
@@ -5792,18 +5903,47 @@ function renderBookShelf(hostId, list, opts={}){
   }
   const collCounts = {};
   list.forEach(b=>{ if(b.coll) collCounts[b.coll] = (collCounts[b.coll]||0)+1; });
-  host.innerHTML = `<div class="book-shelf-grid">` + list.map(b=>{
-    const c = bookDisplayColor(b);
-    const showColl = b.coll && collCounts[b.coll] >= 2;
-    const dateStr = (opts.showDate && b.finishedAt) ? new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) : '';
-    return `<div class="book-tile" data-bidx="${b.idx}" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
-      ${showColl ? `<span class="book-tile-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
-      <div class="book-tile-title">${escapeHtml(b.title)}</div>
-      <div class="book-tile-author">${escapeHtml(b.author||'auteur inconnu')}</div>
-      ${dateStr ? `<div class="book-tile-date">${dateStr}</div>` : ''}
-    </div>`;
-  }).join('') + `</div>`;
+  const variant = opts.variant || 'spine';
+  const per = variant === 'flat' ? 4 : 7;
+  let html = '';
+  for(let i=0; i<list.length; i+=per){
+    const chunk = list.slice(i, i+per);
+    if(variant === 'flat'){
+      html += `<div class="shelf-row"><div class="flatshelf">` + chunk.map(b=>{
+        const c = bookDisplayColor(b);
+        const showColl = b.coll && collCounts[b.coll] >= 2;
+        const dateStr = (opts.showDate && b.finishedAt) ? new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) : '';
+        return `<div class="flat" data-bidx="${b.idx}">
+          ${showColl ? `<span class="flat-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
+          <div class="flat-cover" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
+            <span></span>
+            <div class="flat-title">${escapeHtml(b.title)}</div>
+            <div class="flat-author">${escapeHtml(b.author||'auteur inconnu')}</div>
+          </div>
+          ${dateStr ? `<div class="flat-date">${dateStr}</div>` : ''}
+        </div>`;
+      }).join('') + `</div></div>`;
+    } else {
+      html += `<div class="shelf-row"><div class="shelf">` + chunk.map(b=>{
+        const c = bookDisplayColor(b);
+        const showColl = b.coll && collCounts[b.coll] >= 2;
+        const h = 118 + ([...b.title].reduce((x,ch)=>x+ch.charCodeAt(0),0) % 26);
+        return `<div class="tome" data-bidx="${b.idx}" style="height:${h}px;background:linear-gradient(90deg,color-mix(in srgb,${c} 80%,#000),${c} 45%,color-mix(in srgb,${c} 85%,#fff 10%))">
+          ${showColl ? `<span class="tome-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
+          <div class="tome-title"><span>${escapeHtml(b.title)}</span></div>
+          <div class="tome-author">${escapeHtml(surnameOf(b.author))}</div>
+        </div>`;
+      }).join('') + `</div></div>`;
+    }
+  }
+  host.innerHTML = html;
   host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
+}
+function surnameOf(author){
+  const a = (author||'').trim();
+  if(!a) return 'auteur inconnu';
+  const parts = a.split(/\s+/);
+  return parts[parts.length-1];
 }
 
 // Fenêtre de fiche complète, ouverte depuis une étagère (réutilise le chrome de
@@ -7142,7 +7282,9 @@ function init(){
   // Refresh tasks panel when pomo view is opened
   document.querySelector('.tab[data-view="pomo"]').addEventListener('click', ()=>{ renderTasksPanel('pomo-tasks-list'); });
   // Refresh lecture when books view is opened
-  document.querySelector('.tab[data-view="books"]').addEventListener('click', ()=>{ renderBooks(); renderQuotes(); renderLatin(); renderAlex(); renderKeep(); });
+  document.querySelector('.tab[data-view="books"]').addEventListener('click', ()=>{ renderBooks(); });
+  // Refresh carnet (citations/latin/alexandrins/à retenir) when notes view is opened
+  document.querySelector('.tab[data-view="notes"]').addEventListener('click', ()=>{ renderQuotes(); renderLatin(); renderAlex(); renderKeep(); });
 
   // Refresh tâches/objectifs au changement de jour (au cas où la PWA reste ouverte tard)
   // — c'est déjà géré par tick() qui recall les renders au changement de minute
