@@ -140,7 +140,7 @@
   .ah-date{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:600}
   .ah-greet{font-family:'Instrument Serif',serif;font-weight:400;font-size:19px;line-height:1.2;color:var(--ink)}
   .ah-greet em{color:var(--accent);font-style:italic}
-  .ah-sub{font-size:12px;color:var(--ink-soft);margin-top:1px;font-style:italic}
+  .ah-sub{font-size:12px;color:var(--ink-soft);margin-top:5px;font-style:italic;width:100%}
   .ah-actions{display:flex;gap:7px;flex:0 0 auto;margin-top:1px}
   .ah-gauge{margin-top:9px;height:5px;background:var(--surface-2);border-radius:4px;overflow:hidden}
   .ah-gauge-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent-soft));transition:width .4s}
@@ -657,6 +657,9 @@
   .view:has(> .view-inner > .sub-tabs){
     padding-bottom:calc(var(--tabbar-h) + var(--safe-bottom) + var(--subbar-h));
   }
+  /* La barre de sous-onglets ne prend plus de place dans le flux (position:fixed) :
+     resserre l'espace vide qu'elle laissait entre l'en-tête et le premier contenu. */
+  .view-inner:has(> .sub-tabs){padding-top:8px}
 
   /* Badge de fréquence */
   .freq-badge{
@@ -1555,7 +1558,6 @@
     <div class="ah-mid">
       <div class="ah-date" id="today-date">—</div>
       <h1 class="ah-greet"><span id="greet-word">Bonjour</span> <em id="greet-name">Clément</em></h1>
-      <p class="ah-sub" id="greet-sub">—</p>
     </div>
     <div class="ah-actions">
       <button class="float-btn" id="quicknote-btn" aria-label="Note rapide">
@@ -1569,6 +1571,7 @@
       </button>
     </div>
   </div>
+  <p class="ah-sub" id="greet-sub">—</p>
   <div class="ah-gauge"><div class="ah-gauge-fill" id="header-gauge-fill"></div></div>
 </header>
 
@@ -1776,12 +1779,6 @@
   <!-- ═════ STATS ═════ -->
   <section class="view" data-view="stats">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Tes habitudes</div>
-        <h1>Stats <em>& streak</em></h1>
-        <p class="sub">Ce qui se mesure s'améliore.</p>
-      </div>
-
       <div class="stat-grid">
         <div class="stat-card">
           <div class="stat-label">🔥 Série actuelle</div>
@@ -1840,12 +1837,6 @@
   <!-- ═════ POMODORO ═════ -->
   <section class="view" data-view="pomo">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Focus</div>
-        <h1>Pomo<em>doro</em></h1>
-        <p class="sub">25 minutes focus, 5 minutes pause. La méthode qui change tout.</p>
-      </div>
-
       <div class="pomo-card">
         <div class="pomo-mode focus" id="pomo-mode">Focus</div>
         <div class="pomo-ring" id="pomo-ring">
@@ -1892,12 +1883,6 @@
   <!-- ═════ CARNET ═════ -->
   <section class="view" data-view="notes">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Personnel</div>
-        <h1>Carnet</h1>
-        <p class="sub">Notes classées, citations, latin, alexandrins et choses à retenir.</p>
-      </div>
-
       <div class="sub-tabs">
         <button class="sub-tab active" data-sub="notes-list">📝 Notes</button>
         <button class="sub-tab" data-sub="lect-quotes">💬 Citations</button>
@@ -2000,12 +1985,6 @@
   <!-- ═════ LECTURE ═════ -->
   <section class="view" data-view="books">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Carnet culturel</div>
-        <h1>Lecture</h1>
-        <p class="sub">Ta bibliothèque — en cours, à lire, terminés.</p>
-      </div>
-
       <div class="sub-tabs">
         <button class="sub-tab active" data-sub="lect-books">📖 En cours</button>
         <button class="sub-tab" data-sub="lect-todo">📚 À lire</button>
@@ -2046,16 +2025,11 @@
   <!-- ═════ GUIDE ═════ -->
   <section class="view" data-view="guide">
     <div class="view-inner">
-      <div class="view-head">
-        <div class="eyebrow">Le manuel</div>
-        <h1 id="guide-title">Six <em>piliers</em></h1>
-        <p class="sub" id="guide-sub">Le fond de connaissances. Déplie chaque pilier pour les détails.</p>
-      </div>
-      <div class="mode-tabs" id="guide-mode-tabs">
-        <button class="mode-tab active" data-gmode="pillars">🏛️ Six piliers</button>
-        <button class="mode-tab" data-gmode="youth">✨ 20 ans</button>
-        <button class="mode-tab" data-gmode="nutrition">🍽️ Manger</button>
-        <button class="mode-tab" data-gmode="politique">🏛️ Politique</button>
+      <div class="mode-tabs sub-tabs" id="guide-mode-tabs">
+        <button class="mode-tab sub-tab active" data-gmode="pillars">🏛️ Six piliers</button>
+        <button class="mode-tab sub-tab" data-gmode="youth">✨ 20 ans</button>
+        <button class="mode-tab sub-tab" data-gmode="nutrition">🍽️ Manger</button>
+        <button class="mode-tab sub-tab" data-gmode="politique">🏛️ Politique</button>
       </div>
       <div id="pillars"></div>
       <div id="youth-section" style="display:none"></div>
@@ -2129,7 +2103,6 @@
       <!-- Tasks -->
       <div class="sub-view" data-msub="tasks">
         <div class="input-row">
-          <input type="text" id="task-text" placeholder="Nouvelle tâche...">
           <select id="task-freq">
             <option value="once">Unique (1 jour)</option>
             <option value="daily">Quotidien</option>
@@ -2137,7 +2110,6 @@
             <option value="monthly">Mensuel</option>
             <option value="yearly">Annuel</option>
           </select>
-          <button class="btn btn-primary btn-sm" id="task-add">+</button>
         </div>
         <div class="input-row" id="task-once-row" style="display:none;align-items:center">
           <span style="font-size:14px">📅</span>
@@ -2178,6 +2150,10 @@
           <div id="task-diff-host" style="flex:1;min-width:0"></div>
         </div>
         <div class="freq-filter" id="task-skills-row" style="margin-top:8px"></div>
+        <div class="input-row" style="margin-top:8px">
+          <input type="text" id="task-text" placeholder="Nouvelle tâche...">
+          <button class="btn btn-primary btn-sm" id="task-add">+</button>
+        </div>
         <div class="freq-filter" id="task-filter">
           <button class="freq-btn active" data-filter="all">Toutes</button>
           <button class="freq-btn" data-filter="daily">Quotidien</button>
@@ -2191,22 +2167,24 @@
 
       <!-- Habitudes -->
       <div class="sub-view" data-msub="habits" style="display:none">
-        <div class="note-form-card">
-          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
-          <hr class="note-form-sep">
-          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
+        <div class="input-row">
+          <select id="habit-moment" class="btn btn-sm" style="flex:1">
+            <option value="matin">🌅 Matin</option>
+            <option value="aprem">☀️ Après-midi</option>
+            <option value="soir">🌙 Soir</option>
+          </select>
         </div>
         <div class="input-row" style="margin-top:8px">
           <div id="habit-icon-host" style="flex:1;min-width:0"></div>
           <div id="habit-diff-host" style="flex:1;min-width:0"></div>
         </div>
         <div class="freq-filter" id="habit-skills-row" style="margin-top:8px"></div>
+        <div class="note-form-card" style="margin-top:8px">
+          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
+          <hr class="note-form-sep">
+          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
+        </div>
         <div class="input-row" style="margin-top:8px">
-          <select id="habit-moment" class="btn btn-sm" style="flex:1">
-            <option value="matin">🌅 Matin</option>
-            <option value="aprem">☀️ Après-midi</option>
-            <option value="soir">🌙 Soir</option>
-          </select>
           <button class="btn btn-primary btn-sm" id="habit-add" style="flex:1">Ajouter</button>
         </div>
         <p style="font-size:12px;color:var(--muted);margin:10px 2px 0">Tes habitudes apparaissent dans l'overlay du moment à chaque ouverture de l'app, et comptent dans ta progression et tes stats. Touche ✏️ pour modifier.</p>
@@ -2248,16 +2226,8 @@
       <!-- Ajout livre (contexte Lecture) -->
       <div class="sub-view" data-msub="book" style="display:none">
         <div class="book-form">
-          <div class="book-entry-card">
-            <input type="text" id="book-title" placeholder="Titre du livre">
-            <div class="book-entry-sep"></div>
-            <input type="text" id="book-author" placeholder="Auteur">
-          </div>
-          <div class="input-row" style="margin-top:8px">
-            <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
-          </div>
-          <div class="sched-colors" id="book-color-row" style="margin-top:8px"></div>
-          <div class="book-form-row">
+          <div class="sched-colors" id="book-color-row"></div>
+          <div class="book-form-row" style="margin-top:8px">
             <div id="book-genre-host" style="flex:1;min-width:0"></div>
             <div id="book-init-status-host" style="flex:1;min-width:0"></div>
             <select id="book-genre" class="btn btn-sm" style="display:none;flex:1">
@@ -2275,6 +2245,14 @@
               <option value="reading">📖 En cours</option>
               <option value="done">✓ Terminé</option>
             </select>
+          </div>
+          <div class="book-entry-card" style="margin-top:8px">
+            <input type="text" id="book-title" placeholder="Titre du livre">
+            <div class="book-entry-sep"></div>
+            <input type="text" id="book-author" placeholder="Auteur">
+          </div>
+          <div class="input-row" style="margin-top:8px">
+            <input type="text" id="book-coll" placeholder="Collection (optionnel — même couleur, même étagère)" style="flex:1">
             <button class="btn btn-primary btn-sm" id="book-add" style="flex-shrink:0;white-space:nowrap">Ajouter</button>
           </div>
         </div>
@@ -3060,6 +3038,19 @@ function updateFabVisibility(){
   const fab = document.getElementById('fab-add');
   if(fab) fab.classList.toggle('show', FAB_VIEWS.has(currentView));
 }
+// Le + ne doit jamais rester visible (flouté/assombri) sous une modale ouverte —
+// on le masque dès qu'une des voiles plein écran est affichée, quelle qu'elle soit.
+(function watchFabUnderModals(){
+  const fab = document.getElementById('fab-add');
+  if(!fab) return;
+  const selector = '.habit-overlay, .note-full-overlay, .add-cat-overlay';
+  const recompute = ()=>{
+    const anyOpen = [...document.querySelectorAll(selector)].some(m=>getComputedStyle(m).display!=='none');
+    fab.style.visibility = anyOpen ? 'hidden' : '';
+  };
+  new MutationObserver(recompute).observe(document.body, {attributes:true, attributeFilter:['style'], subtree:true});
+  recompute();
+})();
 function focusField(id){
   const el = document.getElementById(id);
   if(!el) return;
@@ -3160,6 +3151,8 @@ function updateGreeting(){
   // L'ancien bloc sleep-alert séparé n'est plus utilisé (le message passe dans le sous-titre)
   const sleepAlert = document.getElementById('sleep-alert');
   if(sleepAlert) sleepAlert.style.display = 'none';
+  // Le commentaire peut passer sur 2 lignes selon l'onglet : recale la hauteur réservée.
+  if(typeof syncHeaderHeight === 'function') syncHeaderHeight();
 }
 // Mesure la hauteur réelle de l'en-tête persistant pour caler le contenu des vues en dessous.
 function syncHeaderHeight(){
@@ -5747,6 +5740,19 @@ function renderBooks(){
 function hashStr(s){ s=String(s||''); let h=0; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))|0; return h; }
 function bookDisplayColor(b){ return b.color || SCHEDULE_COLORS[Math.abs(hashStr(b.title))%SCHEDULE_COLORS.length]; }
 
+// Cycle todo → reading → done → todo (utilisé par le badge de statut ET par le tap
+// direct sur un dos de livre dans l'étagère "À lire").
+function cycleBookStatus(idx, cb){
+  const cycle = {todo:'reading', reading:'done', done:'todo'};
+  const all = STORE.get('manuel-books',[]);
+  const next = cycle[all[idx].status||'todo'];
+  all[idx].status = next;
+  if(next==='done') all[idx].finishedAt = Date.now();
+  STORE.set('manuel-books', all);
+  renderStats();
+  if(cb) cb();
+}
+
 // Carte complète (utilisée pour "En cours" ET dans la fenêtre de fiche ouverte depuis l'étagère).
 // forceExpanded=true : pas de lien "Fiche & notes" séparé, tout est visible d'emblée.
 function buildBookCard(b, status, opts={}){
@@ -5866,16 +5872,9 @@ function buildBookCard(b, status, opts={}){
   });
 
   // Badge cliquable — cycle todo → reading → done → todo
-  const cycle = {todo:'reading', reading:'done', done:'todo'};
   el.querySelector('[data-act="status-cycle"]').addEventListener('click', e=>{
     e.stopPropagation();
-    const all = STORE.get('manuel-books',[]);
-    const next = cycle[all[b.idx].status||'todo'];
-    all[b.idx].status = next;
-    if(next==='done') all[b.idx].finishedAt = Date.now();
-    STORE.set('manuel-books', all);
-    renderStats();
-    if(opts.onChange) opts.onChange(); else renderBooks();
+    cycleBookStatus(b.idx, ()=>{ if(opts.onChange) opts.onChange(); else renderBooks(); });
   });
   // Swipe to delete
   addSwipeDelete(el, ()=>{
@@ -5890,10 +5889,12 @@ function buildBookCard(b, status, opts={}){
 }
 
 // Étagère (grille de couvertures colorées) pour "À lire" / "Terminés". Le nom de la
-// collection s'affiche sur la couverture dès qu'elle contient ≥ 2 livres sur cette étagère.
-// Étagères façon bibliothèque : dos de livres verticaux ("À lire") ou couvertures posées
-// à plat ("Terminés"), regroupées par tranches sur des planches en bois. Couleur reprise
-// du système existant (bookDisplayColor / palette étendue), jamais les couleurs du proto.
+// Étagères façon bibliothèque, sur planches en bois (même planche que le manuel médiéval).
+// "À lire" (variant spine) : dos de livres debout, dans l'ordre de la liste, PAS de
+// regroupement visuel par collection, tap = change juste le statut (todo→reading→done).
+// "Terminés" (variant flat) : couvertures à plat, groupées par collection (une collection
+// entière remonte dès qu'un de ses livres est terminé), nom de la collection affiché une
+// fois au-dessus du groupe, date de fin sous chaque livre, tap = ouvre la fiche complète.
 function renderBookShelf(hostId, list, opts={}){
   const host = document.getElementById(hostId);
   if(!host) return;
@@ -5901,20 +5902,36 @@ function renderBookShelf(hostId, list, opts={}){
     host.innerHTML = `<div class="empty-state" style="padding:16px 8px"><div class="text" style="font-size:12px">Pas encore de lecture — ${BOOK_EMPTY[opts.emptyKey||'todo']}.</div></div>`;
     return;
   }
-  const collCounts = {};
-  list.forEach(b=>{ if(b.coll) collCounts[b.coll] = (collCounts[b.coll]||0)+1; });
   const variant = opts.variant || 'spine';
-  const per = variant === 'flat' ? 4 : 7;
   let html = '';
-  for(let i=0; i<list.length; i+=per){
-    const chunk = list.slice(i, i+per);
-    if(variant === 'flat'){
-      html += `<div class="shelf-row"><div class="flatshelf">` + chunk.map(b=>{
+
+  if(variant === 'flat'){
+    // Regroupe par collection (livres sans collection = groupe solo), trie chaque groupe
+    // par date de fin desc, puis trie les groupes par leur livre le plus récent desc.
+    const groups = [];
+    const collIndex = {};
+    list.forEach(b=>{
+      if(b.coll && collIndex[b.coll] !== undefined){
+        groups[collIndex[b.coll]].books.push(b);
+      } else {
+        if(b.coll) collIndex[b.coll] = groups.length;
+        groups.push({coll:b.coll||null, books:[b]});
+      }
+    });
+    groups.forEach(g=>g.books.sort((a,b)=>(b.finishedAt||0)-(a.finishedAt||0)));
+    groups.sort((a,b)=>Math.max(...b.books.map(x=>x.finishedAt||0)) - Math.max(...a.books.map(x=>x.finishedAt||0)));
+    // Aplatit en gardant la trace du 1er livre de chaque groupe (pour le libellé collection)
+    const flat = [];
+    groups.forEach(g=>g.books.forEach((b,i)=>flat.push({b, collLabel: (i===0) ? g.coll : null})));
+
+    const per = 4;
+    for(let i=0; i<flat.length; i+=per){
+      const chunk = flat.slice(i, i+per);
+      html += `<div class="shelf-row"><div class="flatshelf">` + chunk.map(({b, collLabel})=>{
         const c = bookDisplayColor(b);
-        const showColl = b.coll && collCounts[b.coll] >= 2;
-        const dateStr = (opts.showDate && b.finishedAt) ? new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) : '';
+        const dateStr = b.finishedAt ? new Date(b.finishedAt).toLocaleDateString('fr-FR',{day:'numeric',month:'short',year:'numeric'}) : '';
         return `<div class="flat" data-bidx="${b.idx}">
-          ${showColl ? `<span class="flat-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
+          ${collLabel ? `<span class="flat-coll">📚 ${escapeHtml(collLabel)}</span>` : ''}
           <div class="flat-cover" style="background:linear-gradient(160deg,color-mix(in srgb,${c} 85%,#fff 8%),${c} 55%,color-mix(in srgb,${c} 60%,#000))">
             <span></span>
             <div class="flat-title">${escapeHtml(b.title)}</div>
@@ -5923,21 +5940,25 @@ function renderBookShelf(hostId, list, opts={}){
           ${dateStr ? `<div class="flat-date">${dateStr}</div>` : ''}
         </div>`;
       }).join('') + `</div></div>`;
-    } else {
+    }
+    host.innerHTML = html;
+    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
+  } else {
+    const per = 7;
+    for(let i=0; i<list.length; i+=per){
+      const chunk = list.slice(i, i+per);
       html += `<div class="shelf-row"><div class="shelf">` + chunk.map(b=>{
         const c = bookDisplayColor(b);
-        const showColl = b.coll && collCounts[b.coll] >= 2;
         const h = 118 + ([...b.title].reduce((x,ch)=>x+ch.charCodeAt(0),0) % 26);
         return `<div class="tome" data-bidx="${b.idx}" style="height:${h}px;background:linear-gradient(90deg,color-mix(in srgb,${c} 80%,#000),${c} 45%,color-mix(in srgb,${c} 85%,#fff 10%))">
-          ${showColl ? `<span class="tome-coll">📚 ${escapeHtml(b.coll)}</span>` : ''}
           <div class="tome-title"><span>${escapeHtml(b.title)}</span></div>
           <div class="tome-author">${escapeHtml(surnameOf(b.author))}</div>
         </div>`;
       }).join('') + `</div></div>`;
     }
+    host.innerHTML = html;
+    host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>cycleBookStatus(+el.dataset.bidx, renderBooks)));
   }
-  host.innerHTML = html;
-  host.querySelectorAll('[data-bidx]').forEach(el=>el.addEventListener('click', ()=>openBookModal(+el.dataset.bidx)));
 }
 function surnameOf(author){
   const a = (author||'').trim();
@@ -6516,20 +6537,10 @@ function setGuideMode(mode){
   if(nutri) nutri.style.display = mode==='nutrition' ? '' : 'none';
   const polit = document.getElementById('politique-section');
   if(polit) polit.style.display = mode==='politique' ? '' : 'none';
-  if(mode==='pillars'){
-    document.getElementById('guide-title').innerHTML = 'Six <em>piliers</em>';
-    document.getElementById('guide-sub').textContent = 'Le fond de connaissances. Déplie chaque pilier pour les détails.';
-  } else if(mode==='nutrition'){
-    document.getElementById('guide-title').innerHTML = 'Manger <em>correctement</em>';
-    document.getElementById('guide-sub').textContent = 'Quoi manger, à quel moment de la journée, et pourquoi.';
+  if(mode==='nutrition'){
     renderNutrition();
   } else if(mode==='politique'){
-    document.getElementById('guide-title').innerHTML = 'Devenir <em>politicien</em>';
-    document.getElementById('guide-sub').textContent = 'Viser le national par la compétence. Feuille de route 19 → 35 ans.';
     renderPolitique();
-  } else {
-    document.getElementById('guide-title').innerHTML = 'Profite d\'avoir <em>20 ans</em>';
-    document.getElementById('guide-sub').textContent = '9 choses que le temps rend irremplaçables. Coche ce que tu explores.';
   }
   STORE.set('manuel-guide-mode', mode);
 }
