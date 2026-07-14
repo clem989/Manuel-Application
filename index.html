@@ -1032,6 +1032,11 @@
   .obj-item > .swipe-content{display:flex;align-items:center;gap:12px;padding:14px 16px}
   .reminder-item{overflow:hidden;padding:0;position:relative}
   .reminder-item > .swipe-content{display:flex;align-items:center;gap:14px;padding:14px 16px}
+  /* En édition (crayon), le contenu passe d'une seule ligne (icône/titre/coche) à un
+     petit formulaire empilé — la mise en page en ligne (flex row) casserait tout,
+     donc on repasse en flux normal, vertical. */
+  .obj-item > .swipe-content.editing,
+  .reminder-item > .swipe-content.editing{display:block}
   .book-item{overflow:hidden;padding:0;position:relative}
   .book-item > .swipe-content{padding:11px 14px}
 
@@ -1293,6 +1298,9 @@
     border:2px solid var(--gold);
     box-shadow:0 6px 18px rgba(0,0,0,.35);z-index:96;
   }
+  /* Mode sombre : cercle violet et fond rouge cramoisi (même rouge que l'alerte
+     "il est très très tard" du sous-titre d'accueil). */
+  :root:not([data-theme="light"]) .fab{background:#D64545;border-color:#7B6FB8}
   .fab.show{display:flex}
   .fab:active{transform:scale(.94)}
   .nav-bottom-fill{
@@ -1403,7 +1411,8 @@
     box-shadow:inset 6px 0 10px rgba(0,0,0,.35),inset -3px 0 6px rgba(255,255,255,.08),3px 3px 10px rgba(0,0,0,.3);
     border:1px solid rgba(0,0,0,.4);
     display:flex;flex-direction:column;justify-content:space-between;align-items:center;
-    padding:12px 8px;text-align:center;
+    /* padding-gauche augmenté : évite que le titre ne passe sur la ligne de reliure */
+    padding:12px 8px 12px 18px;text-align:center;
   }
   .lectern-cover::before{content:"";position:absolute;inset:5px;border:1px solid color-mix(in srgb, var(--gold) 70%, transparent);border-radius:3px 8px 8px 3px}
   /* Ligne de reliure verticale près du bord gauche, comme la couverture de manuel-medieval.html */
@@ -1463,15 +1472,18 @@
   .flat{width:84px;flex:0 0 auto;cursor:pointer;display:flex;flex-direction:column;align-items:center;position:relative}
   .flat-cover{width:88px;height:136px;border-radius:4px 9px 9px 4px;position:relative;
     border:1px solid rgba(0,0,0,.4);box-shadow:inset 5px 0 8px rgba(0,0,0,.35),3px 3px 10px rgba(0,0,0,.3);
-    display:flex;flex-direction:column;justify-content:space-between;align-items:center;padding:9px 6px 8px;text-align:center}
+    display:flex;flex-direction:column;justify-content:flex-end;align-items:center;padding:9px 6px 8px 14px;text-align:center}
   .flat-cover::before{content:"";position:absolute;inset:4px;border:1px solid color-mix(in srgb, var(--gold) 70%, transparent);border-radius:2px 6px 6px 2px}
   .flat-cover::after{content:"";position:absolute;top:0;bottom:0;left:8px;width:2px;background:rgba(0,0,0,.35)}
-  .flat-title{flex:1;display:flex;align-items:center;justify-content:center;width:100%;
+  /* Titre décalé à droite de la ligne de reliure, et un peu au-dessus du centre
+     (ni collé en haut, ni pile au centre — l'ornement reste au centre exact,
+     en filigrane derrière). */
+  .flat-title{position:absolute;top:40%;left:calc(50% + 4px);transform:translate(-50%,-50%);
+    width:calc(100% - 26px);
     font-family:'Instrument Serif',serif;font-size:11.5px;line-height:1.2;color:#F7F1E6;
-    text-shadow:0 1px 3px rgba(0,0,0,.55);position:relative;z-index:1;overflow:hidden}
-  /* Ornement au centre exact de la couverture, en filigrane derrière le titre
-     (même point central que le texte, plutôt qu'une ligne séparée en dessous). */
-  .flat-orn{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+    text-shadow:0 1px 3px rgba(0,0,0,.55);z-index:1;overflow:hidden}
+  /* Ornement au centre exact de la couverture, en filigrane derrière le titre. */
+  .flat-orn{position:absolute;top:50%;left:calc(50% + 4px);transform:translate(-50%,-50%);
     font-size:28px;line-height:1;color:color-mix(in srgb, var(--gold) 55%, transparent);
     z-index:0;pointer-events:none}
   .flat-author{font-size:7px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:#F1E8D8;position:relative;z-index:1}
@@ -1488,6 +1500,14 @@
     display:flex;align-items:center;gap:5px;
   }
   .book-detail h6:first-child{margin-top:0}
+  /* Étiquettes de section dans le panneau + (Tâches, Habitudes...) — regroupe
+     visuellement les champs plutôt que de les empiler sans repère. */
+  .mgmt-section-label{
+    font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-soft);margin:16px 2px 8px;font-weight:700;
+    display:flex;align-items:center;gap:5px;
+  }
+  .mgmt-section-label:first-child{margin-top:0}
   .book-field{
     width:100%;background:var(--surface-2);border:1px solid var(--line);
     border-radius:10px;padding:10px 12px;margin-bottom:7px;
@@ -2132,6 +2152,11 @@
     <div id="mgmt-body">
       <!-- Tasks -->
       <div class="sub-view" data-msub="tasks">
+        <div class="note-form-card">
+          <input type="text" id="task-text" class="note-title-input" placeholder="Nouvelle tâche...">
+        </div>
+
+        <div class="mgmt-section-label">🔁 Fréquence & rappel</div>
         <div class="input-row">
           <select id="task-freq">
             <option value="once">Unique (1 jour)</option>
@@ -2175,15 +2200,21 @@
           </select>
           <input type="time" id="task-rem-time" value="09:00">
         </div>
-        <div class="input-row" style="margin-top:8px">
+
+        <div class="mgmt-section-label">🎯 Icône, difficulté & compétences</div>
+        <div class="input-row">
           <div id="task-icon-host" style="flex:1;min-width:0"></div>
           <div id="task-diff-host" style="flex:1;min-width:0"></div>
         </div>
         <div class="freq-filter" id="task-skills-row" style="margin-top:8px"></div>
-        <div class="input-row" style="margin-top:8px">
-          <input type="text" id="task-text" placeholder="Nouvelle tâche...">
-          <button class="btn btn-primary btn-sm" id="task-add">+</button>
+
+        <div class="input-row" style="margin-top:14px">
+          <button class="btn btn-primary btn-sm" id="task-add" style="flex:1">Ajouter la tâche</button>
         </div>
+
+        <hr class="note-form-sep" style="margin:18px 2px 12px">
+
+        <div class="mgmt-section-label">📋 Tes tâches</div>
         <div class="freq-filter" id="task-filter">
           <button class="freq-btn active" data-filter="all">Toutes</button>
           <button class="freq-btn" data-filter="daily">Quotidien</button>
@@ -2197,6 +2228,13 @@
 
       <!-- Habitudes -->
       <div class="sub-view" data-msub="habits" style="display:none">
+        <div class="note-form-card">
+          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
+          <hr class="note-form-sep">
+          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
+        </div>
+
+        <div class="mgmt-section-label">🌅 Moment de la journée</div>
         <div class="input-row">
           <select id="habit-moment" class="btn btn-sm" style="flex:1">
             <option value="matin">🌅 Matin</option>
@@ -2204,20 +2242,22 @@
             <option value="soir">🌙 Soir</option>
           </select>
         </div>
-        <div class="input-row" style="margin-top:8px">
+
+        <div class="mgmt-section-label">🎯 Icône, difficulté & compétences</div>
+        <div class="input-row">
           <div id="habit-icon-host" style="flex:1;min-width:0"></div>
           <div id="habit-diff-host" style="flex:1;min-width:0"></div>
         </div>
         <div class="freq-filter" id="habit-skills-row" style="margin-top:8px"></div>
-        <div class="note-form-card" style="margin-top:8px">
-          <input type="text" id="habit-text" class="note-title-input" placeholder="Nouvelle habitude...">
-          <hr class="note-form-sep">
-          <input type="text" id="habit-note" class="note-title-input" style="font-size:13px;font-weight:400" placeholder="Petit détail / comment (optionnel)">
+
+        <div class="input-row" style="margin-top:14px">
+          <button class="btn btn-primary btn-sm" id="habit-add" style="flex:1">Ajouter l'habitude</button>
         </div>
-        <div class="input-row" style="margin-top:8px">
-          <button class="btn btn-primary btn-sm" id="habit-add" style="flex:1">Ajouter</button>
-        </div>
-        <p style="font-size:12px;color:var(--muted);margin:10px 2px 0">Tes habitudes apparaissent dans l'overlay du moment à chaque ouverture de l'app, et comptent dans ta progression et tes stats. Touche ✏️ pour modifier.</p>
+
+        <hr class="note-form-sep" style="margin:18px 2px 12px">
+
+        <div class="mgmt-section-label">☑️ Tes habitudes</div>
+        <p style="font-size:12px;color:var(--muted);margin:-4px 2px 10px">Elles apparaissent dans l'overlay du moment à chaque ouverture de l'app, et comptent dans ta progression et tes stats. Touche ✏️ pour modifier.</p>
         <div id="habits-list"></div>
       </div>
 
@@ -2778,21 +2818,26 @@ const pillars = [
 /* ═══════════════════════════════════════════════
    DATA — Checklist
 ═══════════════════════════════════════════════ */
+// Ordre volontaire : groupées par moment de la journée (matin puis après-midi puis
+// soir), et à l'intérieur de chaque moment dans l'ordre demandé — ex. le matin :
+// lever tôt, étirements, lumière naturelle, eau, lecture, petit-déj ; le soir,
+// "au lit avant 23h" en dernier.
 const checks = [
-  {id:"light", text:"Lumière naturelle dès le réveil", note:"15 min dehors ou volets grand ouverts"},
-  {id:"water", text:"6 à 8 verres d'eau", note:"1,5 à 2L sur la journée"},
-  {id:"protein", text:"Petit-déj protéiné", note:"œufs, yaourt, fromage blanc"},
-  {id:"move", text:"30 min de mouvement", note:"marche, sport, vélo"},
-  {id:"recall", text:"1 session de révision active", note:"questions/réponses"},
-  {id:"bed", text:"Au lit avant 23h", note:"même heure que la veille"},
-  // Une habitude par compétence, directement affiliée (§ compétences) — non supprimables
-  // comme les précédentes, mais modifiables (texte/détail/horaire/fréquence/icône/compétences).
-  {id:"sk_intel",   text:"Lire 1 heure minimum", note:""},
+  // — Matin —
   {id:"sk_volonte", text:"Se lever tôt, 8h30", note:""},
   {id:"sk_force",   text:"Étirements tous les jours", note:"S'étirer chaque jour pour améliorer la mobilité et la récupération"},
+  {id:"light", text:"Lumière naturelle dès le réveil", note:"15 min dehors ou volets grand ouverts"},
+  {id:"water", text:"6 à 8 verres d'eau", note:"1,5 à 2L sur la journée"},
+  {id:"sk_intel",   text:"Lire 1 heure minimum", note:""},
+  {id:"protein", text:"Petit-déj protéiné", note:"œufs, yaourt, fromage blanc"},
+  // — Après-midi —
+  {id:"move", text:"30 min de mouvement", note:"marche, sport, vélo"},
+  {id:"recall", text:"1 session de révision active", note:"questions/réponses"},
   {id:"sk_prosper", text:"Avancer sur mes projets", note:""},
+  // — Soir — ("Au lit avant 23h" en dernier)
   {id:"sk_social",  text:"Prendre des nouvelles d'un proche", note:""},
-  {id:"sk_sagesse", text:"20 minutes d'introspection ou de méditation", note:"Écrire dans mon autobiographie"}
+  {id:"sk_sagesse", text:"20 minutes d'introspection ou de méditation", note:"Écrire dans mon autobiographie"},
+  {id:"bed", text:"Au lit avant 23h", note:"même heure que la veille"}
 ];
 // Compétence "cœur" de chaque habitude préenregistrée dédiée — sert au calcul de déclin
 // (2 périodes ratées de suite, selon la fréquence propre de CETTE habitude).
@@ -3762,6 +3807,47 @@ function isIntervalActive(t, date=new Date()){
 }
 function startOfDay(d){ const x=new Date(d); x.setHours(0,0,0,0); return x.getTime(); }
 
+// Fenêtre de visibilité des tâches hebdo/mensuel/annuel dans « Aujourd'hui » :
+// tant qu'une tâche n'est pas cochée pour la période en cours, elle reste toujours
+// visible. Une fois cochée, elle disparaît à partir du lendemain du jour où elle a
+// été cochée, et ne réapparaît que peu avant l'échéance suivante — 2 jours avant la
+// fin de la semaine ISO (hebdo), 5 jours avant la fin du mois (mensuel), 1 mois avant
+// la fin de l'année (annuel). N'affecte pas la liste de gestion (Carnet/+), seulement
+// la liste « à faire aujourd'hui ».
+function periodEndDate(freq, date=new Date()){
+  if(freq === 'weekly'){
+    const d = new Date(date);
+    const day = d.getDay() || 7; // 1=lundi..7=dimanche (ISO)
+    d.setDate(d.getDate() + (7 - day));
+    d.setHours(0,0,0,0);
+    return d;
+  }
+  if(freq === 'monthly') return new Date(date.getFullYear(), date.getMonth()+1, 0);
+  if(freq === 'yearly') return new Date(date.getFullYear(), 11, 31);
+  return null;
+}
+function reappearThresholdDate(freq, date=new Date()){
+  const end = periodEndDate(freq, date);
+  if(!end) return null;
+  const t = new Date(end);
+  if(freq === 'weekly') t.setDate(t.getDate() - 2);
+  else if(freq === 'monthly') t.setDate(t.getDate() - 5);
+  else if(freq === 'yearly') t.setMonth(t.getMonth() - 1);
+  t.setHours(0,0,0,0);
+  return t;
+}
+function isRecurringTaskVisibleToday(t){
+  if(t.freq !== 'weekly' && t.freq !== 'monthly' && t.freq !== 'yearly') return true;
+  if(!getCustomTaskState(t.id, t.freq)) return true; // pas cochée pour cette période → toujours visible
+  const key = `${t.id}__${getPeriodKey(t.freq)}`;
+  const doneDay = (STORE.get('manuel-task-doneday', {}))[key];
+  if(!doneDay) return true; // cochée sans date connue (sécurité) → visible
+  if(doneDay === todayKey()) return true; // cochée aujourd'hui → encore visible aujourd'hui
+  const threshold = reappearThresholdDate(t.freq);
+  if(!threshold) return true;
+  return startOfDay(new Date()) >= threshold.getTime();
+}
+
 // Tâches custom (stockées une fois, état par période)
 function getCustomTasks(){
   return STORE.get('manuel-custom-tasks', []);
@@ -3850,6 +3936,7 @@ function renderUnifiedTasks(){
     ...allCustom
       .filter(t => t.freq !== 'once' || t.onceDate === todayKey()) // les uniques : seulement le jour J
       .filter(t => t.freq === 'once' || t.freq === 'yearly' || isIntervalActive(t)) // « toutes les X »
+      .filter(isRecurringTaskVisibleToday) // hebdo/mensuel/annuel : disparaît puis réapparaît avant échéance
       .map(t=>({
         kind:'custom', data:t,
         isDone: getCustomTaskState(t.id, t.freq),
@@ -4704,6 +4791,7 @@ function renderTaskItem(task){
   });
   content.querySelector('.qc-edit').addEventListener('click', (e)=>{
     e.stopPropagation();
+    content.classList.add('editing');
     content.innerHTML = `
       <input class="note-edit-title" value="${escapeHtml(task.text)}" placeholder="Tâche">
       <div class="input-row" style="margin-top:8px">
@@ -5586,11 +5674,11 @@ function renderReminders(){
     el.querySelector('.item-edit-btn').addEventListener('click', (e)=>{
       e.stopPropagation();
       const sc = el.querySelector('.swipe-content');
-      sc.style.cssText = 'width:100%';
+      sc.classList.add('editing');
       sc.innerHTML = `
-        <div id="redit-time-host" style="flex-shrink:0"></div>
-        <input class="note-edit-title ed-txt" value="${escapeHtml(r.text)}" placeholder="Intitulé du rappel" style="flex:1">
-        <div class="note-edit-actions" style="width:100%">
+        <div id="redit-time-host"></div>
+        <input class="note-edit-title ed-txt" value="${escapeHtml(r.text)}" placeholder="Intitulé du rappel" style="margin-top:8px">
+        <div class="note-edit-actions">
           <button class="btn btn-sm btn-danger" data-act="delete">Supprimer</button>
           <div class="note-edit-actions-right">
             <button class="btn btn-sm btn-ghost ed-cancel">Annuler</button>
@@ -6687,7 +6775,7 @@ function rebuildQuoteSelect(){
   ];
   const prev = window._quoteTypeMsel ? window._quoteTypeMsel.getValue() : 'livre';
   host.innerHTML = '';
-  window._quoteTypeMsel = makeMsel({ options: opts, value: opts.some(o=>o.value===prev)?prev:'livre' });
+  window._quoteTypeMsel = makeMsel({ options: opts, value: opts.some(o=>o.value===prev)?prev:'livre', dropUp:true });
   host.appendChild(window._quoteTypeMsel);
 }
 rebuildQuoteFilter();
@@ -7733,11 +7821,18 @@ function init(){
   if(notifsEnabled){ scheduleNextReminder(); startDeadlineWatcher(); }
   initSync();
 
-  // Généralisation du sélecteur custom : convertit les <select> natifs restants
-  ['day-theme','habit-moment','task-freq','task-interval','task-rem-weekday','task-rem-month',
+  // Généralisation du sélecteur custom : convertit les <select> natifs restants.
+  // day-theme vit dans Paramètres (page normale, défilement classique) : déroulé
+  // classique vers le bas.
+  try{ upgradeSelect('day-theme'); }catch(e){}
+  // Tous les autres ci-dessous vivent dans le panneau + (feuille ancrée en bas
+  // d'écran, .habit-sheet) : le sélecteur doit se déplier vers le HAUT pour ne
+  // jamais être coupé par le bas de l'écran.
+  ['habit-moment','task-freq','task-interval','task-rem-weekday','task-rem-month',
    'task-rem-day','note-cat']
-    .forEach(id=>{ try{ upgradeSelect(id); }catch(e){} });
-  // book-genre et book-init-status ont des hosts dédiés (pour la mise en page)
+    .forEach(id=>{ try{ upgradeSelect(id, {dropUp:true}); }catch(e){} });
+  // book-genre et book-init-status ont des hosts dédiés (pour la mise en page) —
+  // même feuille ancrée en bas, donc déroulé vers le haut aussi.
   try{
     ['book-genre','book-init-status'].forEach(id=>{
       const sel = document.getElementById(id);
@@ -7746,6 +7841,7 @@ function init(){
       const msel = makeMsel({
         options: [...sel.options].map(o=>({value:o.value, label:o.textContent})),
         value: sel.value,
+        dropUp: true,
         onChange: v=>{ sel.value=v; sel.dispatchEvent(new Event('change',{bubbles:true})); }
       });
       msel.style.width='100%'; msel.style.maxWidth='100%';
